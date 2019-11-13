@@ -22,13 +22,13 @@ class DBProvider {
 
   Future<Database> _initDB() async {
     Directory appDir = await getApplicationDocumentsDirectory();
-    String path = join(appDir.path, 'MsdAOK_database.db');
+    String path = join(appDir.path, 'better_together.db');
     return await openDatabase(
       path,
       version: 1,
       onOpen: (db){},
       onCreate: (db, ver) async {
-        String create1 = """
+        String createService = """
             CREATE TABLE Service ( 
              serviceId INTEGER PRIMARY KEY AUTOINCREMENT,
              name VARCHAR(255),
@@ -39,7 +39,7 @@ class DBProvider {
              participantNumber INTEGER
             );
         """;
-        String create2 = """
+        String createServiceParticipant = """
             CREATE TABLE ServiceParticipant ( 
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               serviceId INTEGER,
@@ -50,18 +50,16 @@ class DBProvider {
               monthPaid INTEGER
             );
         """;
-        String create3 = """
+        String createParticipant = """
             CREATE TABLE Participant ( 
               participantId INTEGER PRIMARY KEY AUTOINCREMENT,
               name VARCHAR(255),
               email VARCHAR(255)
             );
         """;
-        await db.execute(create1);
-        await db.execute(create2);
-        await db.execute(create3);
-        await db.execute("INSERT INTO Service (serviceId,name,monthlyPrice,participantNumber) values(1,'test', 15,6)");
-        await db.execute("INSERT INTO Service (serviceId,name) values(2,'prova')");
+        await db.execute(createService);
+        await db.execute(createServiceParticipant);
+        await db.execute(createParticipant);
       }
     );
   }

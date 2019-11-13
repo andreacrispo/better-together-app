@@ -18,11 +18,65 @@ class _ServiceFormState extends State<ServiceForm> {
   final ServiceEntity _item = ServiceEntity();
   final _formKey = GlobalKey<FormState>();
 
+  getInputDecoration(labelText){
+    return InputDecoration(
+      labelText: labelText,
+      fillColor: Colors.white,
+      border: new OutlineInputBorder(
+        borderRadius: new BorderRadius.circular(8.0),
+        borderSide: new BorderSide(
+        ),
+      ),
+      //fillColor: Colors.green
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
+
+    final nameField = TextFormField(
+      decoration: getInputDecoration('Name'),
+      validator: (value) {
+        if (value.isEmpty) return "Campo obbligatorio";
+        return null;
+      },
+      onSaved: (value) => _item.name = value,
+    );
+
+    final monthlyPriceField = Container(
+        margin: EdgeInsets.only(top: 10),
+        child: TextFormField(
+        decoration: getInputDecoration( 'Monthly Price'),
+        keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+        inputFormatters: <TextInputFormatter>[
+          //   WhitelistingTextInputFormatter.digitsOnly
+        ],
+        validator: (value) {
+          if (value.isEmpty) return "Campo obbligatorio";
+          return null;
+        },
+        onSaved: (value) => _item.monthlyPrice = double.parse(value)
+      )
+    );
+
+    final participantNumberField = Container(
+      margin: EdgeInsets.only(top: 10, bottom: 10),
+      child: TextFormField(
+        decoration: getInputDecoration('Number of pariticipant'),
+        keyboardType: TextInputType.numberWithOptions(),
+        inputFormatters: <TextInputFormatter>[
+          WhitelistingTextInputFormatter.digitsOnly
+        ],
+        validator: (value) {
+          if (value.isEmpty) return "Campo obbligatorio";
+          return null;
+        },
+        onSaved: (value) => _item.participantNumber = int.parse(value)
+      )
+    );
+
     return SafeArea(
       child: Scaffold(
-
         appBar: AppBar(
           title: Text("New Service"),
 
@@ -46,71 +100,16 @@ class _ServiceFormState extends State<ServiceForm> {
 
         body: Form(
           key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    decoration: new InputDecoration(
-                      labelText: 'Name',
-                      fillColor: Colors.white,
-                      border: new OutlineInputBorder(
-                        borderRadius: new BorderRadius.circular(8.0),
-                        borderSide: new BorderSide(
-                        ),
-                      ),
-                      //fillColor: Colors.green
-                    ),
-                    validator: (value) {
-                      if (value.isEmpty) return "Campo obbligatorio";
-                      return null;
-                    },
-                    onSaved: (value) => _item.name = value,
-                  ),
+          child: Container(
+            padding: const EdgeInsets.only(top: 32),
 
-                  TextFormField(
-                    decoration: new InputDecoration(
-                      labelText: 'Monthly Price',
-                      fillColor: Colors.white,
-                      border: new OutlineInputBorder(
-                        borderRadius: new BorderRadius.circular(8.0),
-                        borderSide: new BorderSide(
-                        ),
-                      ),
-                      //fillColor: Colors.green
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value.isEmpty) return "Campo obbligatorio";
-                      return null;
-                    },
-                    onSaved: (value) => _item.monthlyPrice = double.parse(value)
-                  ),
-
-                  TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Number of pariticipant',
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:  BorderSide(
-                          ),
-                        ),
-                        //fillColor: Colors.green
-                      ),
-                      keyboardType: TextInputType.numberWithOptions(),
-                      inputFormatters: <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      validator: (value) {
-                        if (value.isEmpty) return "Campo obbligatorio";
-                        return null;
-                      },
-                      onSaved: (value) => _item.participantNumber = int.parse(value)
-                  ),
-
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 16.0, right: 16.0),
+              children: <Widget>[
+                  nameField,
+                  monthlyPriceField,
+                  participantNumberField,
                   SizedBox(
                     width: double.infinity,
                     child: OutlineButton(
@@ -118,9 +117,7 @@ class _ServiceFormState extends State<ServiceForm> {
                       child: const Text('Choose color'),
                     ),
                   ),
-
                 ],
-              ),
             ),
           ),
         ),

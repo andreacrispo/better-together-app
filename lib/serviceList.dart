@@ -116,22 +116,25 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             itemBuilder: (BuildContext context, int index) {
               return Dismissible(
                 key: Key(index.toString()),
-                background: DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.red),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                      size: 52,
+                background:  DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.redAccent),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                        size: 42,
+                      ),
                     ),
                   ),
                 ),
                 direction: DismissDirection.endToStart,
                 onDismissed: (direction) {
-                  ServiceEntity item = snapshot.data[index];
-                  snapshot.data.removeAt(index);
-                  deleteService(item);
+                    ServiceEntity item = snapshot.data[index];
+                    snapshot.data.removeAt(index);
+                    deleteService(item);
                 },
                 child: createCardService(snapshot.data[index])
               );
