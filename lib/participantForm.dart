@@ -73,9 +73,6 @@ class _ParticipantFormState extends State<ParticipantForm> {
         initialValue: _participant.pricePaid != null ?  _participant.pricePaid.toString() : "",
         decoration:  getInputDecoration('Price Paid'),
         keyboardType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          WhitelistingTextInputFormatter.digitsOnly
-        ],
         validator: (value) {
           if (value.isEmpty) return "Mandatory field";
           if(!isNumeric(value)) return "Only numeric value";

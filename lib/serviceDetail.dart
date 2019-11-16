@@ -50,7 +50,22 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     }
   }
 
-  dataBody( List<ParticipantDto> participants) {
+  createTableParticipants( List<ParticipantDto> participants, BuildContext context) {
+    if(participants.length == 0) {
+      return
+        Row(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 60),
+              child: RaisedButton(
+              child: Text("Copy participants from previous month"),
+              onPressed: () => copyParticipantsFromPreviousMonth(context),
+              ),
+            ),
+          ],
+        );
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: DataTable(
@@ -165,7 +180,15 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
      setState(() {});
   }
 
-  changeMonth(details, passArgs) {
+  copyParticipantsFromPreviousMonth(BuildContext context) async {
+    final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
+    int month = passArgs.monthPaid;
+    int year  = passArgs.yearPaid;
+    await  _repository.copyParticipantsFromPreviousMonth(currentService.serviceId, month, year);
+    setState(() {});
+  }
+
+  changeMonth(DragUpdateDetails details, passArgs) {
       final int serviceId = passArgs.serviceId;
       //if details.primaryDelta is positive ,the drag is left to right. So previous month
       if(details.delta.dx > 0) {
@@ -237,22 +260,32 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                      IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () => previousMonth(currentService.serviceId, passArgs.monthPaid, passArgs.yearPaid)
+                      ),
                       Text(
                         "${monthString[passArgs.monthPaid]} ${passArgs.yearPaid}",
                         style: TextStyle(fontSize: 32),
                       ),
+                      IconButton(
+                          icon: Icon(Icons.arrow_forward),
+                          onPressed: () => nextMonth(currentService.serviceId, passArgs.monthPaid, passArgs.yearPaid)
+                      ),
                   ],
                 ),
+
                 Expanded(
-                  child: dataBody(currentService.participants),
+                  child: createTableParticipants(currentService.participants, context)
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Card(
                       elevation: 10,
-                      child: Text("PROVA"),
+                      child: Text("test"),
                     )
                   ],
                 )

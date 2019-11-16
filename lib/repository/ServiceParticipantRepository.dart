@@ -76,5 +76,25 @@ class ServiceParticipantRepository extends DataRepository<ServiceParticipantEnti
     return null;
   }
 
+  Future<List<ServiceParticipantEntity>> findParticipantsByPaymentDate(
+      int serviceId,
+      int monthPaid,
+      int yearPaid
+  ) async {
+
+    Database db = await _dbProvider.database;
+    const String whereCondition = """ 
+          serviceId = ? 
+      and monthPaid = ?
+      and yearPaid  = ?
+     """;
+    var result =  await db.query(tableName, where: whereCondition, whereArgs: [serviceId,monthPaid,yearPaid]);
+    print("resul" + result.length.toString());
+    if(result.length > 0 )
+      return result.map((item) => ServiceParticipantEntity.fromMap(item)).toList();
+
+    return null;
+  }
+
 
 }

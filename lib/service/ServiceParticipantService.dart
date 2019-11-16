@@ -101,11 +101,42 @@ class ServiceParticipantService {
         participantDto.monthPaid,
         participantDto.yearPaid
     );
-     if(relationship == null)
+    if(relationship == null)
       return null;
 
     var result = await _serviceParticipantRepository.delete(relationship.id);
     
+  }
+
+  copyParticipantsFromPreviousMonth(int serviceId, int currentMonth, int currentYear) async {
+    int prevMonth = currentMonth;
+    int prevYear = currentYear;
+    if (currentMonth - 1 <= 0) {
+      prevMonth = 12;
+      prevYear -= 1;
+    } else {
+      prevMonth -= 1;
+    }
+    print("prevM  " + prevMonth.toString() + " prevY  " + prevYear.toString());
+    List<ServiceParticipantEntity> relationshipList = await _serviceParticipantRepository.findParticipantsByPaymentDate(
+        serviceId,
+        prevMonth,
+        prevYear
+    );
+    print("relationshipList ");
+    print(relationshipList);
+    if(relationshipList == null)
+      return null;
+
+    relationshipList.forEach((item) async {
+      ServiceParticipantEntity rel = ServiceParticipantEntity();
+      rel.serviceId = item.serviceId;
+      rel.participantId = item.participantId;
+      rel.monthPaid = currentMonth;
+      rel.yearPaid = currentYear;
+      var result = await  _serviceParticipantRepository.create(rel);
+    });
+
   }
 
 }
