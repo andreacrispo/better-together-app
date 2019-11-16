@@ -7,6 +7,7 @@ import 'package:better_together_app/utils.dart';
 import 'package:flutter/material.dart';
 import 'model/ParticipantDto.dart';
 import 'model/ServiceParticipantDto.dart';
+import 'package:flutter/foundation.dart';
 
 
 class ServiceDetailArgs {
@@ -53,6 +54,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: DataTable(
+        columnSpacing: 30,
         sortAscending: sort,
         sortColumnIndex: 1,
         columns: [
@@ -74,6 +76,9 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             label: Text("Price Paid"),
             numeric: true,
           ),
+          DataColumn(
+            label: Text(""),
+          ),
         ],
         rows: participants
             .map(
@@ -93,7 +98,30 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                         updatePaidStatus(participant);
                       })
                   ),
-                  DataCell(Text(participant.pricePaid != null ? participant.pricePaid.toString(): '')),
+                  DataCell(
+                    Text(participant.pricePaid != null ? participant.pricePaid.toString(): ''),
+                  ),
+                  DataCell(
+                       PopupMenuButton<int>(
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 1,
+                              child: Text("Edit"),
+                            ),
+                            PopupMenuItem(
+                              value: 2,
+                              child: Text("Delete"),
+                            ),
+                          ],
+                          onSelected: (value) {
+                            if(value == 1)
+                              editParticipantFromService(participant);
+                            else if(value == 2)
+                              deleteParticipantFromService(participant);
+                          },
+                          icon: Icon(Icons.more_vert),
+                      ),
+                  )
                 ]),
             ).toList(),
       ),
@@ -111,6 +139,25 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       await _repository.addParticipantToService(serviceId, newParticipant);
       setState(() {});
     }
+  }
+
+  editParticipantFromService(ParticipantDto participant) async {
+    ParticipantDto editedParticipant = await Navigator.pushNamed<ParticipantDto>(
+        context,
+        ParticipantForm.routeName,
+        arguments: participant
+    );
+
+    if (editedParticipant != null) {
+      await _repository.editParticipantFromService(currentService.serviceId, editedParticipant);
+      setState(() {});
+
+    }
+  }
+
+  deleteParticipantFromService(ParticipantDto participant) async {
+    await _repository.deleteParticipantFromService(currentService.serviceId, participant);
+     setState(() {});
   }
 
   updatePaidStatus(ParticipantDto participant) async {

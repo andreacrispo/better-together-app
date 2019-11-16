@@ -22,7 +22,7 @@ class DBProvider {
 
   Future<Database> _initDB() async {
     Directory appDir = await getApplicationDocumentsDirectory();
-    String path = join(appDir.path, 'better_together.db');
+    String path = join(appDir.path, '__better_together.db');
     return await openDatabase(
       path,
       version: 1,

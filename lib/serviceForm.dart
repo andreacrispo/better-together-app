@@ -1,8 +1,7 @@
 
+import 'package:better_together_app/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:better_together_app/model/ServiceParticipantEntity.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
 import 'model/ServiceEntity.dart';
@@ -37,7 +36,7 @@ class _ServiceFormState extends State<ServiceForm> {
     final nameField = TextFormField(
       decoration: getInputDecoration('Name'),
       validator: (value) {
-        if (value.isEmpty) return "Campo obbligatorio";
+        if (value.isEmpty) return "Mandatory field";
         return null;
       },
       onSaved: (value) => _item.name = value,
@@ -52,7 +51,8 @@ class _ServiceFormState extends State<ServiceForm> {
           //   WhitelistingTextInputFormatter.digitsOnly
         ],
         validator: (value) {
-          if (value.isEmpty) return "Campo obbligatorio";
+          if (value.isEmpty) return "Mandatory field";
+          if(!isNumeric(value)) return "Only numeric value";
           return null;
         },
         onSaved: (value) => _item.monthlyPrice = double.parse(value)
@@ -68,7 +68,8 @@ class _ServiceFormState extends State<ServiceForm> {
           WhitelistingTextInputFormatter.digitsOnly
         ],
         validator: (value) {
-          if (value.isEmpty) return "Campo obbligatorio";
+          if (value.isEmpty) return "Mandatory field";
+          if(!isNumeric(value)) return "Only numeric value";
           return null;
         },
         onSaved: (value) => _item.participantNumber = int.parse(value)

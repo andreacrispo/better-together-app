@@ -68,7 +68,6 @@ class ServiceParticipantService {
         yearPaid: participantDto.yearPaid
       );
      var relationship = _serviceParticipantRepository.create(item);
-     print("relationship"); print(relationship);
     }
 
   }
@@ -80,7 +79,6 @@ class ServiceParticipantService {
           participantDto.monthPaid,
           participantDto.yearPaid
     );
-    print("rel"); print(relationship);
     if(relationship == null)
       return null;
 
@@ -94,7 +92,20 @@ class ServiceParticipantService {
     relationship.yearPaid = participantDto.yearPaid;
 
     var result = await _serviceParticipantRepository.update(relationship.id, relationship);
-    print("result update"); print(result);
+  }
+
+  deleteParticipantFromService(int serviceId, ParticipantDto participantDto) async {
+    ServiceParticipantEntity relationship = await _serviceParticipantRepository.findByServiceAndParticipantAndPaymentDate(
+        serviceId,
+        participantDto.participantId,
+        participantDto.monthPaid,
+        participantDto.yearPaid
+    );
+     if(relationship == null)
+      return null;
+
+    var result = await _serviceParticipantRepository.delete(relationship.id);
+    
   }
 
 }

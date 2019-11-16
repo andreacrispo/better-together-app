@@ -30,9 +30,10 @@ class ServiceParticipantRepository extends DataRepository<ServiceParticipantEnti
   }
 
   @override
-  Future<bool> delete(int id) {
-    // TODO: implement delete
-    return null;
+  Future<bool> delete(int id) async {
+    Database db = await _dbProvider.database;
+    int count = await db.delete(tableName, where: "id = ?", whereArgs: [id]);
+    return count == 1;
   }
 
   @override

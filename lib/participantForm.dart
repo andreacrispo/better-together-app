@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'model/ParticipantDto.dart';
@@ -11,7 +12,7 @@ class ParticipantForm extends StatefulWidget {
 }
 
 class _ParticipantFormState extends State<ParticipantForm> {
-  final ParticipantDto _item = ParticipantDto();
+  ParticipantDto _participant = ParticipantDto();
   final _formKey = GlobalKey<FormState>();
 
 
@@ -30,14 +31,22 @@ class _ParticipantFormState extends State<ParticipantForm> {
 
   @override
   Widget build(BuildContext context) {
+    String appBarTitle = "Add Participant";
+    final ParticipantDto passArgs = ModalRoute.of(context).settings.arguments;
+    if(passArgs != null) {
+      _participant = passArgs;
+      appBarTitle = "Edit Participant";
+    }
+
 
     final nameField = TextFormField(
+      initialValue: _participant.name,
       decoration: getInputDecoration('Name'),
       validator: (value) {
-        if (value.isEmpty) return "Campo obbligatorio";
+        if (value.isEmpty) return "Mandatory field";
         return null;
       },
-      onSaved: (value) => _item.name = value,
+      onSaved: (value) => _participant.name = value,
     );
 
     final hasPaidField = Container(
@@ -47,10 +56,10 @@ class _ParticipantFormState extends State<ParticipantForm> {
         children: <Widget>[
           Text("Has paid"),
           Switch(
-            value: _item.hasPaid == null ? false : _item.hasPaid,
+            value: _participant.hasPaid ?? false,
             onChanged: (value) {
               setState(() {
-                _item.hasPaid = value;
+                _participant.hasPaid = value;
               });
             },
             activeTrackColor: Colors.lightGreenAccent,
@@ -61,33 +70,35 @@ class _ParticipantFormState extends State<ParticipantForm> {
     );
 
     final pricePaidField = TextFormField(
+        initialValue: _participant.pricePaid != null ?  _participant.pricePaid.toString() : "",
         decoration:  getInputDecoration('Price Paid'),
         keyboardType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[
           WhitelistingTextInputFormatter.digitsOnly
         ],
         validator: (value) {
-          if (value.isEmpty) return "Campo obbligatorio";
+          if (value.isEmpty) return "Mandatory field";
+          if(!isNumeric(value)) return "Only numeric value";
           return null;
         },
-        onSaved: (value) => _item.pricePaid = double.parse(value)
+        onSaved: (value) => _participant.pricePaid = double.parse(value)
     );
 
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Add Participant"),
+          title: Text(appBarTitle),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.save),
               onPressed: () {
                 if(_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  Navigator.pop(context, _item);
+                  Navigator.pop(context, _participant);
                 }
               },
             )
@@ -104,7 +115,7 @@ class _ParticipantFormState extends State<ParticipantForm> {
               children: <Widget>[
                 nameField,
                 hasPaidField,
-                (_item.hasPaid != null && _item.hasPaid)  ? pricePaidField : Container()
+                (_participant.hasPaid != null && _participant.hasPaid)  ? pricePaidField : Container()
               ],
             ),
           ),
