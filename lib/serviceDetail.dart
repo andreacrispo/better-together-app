@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'model/ParticipantDto.dart';
 import 'model/ServiceParticipantDto.dart';
 import 'package:flutter/foundation.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
+import 'package:swipedetector/swipedetector.dart';
+
 
 
 class ServiceDetailArgs {
@@ -189,40 +192,47 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
   changeMonth(DragUpdateDetails details, passArgs) {
-      final int serviceId = passArgs.serviceId;
       //if details.primaryDelta is positive ,the drag is left to right. So previous month
       if(details.delta.dx > 0) {
-        previousMonth(serviceId, passArgs.monthPaid, passArgs.yearPaid);
+        previousMonth(passArgs.monthPaid, passArgs.yearPaid);
       }
       //if details.primaryDelta is negative ,the drag is right to left. So next month
       else if(details.delta.dx <= 0 ) {
-        nextMonth(serviceId, passArgs.monthPaid, passArgs.yearPaid);
+        nextMonth(passArgs.monthPaid, passArgs.yearPaid);
       }
   }
 
-  previousMonth(serviceId, month, year) {
+  previousMonth(month, year) {
     if (month - 1 <= 0) {
       month = 12;
       year -= 1;
     } else {
       month -= 1;
     }
-    Navigator.pushNamed(context,
-        ServiceDetailWidget.routeName,
-        arguments: ServiceDetailArgs(serviceId: serviceId, monthPaid: month, yearPaid: year)
-    );
+    changeMonthNavigator(month, year);
   }
 
-  nextMonth(int serviceId, int month, int year) {
+  nextMonth(int month, int year) {
     if (month + 1 >= 13) {
       month = 1;
       year += 1;
     } else {
       month += 1;
     }
-    Navigator.pushNamed(context,
-        ServiceDetailWidget.routeName,
-        arguments: ServiceDetailArgs(serviceId: serviceId, monthPaid: month, yearPaid: year)
+    changeMonthNavigator(month, year);
+  }
+
+  changeMonthNavigator(month, year) {
+    Navigator.pushReplacement(
+      context,
+      CustomChangeMonthRoute(
+          builder: (context) => ServiceDetailWidget(),
+          settings: RouteSettings(arguments: ServiceDetailArgs(
+              serviceId: currentService.serviceId,
+              monthPaid: month,
+              yearPaid: year
+          ))
+      ),
     );
   }
 
@@ -238,9 +248,10 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         ),
       ),
       body:
-      GestureDetector(
-        onPanUpdate: (details) => changeMonth(details, passArgs),
-        child: FutureBuilder<ServiceParticipantDto>(
+      SwipeDetector(
+         onSwipeLeft:  () =>  nextMonth(passArgs.monthPaid, passArgs.yearPaid),
+         onSwipeRight: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid),
+         child: FutureBuilder<ServiceParticipantDto>(
           future:  _repository.getServiceWithParticipants(
              passArgs.serviceId,
              passArgs.monthPaid,
@@ -251,7 +262,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               return Center(child: CircularProgressIndicator());
 
             currentService = snapshot.data;
-            return  Column(
+            return Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               verticalDirection: VerticalDirection.down,
@@ -262,7 +273,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                   children: <Widget>[
                       IconButton(
                           icon: Icon(Icons.arrow_back),
-                          onPressed: () => previousMonth(currentService.serviceId, passArgs.monthPaid, passArgs.yearPaid)
+                          onPressed: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid)
                       ),
                       Text(
                         "${monthString[passArgs.monthPaid]} ${passArgs.yearPaid}",
@@ -270,8 +281,19 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                       ),
                       IconButton(
                           icon: Icon(Icons.arrow_forward),
-                          onPressed: () => nextMonth(currentService.serviceId, passArgs.monthPaid, passArgs.yearPaid)
+                          onPressed: () => nextMonth(passArgs.monthPaid, passArgs.yearPaid)
                       ),
+                      IconButton(
+                        icon: Icon(Icons.calendar_today),
+                        onPressed: () {
+                          showMonthPicker(
+                              initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
+                              context: context,
+                          ).then((dateTime) {
+                            changeMonthNavigator(dateTime.month, dateTime.year);
+                          });
+                        },
+                      )
                   ],
                 ),
 
@@ -285,7 +307,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                   children: <Widget>[
                     Card(
                       elevation: 10,
-                      child: Text("test"),
+                      child: Text(""),
                     )
                   ],
                 )
@@ -323,5 +345,19 @@ class HasPaidWidget extends StatelessWidget {
         style: TextStyle(fontSize: 10.0),
       ),
     );
+  }
+}
+
+
+class CustomChangeMonthRoute<T> extends MaterialPageRoute<T> {
+  CustomChangeMonthRoute({WidgetBuilder builder, RouteSettings settings})
+      : super(builder: builder, settings: settings);
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child
+  ) {
+    if (settings.isInitialRoute) return child;
+    return new FadeTransition(opacity: animation, child: child);
   }
 }
