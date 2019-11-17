@@ -19,7 +19,13 @@ class BetterTogetherApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      theme: ThemeData(
+        // Define the default brightness and colors.
+        brightness: Brightness.light,
+        primaryColor: Color.fromRGBO(58, 66, 86, 1.0),
+        accentColor: Colors.blue[700],
 
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => MainWidget(),
@@ -82,7 +88,6 @@ class _MainWidgetState extends State<MainWidget> {
   Widget build(BuildContext context) {
     final topAppBar = AppBar(
       elevation: 0.1,
-      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       title: Text('Better Together')
     );
 
@@ -107,7 +112,7 @@ class _MainWidgetState extends State<MainWidget> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue[500],
+        selectedItemColor:  Theme.of(context).accentColor,
         onTap: _onItemTapped,
       ),
     );

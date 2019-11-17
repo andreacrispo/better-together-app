@@ -5,6 +5,7 @@ import 'package:better_together_app/participantForm.dart';
 import 'package:better_together_app/service/ServiceParticipantService.dart';
 import 'package:better_together_app/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'model/ParticipantDto.dart';
 import 'model/ServiceParticipantDto.dart';
 import 'package:flutter/foundation.dart';
@@ -262,6 +263,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               return Center(child: CircularProgressIndicator());
 
             currentService = snapshot.data;
+            SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {  appBarTitle = currentService.name; }));
             return Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,

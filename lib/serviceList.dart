@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:better_together_app/repository/ServiceRepository.dart';
 import 'package:better_together_app/repository/DataRepository.dart';
-import 'package:better_together_app/model/ServiceParticipantEntity.dart';
+import 'package:flutter/foundation.dart';
 
 import 'model/ServiceEntity.dart';
 
@@ -48,9 +48,9 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     }
   }
 
-  void deleteService(ServiceEntity item) async {
-    if (item != null) {
-      await _repository.delete(item.serviceId);
+  void deleteService(ServiceEntity service) async {
+    if (service != null) {
+      await _repository.delete(service.serviceId);
       setState(() {});
     }
   }
@@ -59,7 +59,6 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     var now = new DateTime.now();
     Color backgroundColor = service.color != null ? Color(service.color) : Color.fromRGBO(64, 75, 96, .9);
     return Card(
-      elevation: 4.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         decoration: BoxDecoration(
@@ -94,7 +93,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             ),
             subtitle: Text(
                 "${service.monthlyPrice} € / monthly",
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(color: Colors.white, fontSize: 16),
                 textAlign: TextAlign.right
             ),
           )
@@ -115,7 +114,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             itemCount: snapshot.data == null ? 0 : snapshot.data.length,
             itemBuilder: (BuildContext context, int index) {
               return Dismissible(
-                key: Key(index.toString()),
+                key: UniqueKey(),
                 background:  DecoratedBox(
                   decoration: BoxDecoration(color: Colors.redAccent),
                   child: Padding(
