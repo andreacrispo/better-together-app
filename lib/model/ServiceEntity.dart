@@ -1,8 +1,6 @@
 
 
 
-import 'ParticipantEntity.dart';
-
 class ServiceEntity {
   int serviceId;
   String name;

@@ -36,7 +36,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
  //   await _repository.closeDB();
   }
 
-  void createNewService(BuildContext context) async {
+  void createNewService() async {
     ServiceEntity newItem = await Navigator.pushNamed<ServiceEntity>(context, ServiceForm.routeName);
 
     if (newItem != null) {
@@ -57,7 +57,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
   Card createCardService( ServiceEntity service) {
     var now = new DateTime.now();
-    Color backgroundColor = service.color != null ? Color(service.color) : Color.fromRGBO(64, 75, 96, .9);
+    Color backgroundColor = service.color != null ? Color(service.color) : Theme.of(context).primaryColor;
     return Card(
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
@@ -142,7 +142,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>  createNewService(context),
+        onPressed: () =>  createNewService(),
         child: Icon(Icons.add),
       ),
     );

@@ -1,24 +1,34 @@
-
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 Color hexToColor(String code) {
-  if(code.length < 7)
+  if (code.length < 7)
     return Colors.white;
 
   return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
 }
 
-
-List<String> monthString = ['', 'Gennaio', 'Febbrario', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
-'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+List<String> monthString = [
+  '',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 
 SnackBar createSnackBar(String text) {
-   return SnackBar(
-     content: Text(text),
-     /*
+  return SnackBar(
+    content: Text(text),
+    /*
      action: SnackBarAction(
        label: 'Undo',
        onPressed: () {
@@ -26,11 +36,11 @@ SnackBar createSnackBar(String text) {
        },
      ),
      */
-   );
- }
+  );
+}
 
 bool isNumeric(String s) {
-  if(s == null) {
+  if (s == null) {
     return false;
   }
   return double.parse(s, (e) => null) != null;

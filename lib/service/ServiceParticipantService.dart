@@ -117,7 +117,6 @@ class ServiceParticipantService {
     } else {
       prevMonth -= 1;
     }
-    print("prevM  " + prevMonth.toString() + " prevY  " + prevYear.toString());
     List<ServiceParticipantEntity> relationshipList = await _serviceParticipantRepository.findParticipantsByPaymentDate(
         serviceId,
         prevMonth,
