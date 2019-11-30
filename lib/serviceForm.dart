@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
-import 'model/ServiceEntity.dart';
+import 'model/ServiceDocument.dart';
 
 class ServiceForm extends StatefulWidget {
   static const routeName = '/serviceForm';
@@ -14,7 +14,7 @@ class ServiceForm extends StatefulWidget {
 }
 
 class _ServiceFormState extends State<ServiceForm> {
-  final ServiceEntity _item = ServiceEntity();
+  final ServiceDocument _item = ServiceDocument();
   final _formKey = GlobalKey<FormState>();
 
   getInputDecoration(labelText){
@@ -55,7 +55,7 @@ class _ServiceFormState extends State<ServiceForm> {
           if(!isNumeric(value)) return "Only numeric value";
           return null;
         },
-        onSaved: (value) => _item.monthlyPrice = double.parse(value)
+            onSaved: (value) => _item.price = double.parse(value)
       )
     );
 
@@ -131,7 +131,8 @@ class _ServiceFormState extends State<ServiceForm> {
       "Choose one color",
       MaterialColorPicker(
         allowShades: false,
-        onMainColorChange: (color) => setState(() => _item.color = color.value),
+        onMainColorChange: (color) =>
+            setState(() => _item.color = color.value.toString()),
       ),
     );
   }

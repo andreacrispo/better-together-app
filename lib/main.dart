@@ -2,11 +2,11 @@
 import 'package:better_together_app/participantForm.dart';
 import 'package:better_together_app/serviceDetail.dart';
 import 'package:better_together_app/serviceForm.dart';
-import 'package:flutter/material.dart';
 import 'package:better_together_app/serviceList.dart';
+import 'package:flutter/material.dart';
 
-import 'model/ParticipantDto.dart';
-import 'model/ServiceEntity.dart';
+import 'model/ParticipantDocument.dart';
+import 'model/ServiceDocument.dart';
 
 
 void main() => runApp(BetterTogetherApp());
@@ -43,11 +43,11 @@ abstract class Router {
         return MaterialPageRoute(builder: (context) => ServiceDetailWidget(), settings: settings);
         break;
       case ServiceForm.routeName:
-        return MaterialPageRoute<ServiceEntity>(
+        return MaterialPageRoute<ServiceDocument>(
             builder: (context) => ServiceForm(), settings: settings);
         break;
       case ParticipantForm.routeName:
-        return MaterialPageRoute<ParticipantDto>(
+        return MaterialPageRoute<ParticipantDocument>(
             builder: (context) => ParticipantForm(), settings: settings);
         break;
     }
@@ -67,10 +67,12 @@ class _MainWidgetState extends State<MainWidget> {
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     ServiceListWidget(),
+
     Text(
       'Participants',
       style: optionStyle,
     ),
+
     Text(
       'Settings',
       style: optionStyle,
@@ -118,4 +120,3 @@ class _MainWidgetState extends State<MainWidget> {
     );
   }
 }
-

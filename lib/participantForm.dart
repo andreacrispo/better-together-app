@@ -2,7 +2,8 @@
 import 'package:better_together_app/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'model/ParticipantDto.dart';
+
+import 'model/ParticipantDocument.dart';
 
 class ParticipantForm extends StatefulWidget {
   static const routeName = '/participantForm';
@@ -12,7 +13,7 @@ class ParticipantForm extends StatefulWidget {
 }
 
 class _ParticipantFormState extends State<ParticipantForm> {
-  ParticipantDto _participant = ParticipantDto();
+  ParticipantDocument _participant = ParticipantDocument();
   final _formKey = GlobalKey<FormState>();
 
 
@@ -32,7 +33,10 @@ class _ParticipantFormState extends State<ParticipantForm> {
   @override
   Widget build(BuildContext context) {
     String appBarTitle = "Add Participant";
-    final ParticipantDto passArgs = ModalRoute.of(context).settings.arguments;
+    final ParticipantDocument passArgs = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
     if(passArgs != null) {
       _participant = passArgs;
       appBarTitle = "Edit Participant";

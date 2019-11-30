@@ -2,13 +2,11 @@
 import 'package:better_together_app/serviceDetail.dart';
 import 'package:better_together_app/serviceForm.dart';
 import 'package:better_together_app/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:better_together_app/repository/ServiceRepository.dart';
-import 'package:better_together_app/repository/DataRepository.dart';
-import 'package:flutter/foundation.dart';
-
-import 'model/ServiceEntity.dart';
+import 'model/ServiceDocument.dart';
 
 
 class ServiceListWidget extends StatefulWidget {
@@ -22,56 +20,101 @@ class ServiceListWidget extends StatefulWidget {
 
 class _ServiceListWidgetState extends State<ServiceListWidget> {
 
-  DataRepository _repository;
-
   @override
   void initState() {
     super.initState();
-    _repository = ServiceRepository();
   }
 
   @override
   void dispose() async {
     super.dispose();
- //   await _repository.closeDB();
   }
 
-  void createNewService() async {
-    ServiceEntity newItem = await Navigator.pushNamed<ServiceEntity>(context, ServiceForm.routeName);
-
-    if (newItem != null) {
-      await _repository.create(newItem)
-        .then((value) {
-          setState(() {});
-        })
-        .catchError((error) => Scaffold.of(context).showSnackBar(createSnackBar(error.toString())));
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildBody(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _createNewService(),
+        child: Icon(Icons.add),
+      ),
+    );
   }
 
-  void deleteService(ServiceEntity service) async {
-    if (service != null) {
-      await _repository.delete(service.serviceId);
-      setState(() {});
-    }
+
+  Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('services').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return LinearProgressIndicator();
+
+        return _buildList(context, snapshot.data.documents);
+      },
+    );
   }
 
-  Card createCardService( ServiceEntity service) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      shrinkWrap: true,
+      itemCount: snapshot == null ? 0 : snapshot.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Dismissible(
+            key: UniqueKey(),
+            background: DecoratedBox(
+              decoration: BoxDecoration(color: Colors.redAccent),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                    size: 42,
+                  ),
+                ),
+              ),
+            ),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction) {
+              DocumentSnapshot item = snapshot[index];
+              snapshot.removeAt(index);
+              _deleteService(item);
+            },
+            child: _buildListItem(context, snapshot[index])
+        );
+      },
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final service = ServiceDocument.fromSnapshot(data);
+
     var now = new DateTime.now();
-    Color backgroundColor = service.color != null ? Color(service.color) : Theme.of(context).primaryColor;
+    Color backgroundColor = service.color != null
+        ? hexToColor(service.color, Theme
+        .of(context)
+        .primaryColor)
+        : Theme
+        .of(context)
+        .primaryColor;
     return Card(
+      key: ValueKey(service.name),
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
-        decoration: BoxDecoration(
+          decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(8.0),
-        ),
-        child:
+          ),
+          child:
           ListTile(
             onTap: () {
               Navigator.pushNamed(context,
                   ServiceDetailWidget.routeName,
                   arguments: ServiceDetailArgs(
-                      serviceId: service.serviceId,
+                      serviceId: data.documentID,
+                      service: service,
                       monthPaid: now.month,
                       yearPaid: now.year
                   )
@@ -89,10 +132,12 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             */
             title: Text(
               "${service.name}",
-               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 32),
+              style: TextStyle(color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32),
             ),
-            subtitle: Text(
-                "${service.monthlyPrice} € / monthly",
+            trailing: Text(
+                "${service.price} € / monthly",
                 style: TextStyle(color: Colors.white, fontSize: 16),
                 textAlign: TextAlign.right
             ),
@@ -101,51 +146,22 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body:
-      FutureBuilder<List<ServiceEntity>>(
-        future: _repository.getAll(),
-        builder: (BuildContext context, AsyncSnapshot<List<ServiceEntity>> snapshot) {
-          return ListView.builder(
-            padding: EdgeInsets.all(8),
-            shrinkWrap: true,
-            itemCount: snapshot.data == null ? 0 : snapshot.data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Dismissible(
-                key: UniqueKey(),
-                background:  DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.redAccent),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                        size: 42,
-                      ),
-                    ),
-                  ),
-                ),
-                direction: DismissDirection.endToStart,
-                onDismissed: (direction) {
-                    ServiceEntity item = snapshot.data[index];
-                    snapshot.data.removeAt(index);
-                    deleteService(item);
-                },
-                child: createCardService(snapshot.data[index])
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>  createNewService(),
-        child: Icon(Icons.add),
-      ),
-    );
+  void _createNewService() async {
+    ServiceDocument newItem = await Navigator.pushNamed<ServiceDocument>(
+        context, ServiceForm.routeName);
+    if (newItem != null) {
+      Firestore.instance.collection('services').add(newItem.toMap());
+    }
   }
+
+  void _deleteService(DocumentSnapshot service) async {
+    Firestore.instance.collection('services')
+        .document(service.documentID)
+        .delete();
+  }
+
 }
+
+
+
 

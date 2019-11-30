@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "330563815492",
+    "firebase_url": "https://bettertogether-123987.firebaseio.com",
+    "project_id": "bettertogether-123987",
+    "storage_bucket": "bettertogether-123987.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:330563815492:android:e717380b916741b5b71411",
+        "android_client_info": {
+          "package_name": "my.app.bt.better_together_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "330563815492-0adgqjee33c4mlq0srofc2v1nb5dohep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtJEK4EQyac_zwLX2U4w_yQmVgpGI1Pcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "330563815492-0adgqjee33c4mlq0srofc2v1nb5dohep.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
