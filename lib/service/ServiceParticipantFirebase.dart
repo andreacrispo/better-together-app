@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils.dart';
 
 class ServiceParticipantFirebase {
-  Stream<QuerySnapshot> getServiceWithParticipants(
-      String serviceId, Timestamp datePaid) {
+
+
+  Stream<QuerySnapshot> getServiceWithParticipants(String serviceId, Timestamp datePaid) {
     return Firestore.instance
         .collection('services')
         .document(serviceId)
@@ -14,8 +15,7 @@ class ServiceParticipantFirebase {
         .snapshots();
   }
 
-  copyParticipantsFromPreviousMonth(
-      String serviceId, int year, int month) async {
+  copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
     var previousPaid = getTimestamp(year, month - 1);
     var currentPaid = getTimestamp(year, month);
 
@@ -40,8 +40,21 @@ class ServiceParticipantFirebase {
     });
   }
 
-  editParticipantFromService(
-      String serviceId, ParticipantDocument participant) {
+  addParticipantIntoService(String serviceId, ParticipantDocument participant) {
+    String participantId = participant.participantId;
+    print(participantId);
+    Firestore.instance.collection('participants').document(participantId).setData({
+      'credit': participant.credit
+    }, merge: true);
+
+    Firestore.instance
+        .collection('services')
+        .document(serviceId)
+        .collection('participants')
+        .add(participant.toMap());
+  }
+
+  editParticipantFromService(String serviceId, ParticipantDocument participant) {
     String participantId = participant.reference.documentID;
     return Firestore.instance
         .collection('services')
@@ -51,8 +64,7 @@ class ServiceParticipantFirebase {
         .setData(participant.toMap());
   }
 
-  deleteParticipantFromService(
-      String serviceId, ParticipantDocument participant) {
+  deleteParticipantFromService(String serviceId, ParticipantDocument participant) {
     String participantId = participant.reference.documentID;
     return Firestore.instance
         .collection('services')

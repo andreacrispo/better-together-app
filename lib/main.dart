@@ -1,5 +1,6 @@
 
 import 'package:better_together_app/participantForm.dart';
+import 'package:better_together_app/participantList.dart';
 import 'package:better_together_app/serviceDetail.dart';
 import 'package:better_together_app/serviceForm.dart';
 import 'package:better_together_app/serviceList.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'model/ParticipantDocument.dart';
 import 'model/ServiceDocument.dart';
+import 'newParticipantForm.dart';
 
 
 void main() => runApp(BetterTogetherApp());
@@ -41,15 +43,17 @@ abstract class Router {
     switch(settings.name) {
       case ServiceDetailWidget.routeName:
         return MaterialPageRoute(builder: (context) => ServiceDetailWidget(), settings: settings);
-        break;
       case ServiceForm.routeName:
         return MaterialPageRoute<ServiceDocument>(
             builder: (context) => ServiceForm(), settings: settings);
-        break;
       case ParticipantForm.routeName:
         return MaterialPageRoute<ParticipantDocument>(
             builder: (context) => ParticipantForm(), settings: settings);
-        break;
+      case ParticipantListWidget.routeName:
+        return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);
+      case NewParticipantForm.routeName:
+        return MaterialPageRoute<ParticipantDocument>(
+            builder: (context) => NewParticipantForm(), settings: settings);
     }
     return null;
   }
@@ -68,10 +72,7 @@ class _MainWidgetState extends State<MainWidget> {
   List<Widget> _widgetOptions = <Widget>[
     ServiceListWidget(),
 
-    Text(
-      'Participants',
-      style: optionStyle,
-    ),
+    ParticipantListWidget(),
 
     Text(
       'Settings',

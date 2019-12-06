@@ -55,7 +55,7 @@ class _ServiceFormState extends State<ServiceForm> {
           if(!isNumeric(value)) return "Only numeric value";
           return null;
         },
-            onSaved: (value) => _item.price = double.parse(value)
+        onSaved: (value) => _item.price = double.parse(value)
       )
     );
 
