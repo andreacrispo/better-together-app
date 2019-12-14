@@ -90,7 +90,7 @@ class _MainWidgetState extends State<MainWidget> {
   @override
   Widget build(BuildContext context) {
     final topAppBar = AppBar(
-      elevation: 0.1,
+      elevation: 0.2,
       title: Text('Better Together')
     );
 
@@ -99,25 +99,31 @@ class _MainWidgetState extends State<MainWidget> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Services'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.supervised_user_circle),
-            title: Text('Participants'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('Settings'),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor:  Theme.of(context).accentColor,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: _bottomNavigationBar()
     );
   }
+
+  _bottomNavigationBar() {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text('Services'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.supervised_user_circle),
+          title: Text('Participants'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          title: Text('Settings'),
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      selectedItemColor:  Theme.of(context).accentColor,
+      onTap: _onItemTapped,
+    );
+  }
+
+
 }

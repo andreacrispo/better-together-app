@@ -14,7 +14,7 @@ class ServiceForm extends StatefulWidget {
 }
 
 class _ServiceFormState extends State<ServiceForm> {
-  final ServiceDocument _item = ServiceDocument();
+  ServiceDocument _service = ServiceDocument();
   final _formKey = GlobalKey<FormState>();
 
   getInputDecoration(labelText){
@@ -33,35 +33,46 @@ class _ServiceFormState extends State<ServiceForm> {
   @override
   Widget build(BuildContext context) {
 
+    String appBarTitle = "Add Service";
+
+    final ServiceDocument passArgs = ModalRoute.of(context).settings.arguments;
+    if(passArgs != null) {
+      _service = passArgs;
+      appBarTitle = "Edit Service";
+    }
+
     final nameField = TextFormField(
+      initialValue: _service.name,
       decoration: getInputDecoration('Name'),
       validator: (value) {
         if (value.isEmpty) return "Mandatory field";
         return null;
       },
-      onSaved: (value) => _item.name = value,
+      onSaved: (value) => _service.name = value,
     );
 
     final monthlyPriceField = Container(
         margin: EdgeInsets.only(top: 10),
         child: TextFormField(
-        decoration: getInputDecoration( 'Monthly Price'),
-        keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-        inputFormatters: <TextInputFormatter>[
-          //   WhitelistingTextInputFormatter.digitsOnly
-        ],
-        validator: (value) {
-          if (value.isEmpty) return "Mandatory field";
-          if(!isNumeric(value)) return "Only numeric value";
-          return null;
-        },
-        onSaved: (value) => _item.price = double.parse(value)
+          initialValue: _service.price != null ? _service.price.toString() : "",
+          decoration: getInputDecoration( 'Price'),
+          keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+          inputFormatters: <TextInputFormatter>[
+            //   WhitelistingTextInputFormatter.digitsOnly
+          ],
+          validator: (value) {
+            if (value.isEmpty) return "Mandatory field";
+            if(!isNumeric(value)) return "Only numeric value";
+            return null;
+          },
+          onSaved: (value) => _service.price = double.parse(value)
       )
     );
 
     final participantNumberField = Container(
       margin: EdgeInsets.only(top: 10, bottom: 10),
       child: TextFormField(
+        initialValue: _service.participantNumber != null ?_service.participantNumber.toString() : "",
         decoration: getInputDecoration('Number of pariticipant'),
         keyboardType: TextInputType.numberWithOptions(),
         inputFormatters: <TextInputFormatter>[
@@ -72,14 +83,14 @@ class _ServiceFormState extends State<ServiceForm> {
           if(!isNumeric(value)) return "Only numeric value";
           return null;
         },
-        onSaved: (value) => _item.participantNumber = int.parse(value)
+        onSaved: (value) => _service.participantNumber = int.parse(value)
       )
     );
 
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("New Service"),
+          title: Text(appBarTitle),
 
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -92,7 +103,7 @@ class _ServiceFormState extends State<ServiceForm> {
               onPressed: () {
                 if(_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  Navigator.pop(context, _item);
+                  Navigator.pop(context, _service);
                 }
               },
             )
@@ -133,7 +144,7 @@ class _ServiceFormState extends State<ServiceForm> {
       MaterialColorPicker(
         allowShades: false,
         onMainColorChange: (color) =>
-            setState(() => _item.color = color.value),
+            setState(() => _service.color = color.value),
       ),
     );
   }

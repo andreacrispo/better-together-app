@@ -3,6 +3,7 @@
 
 import 'package:better_together_app/participantForm.dart';
 import 'package:better_together_app/service/ServiceParticipantFirebase.dart';
+import 'package:better_together_app/serviceForm.dart';
 import 'package:better_together_app/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -56,6 +57,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     this.currentService = passArgs.service;
     this.appBarTitle = this.currentService.name;
     return Scaffold(
+      /*
       appBar: AppBar(
         title: Text(appBarTitle),
         backgroundColor: Color(currentService.color),
@@ -64,6 +66,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
           onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/'))
         ),
       ),
+      */
       body:
       SwipeDetector(
          onSwipeLeft:  () => nextMonth(passArgs.monthPaid, passArgs.yearPaid),
@@ -85,7 +88,45 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
-        return _buildTable(context, snapshot.data.documents);
+     //   return _buildTable(context, snapshot.data.documents);
+       return CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              pinned: true,
+              snap: false,
+              floating: false,
+              expandedHeight: 110.0,
+              elevation: 4,
+              forceElevated: true,
+              centerTitle: true,
+              backgroundColor: Color(currentService.color),
+              flexibleSpace:  FlexibleSpaceBar(
+                title:  Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(currentService.name, textAlign: TextAlign.center),
+                    Text(currentService.price.toString(), style: TextStyle(fontSize: 12.0),textAlign: TextAlign.center),
+                  ],
+                ),
+                centerTitle: true,
+              ),
+              actions: <Widget>[
+                IconButton(
+                  icon: new Icon(Icons.edit),
+                  tooltip: 'Edit',
+                  onPressed: () => _editService(currentService)
+                ),
+              ],
+            ),
+            // If the main content is a list, use SliverList instead.
+            SliverFillRemaining(
+              child: _buildTable(context, snapshot.data.documents)
+            ),
+          ],
+        );
+
       },
     );
   }
@@ -295,8 +336,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     );
 
     if (editedParticipant != null) {
-      await _repository.editParticipantFromService(
-          currentServiceId, editedParticipant);
+      await _repository.editParticipantFromService(currentServiceId, editedParticipant);
       setState(() {});
     }
   }
@@ -368,6 +408,14 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
           ))
       ),
     );
+  }
+
+
+  _editService(ServiceDocument service) async {
+    ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(context, ServiceForm.routeName, arguments: service);
+    if (editedService != null) {
+      Firestore.instance.collection('services').document(service.reference.documentID).setData(editedService.toMap());
+    }
   }
 
 
