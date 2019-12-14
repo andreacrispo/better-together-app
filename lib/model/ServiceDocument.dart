@@ -6,7 +6,7 @@ class ServiceDocument {
   String serviceId;
   String name;
   String description;
-  String color; // Hex
+  num color; // Hex
   num price;
   int participantNumber;
   List<ParticipantDocument> participants;

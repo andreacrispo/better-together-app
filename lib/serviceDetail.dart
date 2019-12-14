@@ -52,9 +52,13 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   @override
   Widget build(BuildContext context) {
     final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
+    this.currentServiceId = passArgs.serviceId;
+    this.currentService = passArgs.service;
+    this.appBarTitle = this.currentService.name;
     return Scaffold(
       appBar: AppBar(
         title: Text(appBarTitle),
+        backgroundColor: Color(currentService.color),
         leading: new IconButton(
           icon: new Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/'))
@@ -62,7 +66,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       ),
       body:
       SwipeDetector(
-          onSwipeLeft: () => nextMonth(passArgs.monthPaid, passArgs.yearPaid),
+         onSwipeLeft:  () => nextMonth(passArgs.monthPaid, passArgs.yearPaid),
          onSwipeRight: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid),
           child: _buildBody(context, passArgs)
       ),
@@ -75,8 +79,6 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 
   Widget _buildBody(BuildContext context, ServiceDetailArgs args) {
-    this.currentServiceId = args.serviceId;
-    this.currentService = args.service;
     return StreamBuilder<QuerySnapshot>(
       stream: _repository.getServiceWithParticipants(
           args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
@@ -89,10 +91,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
   Widget _buildTable(BuildContext context, List<DocumentSnapshot> snapshot) {
-    final ServiceDetailArgs passArgs = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
+    final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
     List<ParticipantDocument> participants = [];
     snapshot.forEach((DocumentSnapshot docSnap) {
       participants.add(ParticipantDocument.fromSnapshot(docSnap));
@@ -103,35 +102,40 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         verticalDirection: VerticalDirection.down,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () =>
                       previousMonth(passArgs.monthPaid, passArgs.yearPaid)
               ),
-              Text(
-                "${monthString[passArgs.monthPaid]} ${passArgs.yearPaid}",
-                style: TextStyle(fontSize: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    "${monthString[passArgs.monthPaid]} ${passArgs.yearPaid}",
+                    style: TextStyle(fontSize: 32),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.calendar_today),
+                    onPressed: () {
+                      showMonthPicker(
+                        initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
+                        context: context,
+                      ).then((dateTime) {
+                        changeMonthNavigator(dateTime.month, dateTime.year);
+                      });
+                    },
+                  )
+                ],
               ),
               IconButton(
                   icon: Icon(Icons.arrow_forward),
                   onPressed: () =>
                       nextMonth(passArgs.monthPaid, passArgs.yearPaid)
               ),
-              IconButton(
-                icon: Icon(Icons.calendar_today),
-                onPressed: () {
-                  showMonthPicker(
-                    initialDate: DateTime(
-                        passArgs.yearPaid, passArgs.monthPaid),
-                    context: context,
-                  ).then((dateTime) {
-                    changeMonthNavigator(dateTime.month, dateTime.year);
-                  });
-                },
-              )
             ],
           ),
 
@@ -154,21 +158,20 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
 
-  createTableParticipants(List<ParticipantDocument> participants,
-      BuildContext context) {
+  createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
     if (participants.length == 0) {
-      return
-        Row(
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(left: 60),
               child: RaisedButton(
                 child: Text("Copy participants from previous month"),
                 onPressed: () => copyParticipantsFromPreviousMonth(context),
               ),
             ),
           ],
-        );
+      );
     }
 
     return SingleChildScrollView(
@@ -272,17 +275,14 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         .of(context)
         .settings
         .arguments;
-    ParticipantDocument newParticipant = await Navigator.pushNamed<
-        ParticipantDocument>(context, ParticipantForm.routeName);
+    ParticipantDocument newParticipant = await Navigator.pushNamed<ParticipantDocument>(
+        context,
+        ParticipantForm.routeName
+    );
 
     if (newParticipant != null) {
-      newParticipant.datePaid =
-          getTimestamp(passArgs.yearPaid, passArgs.monthPaid);
-      print("datePaid");
-      print(newParticipant.datePaid);
-      Firestore.instance.collection('services').document(currentServiceId)
-          .collection('participants')
-          .add(newParticipant.toMap());
+      newParticipant.datePaid = getTimestamp(passArgs.yearPaid, passArgs.monthPaid);
+      _repository.addParticipantIntoService(currentServiceId, newParticipant);
       setState(() {});
     }
   }

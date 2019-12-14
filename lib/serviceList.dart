@@ -1,7 +1,6 @@
 
 import 'package:better_together_app/serviceDetail.dart';
 import 'package:better_together_app/serviceForm.dart';
-import 'package:better_together_app/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -93,12 +92,8 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
     var now = new DateTime.now();
     Color backgroundColor = service.color != null
-        ? hexToColor(service.color, Theme
-        .of(context)
-        .primaryColor)
-        : Theme
-        .of(context)
-        .primaryColor;
+        ? Color(service.color)   //hexToColor(service.color, Theme.of(context).primaryColor)
+        : Theme.of(context).primaryColor;
     return Card(
       key: ValueKey(service.name),
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),

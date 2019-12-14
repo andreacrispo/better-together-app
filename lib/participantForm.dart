@@ -44,6 +44,7 @@ class _ParticipantFormState extends State<ParticipantForm> {
         .arguments;
     if(passArgs != null) {
       _participant = passArgs;
+      _participantId = passArgs.participantId;
       appBarTitle = "Edit Participant";
     }
 

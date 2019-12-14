@@ -114,6 +114,7 @@ class _ServiceFormState extends State<ServiceForm> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlineButton(
+
                       onPressed: _openColorPicker,
                       child: const Text('Choose color'),
                     ),
@@ -132,7 +133,7 @@ class _ServiceFormState extends State<ServiceForm> {
       MaterialColorPicker(
         allowShades: false,
         onMainColorChange: (color) =>
-            setState(() => _item.color = color.value.toString()),
+            setState(() => _item.color = color.value),
       ),
     );
   }
@@ -152,10 +153,7 @@ class _ServiceFormState extends State<ServiceForm> {
             ),
             FlatButton(
               child: Text('Select'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                //setState(() => _mainColor = _tempMainColor);
-              },
+              onPressed: () => Navigator.of(context).pop()
             ),
           ],
         );
