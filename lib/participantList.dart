@@ -1,27 +1,23 @@
 
-import 'package:better_together_app/serviceDetail.dart';
-import 'package:better_together_app/serviceForm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'BTBottomAppBarWidget.dart';
-import 'model/ServiceDocument.dart';
+import 'model/ParticipantDocument.dart';
+import 'newParticipantForm.dart';
 
 
-class ServiceListWidget extends StatefulWidget {
-  ServiceListWidget({Key key}) : super(key: key);
-  static const routeName = '/serviceList';
+class ParticipantListWidget extends StatefulWidget {
+  ParticipantListWidget({Key key}) : super(key: key);
+  static const routeName = '/participantList';
 
 
   @override
-  State<StatefulWidget> createState() => _ServiceListWidgetState();
+  State<StatefulWidget> createState() => _ParticipantListWidgetState();
 }
 
-class _ServiceListWidgetState extends State<ServiceListWidget> {
-
-  String _sortByVariable = "name";
-  bool _isSortByDesc = false;
+class _ParticipantListWidgetState extends State<ParticipantListWidget> {
 
   @override
   void initState() {
@@ -39,12 +35,11 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
         elevation: 0.2,
         title: Text('Better Together')
     );
-
     return Scaffold(
       appBar: topAppBar,
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => _createNewService(),
+          onPressed: () => _createNewParticipant(),
           child: Icon(Icons.add)
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -55,7 +50,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('services').orderBy(_sortByVariable, descending: _isSortByDesc).snapshots(),
+      stream: Firestore.instance.collection('participants').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
@@ -91,7 +86,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             onDismissed: (direction) {
               DocumentSnapshot item = snapshot[index];
               snapshot.removeAt(index);
-              _deleteService(item);
+              _deleteParticipant(item);
             },
             child: _buildListItem(context, snapshot[index])
         );
@@ -100,33 +95,19 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final service = ServiceDocument.fromSnapshot(data);
+    final participant = ParticipantDocument.fromSnapshot(data);
 
-    var now = new DateTime.now();
-    Color backgroundColor = service.color != null
-        ? Color(service.color)
-        : Theme.of(context).primaryColor;
     return Card(
-      key: ValueKey(service.name),
+      key: ValueKey(participant.name),
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
-            color: backgroundColor,
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child:
           ListTile(
-            onTap: () {
-              Navigator.pushNamed(context,
-                  ServiceDetailWidget.routeName,
-                  arguments: ServiceDetailArgs(
-                      serviceId: data.documentID,
-                      service: service,
-                      monthPaid: now.month,
-                      yearPaid: now.year
-                  )
-              );
-            },
+            onTap: () {},
             contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             /*
             leading: Container(
@@ -138,13 +119,13 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             ),
             */
             title: Text(
-              "${service.name}",
+              "${participant.name}",
               style: TextStyle(color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 32),
             ),
             trailing: Text(
-                "${service.price} € / monthly",
+                "Credit: ${participant.credit ?? 0} €",
                 style: TextStyle(color: Colors.white, fontSize: 16),
                 textAlign: TextAlign.right
             ),
@@ -153,18 +134,29 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     );
   }
 
-  void _createNewService() async {
-    ServiceDocument newItem = await Navigator.pushNamed<ServiceDocument>(context, ServiceForm.routeName);
+  void _createNewParticipant() async {
+    ParticipantDocument newItem = await Navigator.pushNamed<ParticipantDocument>(
+        context, NewParticipantForm.routeName);
     if (newItem != null) {
-      Firestore.instance.collection('services').add(newItem.toMap());
+      Map<String, dynamic> toAdd = new Map();
+      toAdd['name'] = newItem.name;
+      toAdd['credit'] = newItem.credit;
+      Firestore.instance.collection('participants').add(toAdd);
     }
   }
 
-  void _deleteService(DocumentSnapshot service) async {
-    Firestore.instance.collection('services')
+  void _deleteParticipant(DocumentSnapshot service) async {
+    Firestore.instance.collection('participants')
         .document(service.documentID)
         .delete();
   }
 
+  bool testing(String key, String value) {
+    return value == null;
+  }
+
 }
+
+
+
 

@@ -1,12 +1,15 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-Color hexToColor(String code) {
-  if (code.length < 7)
-    return Colors.white;
-
-  return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+Color hexToColor(String code, Color defaultColor) {
+  try {
+    return new Color(int.parse(code, radix: 16) + 0xFF000000);
+  } catch (Ex) {
+    print("hexToColor EX" + Ex.toString());
+    return defaultColor;
+  }
 }
 
 List<String> monthString = [
@@ -44,4 +47,9 @@ bool isNumeric(String s) {
     return false;
   }
   return double.parse(s, (e) => null) != null;
+}
+
+
+Timestamp getTimestamp(yearPaid, monthPaid) {
+  return Timestamp.fromDate(DateTime(yearPaid, monthPaid));
 }
