@@ -43,7 +43,7 @@ class _NewParticipantFormState extends State<NewParticipantForm> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("New Service"),
+          title: Text("Add Participant"),
 
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

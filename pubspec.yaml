@@ -28,6 +28,9 @@ dependencies:
   flutter_material_color_picker: ^1.0.5
   month_picker_dialog: ^0.3.0
   swipedetector: ^1.2.0
+  provider: ^3.2.0
+  shared_preferences: ^0.5.4
+
 
 
   # The following adds the Cupertino Icons font to your application.

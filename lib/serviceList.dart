@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'BTBottomAppBarWidget.dart';
 import 'model/ServiceDocument.dart';
 
 
@@ -19,6 +20,9 @@ class ServiceListWidget extends StatefulWidget {
 
 class _ServiceListWidgetState extends State<ServiceListWidget> {
 
+  String _sortByVariable = "name";
+  bool _isSortByDesc = false;
+
   @override
   void initState() {
     super.initState();
@@ -31,19 +35,27 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final topAppBar = AppBar(
+        elevation: 0.2,
+        title: Text('Better Together')
+    );
+
     return Scaffold(
+      appBar: topAppBar,
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _createNewService(),
-        child: Icon(Icons.add),
+          onPressed: () => _createNewService(),
+          child: Icon(Icons.add)
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar:  BTBottomAppBarWidget(fabLocation: FloatingActionButtonLocation.centerDocked)
     );
   }
 
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('services').snapshots(),
+      stream: Firestore.instance.collection('services').orderBy(_sortByVariable, descending: _isSortByDesc).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
@@ -92,7 +104,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
     var now = new DateTime.now();
     Color backgroundColor = service.color != null
-        ? Color(service.color)   //hexToColor(service.color, Theme.of(context).primaryColor)
+        ? Color(service.color)
         : Theme.of(context).primaryColor;
     return Card(
       key: ValueKey(service.name),
@@ -155,7 +167,4 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   }
 
 }
-
-
-
 

@@ -5,13 +5,30 @@ import 'package:better_together_app/serviceDetail.dart';
 import 'package:better_together_app/serviceForm.dart';
 import 'package:better_together_app/serviceList.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'AppTheme.dart';
 import 'model/ParticipantDocument.dart';
 import 'model/ServiceDocument.dart';
 import 'newParticipantForm.dart';
 
 
-void main() => runApp(BetterTogetherApp());
+
+Future<Null> main() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  bool darkThemeActive = sharedPreferences.getBool('darkThemeActive') ?? true;
+  runApp(
+    ChangeNotifierProvider<ThemeNotifier>(
+      create: (context) => ThemeNotifier(darkThemeActive ? darkTheme : lightTheme),
+      child: BetterTogetherApp(),
+    ),
+  );
+
+}
+
+
+
 
 /// This Widget is the main application widget.
 class BetterTogetherApp extends StatelessWidget {
@@ -19,18 +36,13 @@ class BetterTogetherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
       title: _title,
-      theme: ThemeData(
-        // Define the default brightness and colors.
-        brightness: Brightness.light,
-        primaryColor: Color.fromRGBO(58, 66, 86, 1.0),
-        accentColor: Colors.blue[700],
-
-      ),
+      theme:  themeNotifier.getTheme(),
       initialRoute: '/',
       routes: {
-        '/': (context) => MainWidget(),
+        '/': (context) => ServiceListWidget(),
        },
       onGenerateRoute: (settings) => Router.generate(settings),
     );
@@ -41,6 +53,8 @@ class BetterTogetherApp extends StatelessWidget {
 abstract class Router {
   static Route<dynamic> generate(RouteSettings settings) {
     switch(settings.name) {
+      case ServiceListWidget.routeName:
+        return MaterialPageRoute(builder: (context) => ServiceListWidget(), settings: settings);
       case ServiceDetailWidget.routeName:
         return MaterialPageRoute(builder: (context) => ServiceDetailWidget(), settings: settings);
       case ServiceForm.routeName:
@@ -58,6 +72,21 @@ abstract class Router {
     return null;
   }
 }
+
+
+class ThemeNotifier with ChangeNotifier {
+  ThemeData _themeData;
+
+  ThemeNotifier(this._themeData);
+
+  getTheme() => _themeData;
+
+  setTheme(ThemeData themeData) async {
+    _themeData = themeData;
+    notifyListeners();
+  }
+}
+
 
 class MainWidget extends StatefulWidget {
   MainWidget({Key key}) : super(key: key);
@@ -99,31 +128,8 @@ class _MainWidgetState extends State<MainWidget> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: _bottomNavigationBar()
     );
   }
-
-  _bottomNavigationBar() {
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          title: Text('Services'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.supervised_user_circle),
-          title: Text('Participants'),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          title: Text('Settings'),
-        ),
-      ],
-      currentIndex: _selectedIndex,
-      selectedItemColor:  Theme.of(context).accentColor,
-      onTap: _onItemTapped,
-    );
-  }
-
-
 }
+
+

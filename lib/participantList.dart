@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'BTBottomAppBarWidget.dart';
 import 'model/ParticipantDocument.dart';
 import 'newParticipantForm.dart';
 
@@ -30,12 +31,19 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final topAppBar = AppBar(
+        elevation: 0.2,
+        title: Text('Better Together')
+    );
     return Scaffold(
+      appBar: topAppBar,
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _createNewParticipant(),
-        child: Icon(Icons.add),
+          onPressed: () => _createNewParticipant(),
+          child: Icon(Icons.add)
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar:  BTBottomAppBarWidget(fabLocation: FloatingActionButtonLocation.centerDocked)
     );
   }
 
