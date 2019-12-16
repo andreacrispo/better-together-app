@@ -19,15 +19,16 @@ Future<Null> main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool darkThemeActive = sharedPreferences.getBool('darkThemeActive') ?? true;
   runApp(
-    ChangeNotifierProvider<ThemeNotifier>(
-      create: (context) => ThemeNotifier(darkThemeActive ? darkTheme : lightTheme),
-      child: BetterTogetherApp(),
-    ),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ThemeNotifier>(create: (_) => ThemeNotifier(darkThemeActive ? darkTheme : lightTheme)),
+          ChangeNotifierProvider<ServiceListNotifier>(create: (_) => ServiceListNotifier()),
+        ],
+        child: BetterTogetherApp()
+      )
   );
 
 }
-
-
 
 
 /// This Widget is the main application widget.
@@ -86,50 +87,4 @@ class ThemeNotifier with ChangeNotifier {
     notifyListeners();
   }
 }
-
-
-class MainWidget extends StatefulWidget {
-  MainWidget({Key key}) : super(key: key);
-
-  @override
-  _MainWidgetState createState() => _MainWidgetState();
-}
-
-class _MainWidgetState extends State<MainWidget> {
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  List<Widget> _widgetOptions = <Widget>[
-    ServiceListWidget(),
-
-    ParticipantListWidget(),
-
-    Text(
-      'Settings',
-      style: optionStyle,
-    ),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    final topAppBar = AppBar(
-      elevation: 0.2,
-      title: Text('Better Together')
-    );
-
-    return Scaffold(
-      appBar: topAppBar,
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-    );
-  }
-}
-
 

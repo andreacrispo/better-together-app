@@ -10,27 +10,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BTBottomAppBarWidget extends StatelessWidget {
   const BTBottomAppBarWidget({
-    this.fabLocation,
+ //   this.fabLocation,
+    this.target
   });
 
-  final FloatingActionButtonLocation fabLocation;
+  //final FloatingActionButtonLocation fabLocation;
+  final String target;
 
 
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      //color: Theme.of(context).primaryColor,
       elevation: 5,
       shape: const CircularNotchedRectangle(),
       child: Row(children: <Widget>[
         IconButton(
-            color: Theme.of(context).accentColor,
             iconSize: 36,
             icon: const Icon(Icons.home, semanticLabel: 'Show service list'),
             onPressed: () => _changeRoute(context, ServiceListWidget.routeName)
         ),
         IconButton(
-            color: Theme.of(context).accentColor,
             iconSize: 36,
             icon: const Icon(Icons.supervised_user_circle, semanticLabel: 'Show participants list'),
             onPressed: () => _changeRoute(context,ParticipantListWidget.routeName)
@@ -40,17 +39,20 @@ class BTBottomAppBarWidget extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.filter_list),
         ),
-        IconButton(
-          icon: Icon(Icons.sort),
-          onPressed: () => _showSortByBottomSheet(context)
-        ),
         */
+        this.target == ServiceListWidget.routeName
+          ?  IconButton(
+              icon: Icon(Icons.sort),
+              onPressed: () => _showSortByBottomSheet(context)
+            )
+          : null,
+
         IconButton(
             iconSize: 36,
             icon: Icon(Icons.more_vert),
             onPressed: () => _showMoreMenu(context)
         ),
-      ]),
+      ].where((w) => w != null).toList()),
     );
   }
 
@@ -69,7 +71,8 @@ class BTBottomAppBarWidget extends StatelessWidget {
     }
   }
 
-  void _showSortByBottomSheet(context){
+  void _showSortByBottomSheet(context) {
+    final serviceProvider = Provider.of<ServiceListNotifier>(context);
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc){
@@ -78,15 +81,15 @@ class BTBottomAppBarWidget extends StatelessWidget {
               children: <Widget>[
                 ListTile(
                     title: Text('Name'),
-                    onTap: () => {}
+                    onTap: () { serviceProvider.setSortByVariable("name", false); Navigator.pop(context); }
                 ),
                 ListTile(
                   title: Text('Price'),
-                  onTap: () => {},
+                  onTap: () { serviceProvider.setSortByVariable("price", false); Navigator.pop(context); }
                 ),
                 ListTile(
                   title: Text('Number of participants'),
-                  onTap: () => {},
+                  onTap: () { serviceProvider.setSortByVariable("participantNumber", false); Navigator.pop(context); }
                 )
               ],
             ),

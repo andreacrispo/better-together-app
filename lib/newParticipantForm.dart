@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/utils.dart';
 import 'package:flutter/material.dart';
 
 import 'model/ParticipantDocument.dart';
@@ -35,6 +36,7 @@ class _NewParticipantFormState extends State<NewParticipantForm> {
       decoration: getInputDecoration('Credit'),
       validator: (value) {
         if (value.isEmpty) return "Mandatory field";
+        if(!isNumeric(value)) return "Only numeric value";
         return null;
       },
       onSaved: (value) => _item.credit = int.parse(value),

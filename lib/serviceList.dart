@@ -4,10 +4,34 @@ import 'package:better_together_app/serviceForm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'BTBottomAppBarWidget.dart';
 import 'model/ServiceDocument.dart';
 
+
+class ServiceListNotifier with ChangeNotifier {
+
+  final whiteListVariable = ["name", "price", "participantNumber"];
+
+  String _sortByVariable = "name";
+  bool _isSortByDesc = false;
+
+  get sortByVariable => _sortByVariable;
+
+  get isSortByDesc => _isSortByDesc;
+
+  setSortByVariable(String variable, isDesc) async {
+    if(!whiteListVariable.contains(variable)) {
+      return;
+    }
+
+    _sortByVariable = variable;
+    _isSortByDesc = _isSortByDesc;
+    notifyListeners();
+  }
+
+}
 
 class ServiceListWidget extends StatefulWidget {
   ServiceListWidget({Key key}) : super(key: key);
@@ -19,9 +43,6 @@ class ServiceListWidget extends StatefulWidget {
 }
 
 class _ServiceListWidgetState extends State<ServiceListWidget> {
-
-  String _sortByVariable = "name";
-  bool _isSortByDesc = false;
 
   @override
   void initState() {
@@ -48,14 +69,16 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
           child: Icon(Icons.add)
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar:  BTBottomAppBarWidget(fabLocation: FloatingActionButtonLocation.centerDocked)
+      bottomNavigationBar:  BTBottomAppBarWidget(target: ServiceListWidget.routeName)
     );
   }
 
 
   Widget _buildBody(BuildContext context) {
+
+    final serviceProvider = Provider.of<ServiceListNotifier>(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('services').orderBy(_sortByVariable, descending: _isSortByDesc).snapshots(),
+      stream: Firestore.instance.collection('services').orderBy(serviceProvider.sortByVariable, descending: serviceProvider.isSortByDesc).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();

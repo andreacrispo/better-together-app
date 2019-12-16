@@ -43,7 +43,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
           child: Icon(Icons.add)
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar:  BTBottomAppBarWidget(fabLocation: FloatingActionButtonLocation.centerDocked)
+      bottomNavigationBar:  BTBottomAppBarWidget(target: ParticipantListWidget.routeName)
     );
   }
 
@@ -150,10 +150,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
         .document(service.documentID)
         .delete();
   }
-
-  bool testing(String key, String value) {
-    return value == null;
-  }
+  
 
 }
 
