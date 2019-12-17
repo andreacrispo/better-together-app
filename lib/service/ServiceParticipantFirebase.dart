@@ -5,7 +5,6 @@ import '../utils.dart';
 
 class ServiceParticipantFirebase {
 
-
   Stream<QuerySnapshot> getServiceWithParticipants(String serviceId, Timestamp datePaid) {
     return Firestore.instance
         .collection('services')

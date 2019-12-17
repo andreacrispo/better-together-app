@@ -34,7 +34,6 @@ class _ServiceFormState extends State<ServiceForm> {
   Widget build(BuildContext context) {
 
     String appBarTitle = "Add Service";
-
     final ServiceDocument passArgs = ModalRoute.of(context).settings.arguments;
     if(passArgs != null) {
       _service = passArgs;
@@ -69,6 +68,8 @@ class _ServiceFormState extends State<ServiceForm> {
       )
     );
 
+
+
     final participantNumberField = Container(
       margin: EdgeInsets.only(top: 10, bottom: 10),
       child: TextFormField(
@@ -85,6 +86,31 @@ class _ServiceFormState extends State<ServiceForm> {
         },
         onSaved: (value) => _service.participantNumber = int.parse(value)
       )
+    );
+
+
+    final colorPickerField = Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          "Service Color",
+         ),
+        const SizedBox(height: 32.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            OutlineButton(
+              onPressed: _openColorPicker,
+              child: const Text('Choose color'),
+            ),
+            const SizedBox(height: 16.0),
+            CircleAvatar(
+              backgroundColor: Color(_service.color ?? Theme.of(context).primaryColor.value),
+              radius: 22.0
+            ),
+          ],
+        ),
+      ]
     );
 
     return SafeArea(
@@ -122,14 +148,7 @@ class _ServiceFormState extends State<ServiceForm> {
                   nameField,
                   monthlyPriceField,
                   participantNumberField,
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlineButton(
-
-                      onPressed: _openColorPicker,
-                      child: const Text('Choose color'),
-                    ),
-                  ),
+                  colorPickerField,
                 ],
             ),
           ),

@@ -1,5 +1,5 @@
 
-import 'package:better_together_app/participantForm.dart';
+import 'package:better_together_app/ServiceParticipantForm.dart';
 import 'package:better_together_app/participantList.dart';
 import 'package:better_together_app/serviceDetail.dart';
 import 'package:better_together_app/serviceForm.dart';
@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AppTheme.dart';
+import 'ParticipantForm.dart';
 import 'model/ParticipantDocument.dart';
 import 'model/ServiceDocument.dart';
-import 'newParticipantForm.dart';
 
 
 
@@ -61,14 +61,14 @@ abstract class Router {
       case ServiceForm.routeName:
         return MaterialPageRoute<ServiceDocument>(
             builder: (context) => ServiceForm(), settings: settings);
+      case ServiceParticipantForm.routeName:
+        return MaterialPageRoute<ParticipantDocument>(
+            builder: (context) => ServiceParticipantForm(), settings: settings);
+      case ParticipantListWidget.routeName:
+        return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);
       case ParticipantForm.routeName:
         return MaterialPageRoute<ParticipantDocument>(
             builder: (context) => ParticipantForm(), settings: settings);
-      case ParticipantListWidget.routeName:
-        return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);
-      case NewParticipantForm.routeName:
-        return MaterialPageRoute<ParticipantDocument>(
-            builder: (context) => NewParticipantForm(), settings: settings);
     }
     return null;
   }

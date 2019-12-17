@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'BTBottomAppBarWidget.dart';
+import 'ParticipantForm.dart';
 import 'model/ParticipantDocument.dart';
-import 'newParticipantForm.dart';
 
 
 class ParticipantListWidget extends StatefulWidget {
@@ -136,7 +136,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
 
   void _createNewParticipant() async {
     ParticipantDocument newItem = await Navigator.pushNamed<ParticipantDocument>(
-        context, NewParticipantForm.routeName);
+        context, ParticipantForm.routeName);
     if (newItem != null) {
       Map<String, dynamic> toAdd = new Map();
       toAdd['name'] = newItem.name;
@@ -150,7 +150,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
         .document(service.documentID)
         .delete();
   }
-  
+
 
 }
 

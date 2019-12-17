@@ -179,6 +179,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   void _createNewService() async {
     ServiceDocument newItem = await Navigator.pushNamed<ServiceDocument>(context, ServiceForm.routeName);
     if (newItem != null) {
+      newItem.color = newItem.color ?? Theme.of(context).primaryColor;
       Firestore.instance.collection('services').add(newItem.toMap());
     }
   }

@@ -6,14 +6,14 @@ import 'package:flutter/services.dart';
 
 import 'model/ParticipantDocument.dart';
 
-class ParticipantForm extends StatefulWidget {
+class ServiceParticipantForm extends StatefulWidget {
   static const routeName = '/participantForm';
 
   @override
-  _ParticipantFormState createState() => _ParticipantFormState();
+  _ServiceParticipantFormState createState() => _ServiceParticipantFormState();
 }
 
-class _ParticipantFormState extends State<ParticipantForm> {
+class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
   ParticipantDocument _participant = ParticipantDocument();
   final _formKey = GlobalKey<FormState>();

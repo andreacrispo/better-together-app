@@ -1,7 +1,7 @@
 
 
 
-import 'package:better_together_app/participantForm.dart';
+import 'package:better_together_app/ServiceParticipantForm.dart';
 import 'package:better_together_app/service/ServiceParticipantFirebase.dart';
 import 'package:better_together_app/serviceForm.dart';
 import 'package:better_together_app/utils.dart';
@@ -318,7 +318,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         .arguments;
     ParticipantDocument newParticipant = await Navigator.pushNamed<ParticipantDocument>(
         context,
-        ParticipantForm.routeName
+        ServiceParticipantForm.routeName
     );
 
     if (newParticipant != null) {
@@ -331,7 +331,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   editParticipantFromService(ParticipantDocument participant) async {
     ParticipantDocument editedParticipant = await Navigator.pushNamed(
         context,
-        ParticipantForm.routeName,
+        ServiceParticipantForm.routeName,
         arguments: participant
     );
 

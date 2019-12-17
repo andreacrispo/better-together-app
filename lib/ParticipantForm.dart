@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 import 'model/ParticipantDocument.dart';
 
-class NewParticipantForm extends StatefulWidget {
+class ParticipantForm extends StatefulWidget {
   static const routeName = '/newParticipantForm';
 
   @override
-  _NewParticipantFormState createState() => _NewParticipantFormState();
+  _ParticipantFormState createState() => _ParticipantFormState();
 }
 
-class _NewParticipantFormState extends State<NewParticipantForm> {
+class _ParticipantFormState extends State<ParticipantForm> {
   final ParticipantDocument _item = ParticipantDocument();
   final _formKey = GlobalKey<FormState>();
 
