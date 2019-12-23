@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/ParticipantDetail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -107,17 +108,8 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
           ),
           child:
           ListTile(
-            onTap: () {},
+            onTap: () => _openParticipantDetail(participant),
             contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            /*
-            leading: Container(
-              padding: EdgeInsets.only(right: 12.0),
-              decoration: new BoxDecoration(
-                  border: new Border(
-                      right: new BorderSide(width: 1.0, color: Colors.white24))),
-              child: Icon(Icons.autorenew, color: Colors.white),
-            ),
-            */
             title: Text(
               "${participant.name}",
               style: TextStyle(color: Colors.white,
@@ -150,6 +142,16 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
         .document(service.documentID)
         .delete();
   }
+
+  _openParticipantDetail(ParticipantDocument participant) {
+    Navigator.pushNamed(
+        context,
+        ParticipantDetailWidget.routeName,
+        arguments: participant
+    );
+  }
+
+
 
 
 }

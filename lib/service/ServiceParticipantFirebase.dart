@@ -41,7 +41,7 @@ class ServiceParticipantFirebase {
 
   addParticipantIntoService(String serviceId, ParticipantDocument participant) {
     String participantId = participant.participantId;
-    print(participantId);
+
     Firestore.instance.collection('participants').document(participantId).setData({
       'credit': participant.credit
     }, merge: true);

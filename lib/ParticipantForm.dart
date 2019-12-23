@@ -12,40 +12,50 @@ class ParticipantForm extends StatefulWidget {
 }
 
 class _ParticipantFormState extends State<ParticipantForm> {
-  final ParticipantDocument _item = ParticipantDocument();
+  ParticipantDocument _participant = ParticipantDocument();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
 
+    String appBarTitle = "Add Participant";
+    final ParticipantDocument passArgs = ModalRoute.of(context).settings.arguments;
+    if(passArgs != null) {
+      _participant = passArgs;
+      appBarTitle = "Edit Participant";
+    }
+
     final nameField = TextFormField(
+      initialValue: _participant.name ?? "",
       decoration: getInputDecoration('Name'),
       validator: (value) {
         if (value.isEmpty) return "Mandatory field";
         return null;
       },
-      onSaved: (value) => _item.name = value,
+      onSaved: (value) => _participant.name = value,
     );
 
     final emailField = TextFormField(
+      initialValue: _participant.email ?? "",
       decoration: getInputDecoration('Email'),
-      onSaved: (value) => _item.email = value
+      onSaved: (value) => _participant.email = value
     );
 
     final creditField = TextFormField(
+      initialValue: _participant.credit != null ? _participant.credit.toString() : "",
       decoration: getInputDecoration('Credit'),
       validator: (value) {
         if (value.isEmpty) return "Mandatory field";
         if(!isNumeric(value)) return "Only numeric value";
         return null;
       },
-      onSaved: (value) => _item.credit = int.parse(value),
+      onSaved: (value) => _participant.credit = double.parse(value),
     );
 
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Add Participant"),
+          title: Text(appBarTitle),
 
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -58,7 +68,7 @@ class _ParticipantFormState extends State<ParticipantForm> {
               onPressed: () {
                 if(_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  Navigator.pop(context, _item);
+                  Navigator.pop(context, _participant);
                 }
               },
             )

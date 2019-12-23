@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/ParticipantForm.dart';
 import 'package:better_together_app/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +19,10 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
   ParticipantDocument _participant = ParticipantDocument();
   final _formKey = GlobalKey<FormState>();
   bool _useCredit = false;
- // ParticipantDocument _selectedParticipant = null;
   String _participantId;
 
 
-  getInputDecoration(labelText){
+  getInputDecoration(labelText) {
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
@@ -49,6 +49,20 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     }
 
 
+    Widget selectOrAddField() {
+      return  Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+              Text("Select participant"),
+             // Icon(Icons.add)
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _addParticipant(),
+              )
+            ],
+      );
+    }
+
     Widget participantSelector() {
       return StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance.collection('participants').snapshots(),
@@ -57,9 +71,9 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
               return LinearProgressIndicator();
             }
 
-
             return Center(
               child: DropdownButton(
+                hint: Text( "Participants"),
                 isExpanded: true,
                 value:  _participantId != null ? snapshot.data.documents.firstWhere((doc) => doc.documentID == _participantId) : null,
                 onChanged: (DocumentSnapshot newValue) {
@@ -170,9 +184,9 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
               shrinkWrap: true,
               padding: EdgeInsets.only(left: 16.0, right: 16.0),
               children: <Widget>[
-                //nameField,
+                selectOrAddField(),
                 participantSelector(),
-                hasPaidField,
+                (_participant != null && _participant.name != null ) ?  hasPaidField : Container(),
                 (_participant.hasPaid != null && _participant.hasPaid) ? askToUseCreditField : Container(),
                 (_participant.hasPaid != null && _participant.hasPaid) ? pricePaidField : Container()
               ],
@@ -182,4 +196,21 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       ),
     );
   }
+
+
+  _addParticipant() async {
+    ParticipantDocument newParticipant = await Navigator.pushNamed(
+        context,
+        ParticipantForm.routeName,
+    );
+
+    if (newParticipant != null) {
+      DocumentReference doc = await Firestore.instance.collection('participants').add(newParticipant.toMap());
+      setState(() {
+        _participant = newParticipant;
+        _participantId = doc.documentID;
+      });
+    }
+  }
+
 }

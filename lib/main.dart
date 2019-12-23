@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/ParticipantDetail.dart';
 import 'package:better_together_app/ServiceParticipantForm.dart';
 import 'package:better_together_app/participantList.dart';
 import 'package:better_together_app/serviceDetail.dart';
@@ -66,6 +67,8 @@ abstract class Router {
             builder: (context) => ServiceParticipantForm(), settings: settings);
       case ParticipantListWidget.routeName:
         return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);
+      case ParticipantDetailWidget.routeName:
+        return MaterialPageRoute(builder: (context) => ParticipantDetailWidget(), settings: settings);
       case ParticipantForm.routeName:
         return MaterialPageRoute<ParticipantDocument>(
             builder: (context) => ParticipantForm(), settings: settings);

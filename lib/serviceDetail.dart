@@ -57,16 +57,6 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     this.currentService = passArgs.service;
     this.appBarTitle = this.currentService.name;
     return Scaffold(
-      /*
-      appBar: AppBar(
-        title: Text(appBarTitle),
-        backgroundColor: Color(currentService.color),
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/'))
-        ),
-      ),
-      */
       body:
       SwipeDetector(
          onSwipeLeft:  () => nextMonth(passArgs.monthPaid, passArgs.yearPaid),
@@ -88,7 +78,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
-     //   return _buildTable(context, snapshot.data.documents);
+
        return CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -126,7 +116,6 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             ),
           ],
         );
-
       },
     );
   }
@@ -412,7 +401,11 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 
   _editService(ServiceDocument service) async {
-    ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(context, ServiceForm.routeName, arguments: service);
+    ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(
+        context,
+        ServiceForm.routeName,
+        arguments: service
+    );
     if (editedService != null) {
       Firestore.instance.collection('services').document(service.reference.documentID).setData(editedService.toMap());
     }
