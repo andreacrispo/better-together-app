@@ -63,7 +63,7 @@ abstract class Router {
         return MaterialPageRoute<ServiceDocument>(
             builder: (context) => ServiceForm(), settings: settings);
       case ServiceParticipantForm.routeName:
-        return MaterialPageRoute<ParticipantDocument>(
+        return MaterialPageRoute<dynamic>(
             builder: (context) => ServiceParticipantForm(), settings: settings);
       case ParticipantListWidget.routeName:
         return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);

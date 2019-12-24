@@ -8,6 +8,8 @@ class ParticipantDocument {
   bool hasPaid;
   num pricePaid;
   Timestamp datePaid;
+  Map<dynamic, dynamic> creditHistory;
+
   DocumentReference reference;
 
   ParticipantDocument({
@@ -17,6 +19,7 @@ class ParticipantDocument {
       this.pricePaid,
   }) {
     this.hasPaid = false;
+    this.creditHistory = new Map();
   }
 
   ParticipantDocument.fromMap(Map<String, dynamic> map, {this.reference})
@@ -27,7 +30,9 @@ class ParticipantDocument {
         credit = map['credit'],
         hasPaid = map['hasPaid'],
         pricePaid = map['pricePaid'],
-        datePaid = map['datePaid'];
+        datePaid = map['datePaid'],
+        creditHistory  = map['creditHistory']
+  ;
 
   ParticipantDocument.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
@@ -40,5 +45,6 @@ class ParticipantDocument {
         "hasPaid": hasPaid,
         "pricePaid": pricePaid,
         "datePaid": datePaid,
+        "creditHistory": creditHistory
       };
 }

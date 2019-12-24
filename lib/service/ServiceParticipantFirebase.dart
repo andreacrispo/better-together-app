@@ -39,11 +39,17 @@ class ServiceParticipantFirebase {
     });
   }
 
-  addParticipantIntoService(String serviceId, ParticipantDocument participant) {
+  addParticipantIntoService({String serviceId, ParticipantDocument participant, bool useCredit}) {
     String participantId = participant.participantId;
 
+    if(useCredit) {
+      participant.credit -= participant.pricePaid;
+      String dateKey = Timestamp.now().toDate().toIso8601String();
+      participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
+    }
     Firestore.instance.collection('participants').document(participantId).setData({
-      'credit': participant.credit
+      'credit': participant.credit,
+      'creditHistory': participant.creditHistory
     }, merge: true);
 
     Firestore.instance

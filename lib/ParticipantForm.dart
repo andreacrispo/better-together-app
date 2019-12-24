@@ -1,5 +1,6 @@
 
 import 'package:better_together_app/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'model/ParticipantDocument.dart';
@@ -49,7 +50,13 @@ class _ParticipantFormState extends State<ParticipantForm> {
         if(!isNumeric(value)) return "Only numeric value";
         return null;
       },
-      onSaved: (value) => _participant.credit = double.parse(value),
+      onSaved: (value) {
+        if(double.parse(value) != _participant.credit) {
+          _participant.credit = double.parse(value);
+          String dateKey = Timestamp.now().toDate().toIso8601String();
+         _participant.creditHistory.putIfAbsent(dateKey, () => _participant.credit);
+        }
+      }
     );
 
     return SafeArea(

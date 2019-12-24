@@ -1,16 +1,10 @@
 
-
-
-
-
-
-
-
 import 'package:better_together_app/ParticipantForm.dart';
 import 'package:better_together_app/model/ParticipantDocument.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 class ParticipantDetailWidget extends StatefulWidget {
   ParticipantDetailWidget({Key key}) : super(key: key);
@@ -26,8 +20,9 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   String appBarTitle = 'Better Together';
  // ServiceParticipantFirebase _repository;
   ParticipantDocument currentParticipant;
-
   String currentServiceId;
+
+  bool isHistoryExpanded = true;
 
   @override
   void initState() {
@@ -53,14 +48,36 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
 
-        return _buildSummaryCard(context);
+        return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            verticalDirection: VerticalDirection.down,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[ Container()],
+              ),
+
+              Container(
+                  margin: EdgeInsets.only(top: 50, left: 10, right: 10),
+                  child: _buildSummaryCard(context)
+              ),
+
+              Container(
+                margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+                child:
+                   _buildCreditHistorySection(),
+              )
+            ]
+        );
       },
     );
   }
 
-  Card _buildSummaryCard(BuildContext context) {
+   _buildSummaryCard(BuildContext context) {
     return Card(
-          margin: EdgeInsets.only(top: 50, left: 10, right: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -112,8 +129,42 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   }
 
 
-  _buildCreditHistorySection(){
-    // TODO:
+  _buildCreditHistorySection() {
+    return ExpansionPanelList(
+      expansionCallback: (int index, bool isExpanded) {
+        setState(() {
+          this.isHistoryExpanded = !this.isHistoryExpanded;
+        });
+      },
+      children: [
+         ExpansionPanel(
+          headerBuilder: (BuildContext context, bool isExpanded) {
+            return  ListTile(
+                title: Text("Credit History"),
+              );
+          },
+          body: ListView.builder(
+            padding: EdgeInsets.all(2),
+            shrinkWrap: true,
+            itemCount: currentParticipant.creditHistory.length,
+            itemBuilder: (BuildContext context, int index) {
+              String key = currentParticipant.creditHistory.keys.elementAt(index);
+              String dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(key));
+              return  Column(
+                children: <Widget>[
+                  ListTile(
+                    title:  Text("$dateFormatted"),
+                    trailing: Text("${currentParticipant.creditHistory[key]}"),
+                  ),
+                  Divider(height: 2.0,),
+                ],
+              );
+             },
+          ),
+          isExpanded: this.isHistoryExpanded
+        )
+      ]
+    );
   }
 
   _editParticipant() async {
@@ -129,4 +180,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
     }
   }
 
+
+
 }
+

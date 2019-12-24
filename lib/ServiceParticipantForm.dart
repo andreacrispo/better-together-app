@@ -37,7 +37,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
   @override
   Widget build(BuildContext context) {
-    String appBarTitle = "Add Participant";
+    String appBarTitle = "Add Participant to Service";
     final ParticipantDocument passArgs = ModalRoute
         .of(context)
         .settings
@@ -45,7 +45,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     if(passArgs != null) {
       _participant = passArgs;
       _participantId = passArgs.participantId;
-      appBarTitle = "Edit Participant";
+      appBarTitle = "Edit Participant from Service";
     }
 
 
@@ -149,8 +149,6 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         },
         onSaved: (value) {
           _participant.pricePaid = double.parse(value);
-          if(_useCredit)
-            _participant.credit -= _participant.pricePaid;
         }
     );
 
@@ -169,7 +167,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
               onPressed: () {
                 if(_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  Navigator.pop(context, _participant);
+                  Navigator.pop(context, [_participant, _useCredit]);
                 }
               },
             )
@@ -208,7 +206,8 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       DocumentReference doc = await Firestore.instance.collection('participants').add(newParticipant.toMap());
       setState(() {
         _participant = newParticipant;
-        _participantId = doc.documentID;
+        _participant.participantId = doc.documentID;
+        _participantId = _participant.participantId;
       });
     }
   }

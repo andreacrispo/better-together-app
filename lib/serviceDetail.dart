@@ -22,9 +22,11 @@ class ServiceDetailArgs {
   int yearPaid;
   int monthPaid;
 
-  ServiceDetailArgs(
-      { this.serviceId, this.service, this.yearPaid, this.monthPaid});
+  ServiceDetailArgs({
+    this.serviceId, this.service, this.yearPaid, this.monthPaid
+  });
 }
+
 
 
 class ServiceDetailWidget extends StatefulWidget {
@@ -85,7 +87,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               pinned: true,
               snap: false,
               floating: false,
-              expandedHeight: 110.0,
+              expandedHeight: 130.0,
               elevation: 4,
               forceElevated: true,
               centerTitle: true,
@@ -96,8 +98,18 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(currentService.name, textAlign: TextAlign.center),
-                    Text(currentService.price.toString(), style: TextStyle(fontSize: 12.0),textAlign: TextAlign.center),
+                    Center(
+                        child: Text(currentService.name,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                        )
+                    ),
+                    Center(
+                        child: Text(currentService.price.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16.0)
+                        )
+                    ),
                   ],
                 ),
                 centerTitle: true,
@@ -301,33 +313,39 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
   addParticipantToService(BuildContext context) async {
-    final ServiceDetailArgs passArgs = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
-    ParticipantDocument newParticipant = await Navigator.pushNamed<ParticipantDocument>(
+    var result = await Navigator.pushNamed<dynamic>(
         context,
         ServiceParticipantForm.routeName
     );
+    ParticipantDocument newParticipant = result[0];
+    bool useCredit = result[1];
 
     if (newParticipant != null) {
+      final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
       newParticipant.datePaid = getTimestamp(passArgs.yearPaid, passArgs.monthPaid);
-      _repository.addParticipantIntoService(currentServiceId, newParticipant);
+      _repository.addParticipantIntoService(
+          serviceId: currentServiceId,
+          participant: newParticipant,
+          useCredit: useCredit,
+      );
       setState(() {});
     }
   }
 
   editParticipantFromService(ParticipantDocument participant) async {
-    ParticipantDocument editedParticipant = await Navigator.pushNamed(
+    var result = await Navigator.pushNamed<dynamic>(
         context,
         ServiceParticipantForm.routeName,
         arguments: participant
     );
+    ParticipantDocument editedParticipant = result[0];
+    bool useCredit = result[1];
 
     if (editedParticipant != null) {
       await _repository.editParticipantFromService(currentServiceId, editedParticipant);
       setState(() {});
     }
+
   }
 
   deleteParticipantFromService(ParticipantDocument participant) async {

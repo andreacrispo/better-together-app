@@ -133,7 +133,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
       Map<String, dynamic> toAdd = new Map();
       toAdd['name'] = newItem.name;
       toAdd['credit'] = newItem.credit;
-      Firestore.instance.collection('participants').add(toAdd);
+     Firestore.instance.collection('participants').add(newItem.toMap());
     }
   }
 
