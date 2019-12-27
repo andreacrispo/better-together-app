@@ -1,8 +1,8 @@
 
-import 'package:better_together_app/AppTheme.dart';
+import 'package:better_together_app/app_theme.dart';
 import 'package:better_together_app/main.dart';
-import 'package:better_together_app/participantList.dart';
-import 'package:better_together_app/serviceList.dart';
+import 'package:better_together_app/screens/participant/participant_list.dart';
+import 'package:better_together_app/screens/service/service_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,11 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BTBottomAppBarWidget extends StatelessWidget {
   const BTBottomAppBarWidget({
- //   this.fabLocation,
     this.target
   });
 
-  //final FloatingActionButtonLocation fabLocation;
   final String target;
 
 

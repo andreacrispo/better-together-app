@@ -1,12 +1,11 @@
 
-import 'package:better_together_app/ParticipantDetail.dart';
+import 'package:better_together_app/model/ParticipantDocument.dart';
+import 'package:better_together_app/screens/participant/participant_detail.dart';
+import 'package:better_together_app/screens/participant/participant_form.dart';
+import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'BTBottomAppBarWidget.dart';
-import 'ParticipantForm.dart';
-import 'model/ParticipantDocument.dart';
 
 
 class ParticipantListWidget extends StatefulWidget {

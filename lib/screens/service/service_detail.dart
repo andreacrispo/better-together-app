@@ -1,19 +1,18 @@
 
 
 
-import 'package:better_together_app/ServiceParticipantForm.dart';
-import 'package:better_together_app/service/ServiceParticipantFirebase.dart';
-import 'package:better_together_app/serviceForm.dart';
+import 'package:better_together_app/model/ParticipantDocument.dart';
+import 'package:better_together_app/model/ServiceDocument.dart';
+import 'package:better_together_app/screens/service/service_form.dart';
+import 'package:better_together_app/screens/service/service_participant_form.dart';
+import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:better_together_app/utils.dart';
+import 'package:better_together_app/widgets/has_paid_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:swipedetector/swipedetector.dart';
-
-import 'model/ParticipantDocument.dart';
-import 'model/ServiceDocument.dart';
-
 
 
 class ServiceDetailArgs {
@@ -267,7 +266,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                                 participant.pricePaid = null;
                               }
                               updatePaidStatus(participant);
-                            })
+                            }
+                        )
                     ),
                     DataCell(
                       Text(participant.pricePaid != null ? participant.pricePaid
@@ -432,27 +432,6 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 }
 
-class HasPaidWidget extends StatelessWidget {
-  final bool hasPaid;
-  final Function(bool) callback;
-  HasPaidWidget({Key key, @required this.hasPaid, @required this.callback}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FlatButton(
-      color: hasPaid ? Colors.green : Colors.red,
-      textColor: Colors.white,
-      padding: EdgeInsets.all(8.0),
-      onPressed: () {
-         callback(!hasPaid);
-      },
-      child: Text(
-        hasPaid ? 'Paid' : 'NOT Paid',
-        style: TextStyle(fontSize: 10.0),
-      ),
-    );
-  }
-}
 
 
 class CustomChangeMonthRoute<T> extends MaterialPageRoute<T> {

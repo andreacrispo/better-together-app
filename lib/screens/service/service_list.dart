@@ -1,13 +1,12 @@
 
-import 'package:better_together_app/serviceDetail.dart';
-import 'package:better_together_app/serviceForm.dart';
+import 'package:better_together_app/model/ServiceDocument.dart';
+import 'package:better_together_app/screens/service/service_detail.dart';
+import 'package:better_together_app/screens/service/service_form.dart';
+import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'BTBottomAppBarWidget.dart';
-import 'model/ServiceDocument.dart';
 
 
 class ServiceListNotifier with ChangeNotifier {

@@ -1,11 +1,11 @@
 
-import 'package:better_together_app/ParticipantForm.dart';
+import 'package:better_together_app/model/ParticipantDocument.dart';
+import 'package:better_together_app/screens/participant/participant_form.dart';
 import 'package:better_together_app/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'model/ParticipantDocument.dart';
 
 class ServiceParticipantForm extends StatefulWidget {
   static const routeName = '/participantForm';

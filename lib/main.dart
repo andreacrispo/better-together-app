@@ -1,16 +1,16 @@
 
-import 'package:better_together_app/ParticipantDetail.dart';
-import 'package:better_together_app/ServiceParticipantForm.dart';
-import 'package:better_together_app/participantList.dart';
-import 'package:better_together_app/serviceDetail.dart';
-import 'package:better_together_app/serviceForm.dart';
-import 'package:better_together_app/serviceList.dart';
+import 'package:better_together_app/screens/participant/participant_detail.dart';
+import 'package:better_together_app/screens/participant/participant_form.dart';
+import 'package:better_together_app/screens/participant/participant_list.dart';
+import 'package:better_together_app/screens/service/service_detail.dart';
+import 'package:better_together_app/screens/service/service_form.dart';
+import 'package:better_together_app/screens/service/service_list.dart';
+import 'package:better_together_app/screens/service/service_participant_form.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'AppTheme.dart';
-import 'ParticipantForm.dart';
+import 'app_theme.dart';
 import 'model/ParticipantDocument.dart';
 import 'model/ServiceDocument.dart';
 
