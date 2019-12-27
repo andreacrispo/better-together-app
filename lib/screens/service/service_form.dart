@@ -1,6 +1,6 @@
 
 import 'package:better_together_app/model/ServiceDocument.dart';
-import 'package:better_together_app/utils.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';

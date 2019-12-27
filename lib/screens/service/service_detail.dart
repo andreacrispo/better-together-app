@@ -6,7 +6,8 @@ import 'package:better_together_app/model/ServiceDocument.dart';
 import 'package:better_together_app/screens/service/service_form.dart';
 import 'package:better_together_app/screens/service/service_participant_form.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
-import 'package:better_together_app/utils.dart';
+import 'package:better_together_app/utils/custom_route_animation.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:better_together_app/widgets/has_paid_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -405,7 +406,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   changeMonthNavigator(month, year) {
     Navigator.pushReplacement(
       context,
-      CustomChangeMonthRoute(
+      CustomRouteFadeAnimation(
           builder: (context) => ServiceDetailWidget(),
           settings: RouteSettings(arguments: ServiceDetailArgs(
               serviceId: currentServiceId,
@@ -432,17 +433,3 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 }
 
-
-
-class CustomChangeMonthRoute<T> extends MaterialPageRoute<T> {
-  CustomChangeMonthRoute({WidgetBuilder builder, RouteSettings settings})
-      : super(builder: builder, settings: settings);
-
-  @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child
-  ) {
-    if (settings.isInitialRoute) return child;
-    return new FadeTransition(opacity: animation, child: child);
-  }
-}

@@ -3,6 +3,7 @@ import 'package:better_together_app/app_theme.dart';
 import 'package:better_together_app/main.dart';
 import 'package:better_together_app/screens/participant/participant_list.dart';
 import 'package:better_together_app/screens/service/service_list.dart';
+import 'package:better_together_app/utils/custom_route_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,12 +26,12 @@ class BTBottomAppBarWidget extends StatelessWidget {
         IconButton(
             iconSize: 36,
             icon: const Icon(Icons.home, semanticLabel: 'Show service list'),
-            onPressed: () => _changeRoute(context, ServiceListWidget.routeName)
+            onPressed: () => _changeRoute(context, ServiceListWidget.routeName, ServiceListWidget())
         ),
         IconButton(
             iconSize: 36,
             icon: const Icon(Icons.supervised_user_circle, semanticLabel: 'Show participants list'),
-            onPressed: () => _changeRoute(context,ParticipantListWidget.routeName)
+            onPressed: () => _changeRoute(context,ParticipantListWidget.routeName, ParticipantListWidget())
         ),
         const Expanded(child: SizedBox()),
         /*
@@ -54,7 +55,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
     );
   }
 
-  _changeRoute(context, newRouteName) {
+  _changeRoute(context, newRouteName, newWidget) {
     bool isNewRouteSameAsCurrent = false;
 
     Navigator.popUntil(context, (route) {
@@ -65,7 +66,13 @@ class BTBottomAppBarWidget extends StatelessWidget {
     });
 
     if (!isNewRouteSameAsCurrent) {
-      Navigator.pushReplacementNamed(context, newRouteName);
+
+      Navigator.pushReplacement(
+        context,
+        CustomRouteFadeAnimation(
+            builder: (context) => newWidget
+        ),
+      );
     }
   }
 

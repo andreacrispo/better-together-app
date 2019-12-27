@@ -1,7 +1,6 @@
 import 'package:better_together_app/model/ParticipantDocument.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../utils.dart';
 
 class ServiceParticipantFirebase {
 
