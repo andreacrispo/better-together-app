@@ -1,0 +1,25 @@
+
+[
+
+  {
+    "name": "Amazon",
+    "price": 38,
+    "icon": "amazon",
+    "color": 4294951175
+  },
+  {
+    "name": "Netflix",
+    "price": 11,
+    "icon": "netflix",
+    "color": 4294198070
+
+  },
+  {
+    "name": "Spotify",
+    "price": 15,
+    "icon": "spotify",
+    "color": 4283215696
+  }
+
+
+]

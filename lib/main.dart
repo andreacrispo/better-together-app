@@ -6,6 +6,7 @@ import 'package:better_together_app/screens/service/service_detail.dart';
 import 'package:better_together_app/screens/service/service_form.dart';
 import 'package:better_together_app/screens/service/service_list.dart';
 import 'package:better_together_app/screens/service/service_participant_form.dart';
+import 'package:better_together_app/screens/service/service_preset.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,7 +45,7 @@ class BetterTogetherApp extends StatelessWidget {
       theme:  themeNotifier.getTheme(),
       initialRoute: '/',
       routes: {
-        '/': (context) => ServiceListWidget(),
+        '/': (context) => ServiceListWidget()
        },
       onGenerateRoute: (settings) => Router.generate(settings),
     );
@@ -65,6 +66,9 @@ abstract class Router {
       case ServiceParticipantForm.routeName:
         return MaterialPageRoute<dynamic>(
             builder: (context) => ServiceParticipantForm(), settings: settings);
+      case ServicePreset.routeName:
+        return MaterialPageRoute(
+            builder: (context) => ServicePreset(), settings: settings);
       case ParticipantListWidget.routeName:
         return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);
       case ParticipantDetailWidget.routeName:

@@ -89,20 +89,21 @@ class _ServiceFormState extends State<ServiceForm> {
 
 
     final colorPickerField = Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        const SizedBox(height: 10.0),
         Text(
           "Service Color",
          ),
-        const SizedBox(height: 32.0),
+        const SizedBox(height: 10.0),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             OutlineButton(
               onPressed: _openColorPicker,
               child: const Text('Choose color'),
             ),
-            const SizedBox(height: 16.0),
+        //    const SizedBox(height: 16.0),
             CircleAvatar(
               backgroundColor: Color(_service.color ?? Theme.of(context).primaryColor.value),
               radius: 22.0
@@ -124,7 +125,7 @@ class _ServiceFormState extends State<ServiceForm> {
 
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.save),
               onPressed: () {
                 if(_formKey.currentState.validate()) {
                   _formKey.currentState.save();

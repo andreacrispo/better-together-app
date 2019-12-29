@@ -6,9 +6,10 @@ class ServiceDocument {
   String serviceId;
   String name;
   String description;
-  num color; // Hex
+  num color;
   num price;
   int participantNumber;
+  String icon; // To be define better
   List<ParticipantDocument> participants;
   DocumentReference reference;
 
@@ -27,6 +28,7 @@ class ServiceDocument {
         description = map['description'],
         color = map['color'],
         price = map['price'],
+        icon  = map['icon'],
         participantNumber = map['participantNumber'],
         participants = map['participants'];
 
@@ -39,6 +41,7 @@ class ServiceDocument {
         "description": description,
         "color": color,
         "price": price,
+        "icon": icon,
         "participantNumber": participantNumber,
       };
 

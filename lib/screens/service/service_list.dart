@@ -2,11 +2,13 @@
 import 'package:better_together_app/model/ServiceDocument.dart';
 import 'package:better_together_app/screens/service/service_detail.dart';
 import 'package:better_together_app/screens/service/service_form.dart';
+import 'package:better_together_app/screens/service/service_preset.dart';
 import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 
 
 class ServiceListNotifier with ChangeNotifier {
@@ -63,10 +65,10 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     return Scaffold(
       appBar: topAppBar,
       body: _buildBody(context),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => _createNewService(),
-          child: Icon(Icons.add)
-      ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () => Navigator.pushNamed(context, ServicePreset.routeName),  // _createNewService(),
+            child: Icon(Icons.add)
+        ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar:  BTBottomAppBarWidget(target: ServiceListWidget.routeName)
     );
@@ -124,7 +126,6 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final service = ServiceDocument.fromSnapshot(data);
 
-    var now = new DateTime.now();
     Color backgroundColor = service.color != null
         ? Color(service.color)
         : Theme.of(context).primaryColor;
@@ -133,45 +134,54 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
-            color: backgroundColor,
+            border: Border.all(color: backgroundColor, width: 2,),
+            color: Theme.of(context).primaryColor, //backgroundColor,
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child:
-          ListTile(
+          child: ListTile(
             onTap: () {
               Navigator.pushNamed(context,
                   ServiceDetailWidget.routeName,
                   arguments: ServiceDetailArgs(
                       serviceId: data.documentID,
                       service: service,
-                      monthPaid: now.month,
-                      yearPaid: now.year
+                      monthPaid: DateTime.now().month,
+                      yearPaid: DateTime.now().year
                   )
               );
             },
             contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            /*
-            leading: Container(
-              padding: EdgeInsets.only(right: 12.0),
-              decoration: new BoxDecoration(
-                  border: new Border(
-                      right: new BorderSide(width: 1.0, color: Colors.white24))),
-              child: Icon(Icons.autorenew, color: Colors.white),
-            ),
-            */
+
+            leading: _iconLeading(service, backgroundColor),
+
             title: Text(
               "${service.name}",
               style: TextStyle(color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 32),
+                  fontSize: 28),
             ),
             trailing: Text(
-                "${service.price} € / monthly",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                "${service.price} €",
+                style: TextStyle(color: Colors.white, fontSize: 14),
                 textAlign: TextAlign.right
             ),
           )
       ),
+    );
+  }
+
+  _iconLeading(ServiceDocument service, Color backgroundColor) {
+    if(service.icon == null)
+      return null;
+
+    return Container(
+      padding: EdgeInsets.only(right: 16.0),
+      decoration: BoxDecoration(
+          border: Border(
+            right: BorderSide(width: 1.0, color: Colors.white24),
+          )
+      ),
+      child: Tab(icon: Image.asset("assets/${service.icon}.png",color: backgroundColor,)),
     );
   }
 
@@ -188,6 +198,8 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
         .document(service.documentID)
         .delete();
   }
+
+
 
 }
 
