@@ -13,13 +13,17 @@ class ServiceDocument {
   List<ParticipantDocument> participants;
   DocumentReference reference;
 
-  ServiceDocument(
-      {this.serviceId,
+  String uid;
+
+  ServiceDocument({
+      this.serviceId,
       this.name,
       this.description,
       this.color,
       this.price,
-      this.participantNumber});
+      this.participantNumber,
+      this.uid
+  });
 
   ServiceDocument.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['name'] != null),
@@ -30,7 +34,9 @@ class ServiceDocument {
         price = map['price'],
         icon  = map['icon'],
         participantNumber = map['participantNumber'],
-        participants = map['participants'];
+        participants = map['participants'],
+        uid = map['uid']
+  ;
 
   ServiceDocument.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
@@ -43,8 +49,8 @@ class ServiceDocument {
         "price": price,
         "icon": icon,
         "participantNumber": participantNumber,
-      };
+        "uid": uid,
+  };
 
-  @override
-  String toString() => "Record<$name>";
+
 }

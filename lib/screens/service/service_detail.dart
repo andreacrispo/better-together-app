@@ -78,7 +78,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       stream: _repository.getServiceWithParticipants(
           args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
+        if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
        return CustomScrollView(

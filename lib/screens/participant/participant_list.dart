@@ -2,6 +2,7 @@
 import 'package:better_together_app/model/ParticipantDocument.dart';
 import 'package:better_together_app/screens/participant/participant_detail.dart';
 import 'package:better_together_app/screens/participant/participant_form.dart';
+import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -19,9 +20,12 @@ class ParticipantListWidget extends StatefulWidget {
 
 class _ParticipantListWidgetState extends State<ParticipantListWidget> {
 
+  ServiceParticipantFirebase _repository;
+
   @override
   void initState() {
     super.initState();
+    _repository = ServiceParticipantFirebase();
   }
 
   @override
@@ -50,9 +54,9 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('participants').snapshots(),
+      stream: _repository.getParticipants(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
+        if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
         return _buildList(context, snapshot.data.documents);
@@ -128,18 +132,12 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
   void _createNewParticipant() async {
     ParticipantDocument newItem = await Navigator.pushNamed<ParticipantDocument>(
         context, ParticipantForm.routeName);
-    if (newItem != null) {
-      Map<String, dynamic> toAdd = new Map();
-      toAdd['name'] = newItem.name;
-      toAdd['credit'] = newItem.credit;
-     Firestore.instance.collection('participants').add(newItem.toMap());
-    }
+    if (newItem != null)
+      _repository.createParticipant(newItem);
   }
 
   void _deleteParticipant(DocumentSnapshot service) async {
-    Firestore.instance.collection('participants')
-        .document(service.documentID)
-        .delete();
+    _repository.deleteParticipant(service.documentID);
   }
 
   _openParticipantDetail(ParticipantDocument participant) {
@@ -149,8 +147,6 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
         arguments: participant
     );
   }
-
-
 
 
 }

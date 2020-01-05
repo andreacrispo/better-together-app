@@ -9,14 +9,16 @@ class ParticipantDocument {
   num pricePaid;
   Timestamp datePaid;
   Map<dynamic, dynamic> creditHistory;
-
   DocumentReference reference;
+
+  String uid;
 
   ParticipantDocument({
       this.name,
       this.email,
       this.hasPaid,
       this.pricePaid,
+      this.uid
   }) {
     this.hasPaid = false;
     this.creditHistory = new Map();
@@ -31,7 +33,8 @@ class ParticipantDocument {
         hasPaid = map['hasPaid'],
         pricePaid = map['pricePaid'],
         datePaid = map['datePaid'],
-        creditHistory  = map['creditHistory']
+        creditHistory  = map['creditHistory'],
+        uid  = map['uid']
   ;
 
   ParticipantDocument.fromSnapshot(DocumentSnapshot snapshot)
@@ -45,6 +48,7 @@ class ParticipantDocument {
         "hasPaid": hasPaid,
         "pricePaid": pricePaid,
         "datePaid": datePaid,
-        "creditHistory": creditHistory
+        "creditHistory": creditHistory,
+        "uid": uid
       };
 }

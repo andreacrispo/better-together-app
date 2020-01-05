@@ -1,8 +1,8 @@
 
 import 'package:better_together_app/model/ServiceDocument.dart';
 import 'package:better_together_app/screens/service/service_detail.dart';
-import 'package:better_together_app/screens/service/service_form.dart';
 import 'package:better_together_app/screens/service/service_preset.dart';
+import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -45,9 +45,12 @@ class ServiceListWidget extends StatefulWidget {
 
 class _ServiceListWidgetState extends State<ServiceListWidget> {
 
+  ServiceParticipantFirebase _repository;
+
   @override
   void initState() {
     super.initState();
+    _repository = ServiceParticipantFirebase();
   }
 
   @override
@@ -59,7 +62,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   Widget build(BuildContext context) {
     final topAppBar = AppBar(
         elevation: 0.2,
-        title: Text('Better Together')
+        title:  Text('Better Together')
     );
 
     return Scaffold(
@@ -75,13 +78,14 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   }
 
 
-  Widget _buildBody(BuildContext context) {
 
+
+  Widget _buildBody(BuildContext context) {
     final serviceProvider = Provider.of<ServiceListNotifier>(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('services').orderBy(serviceProvider.sortByVariable, descending: serviceProvider.isSortByDesc).snapshots(),
+      stream: _repository.getServices(serviceProvider.sortByVariable, serviceProvider.isSortByDesc),
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
+        if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
         return _buildList(context, snapshot.data.documents);
@@ -185,13 +189,6 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     );
   }
 
-  void _createNewService() async {
-    ServiceDocument newItem = await Navigator.pushNamed<ServiceDocument>(context, ServiceForm.routeName);
-    if (newItem != null) {
-      newItem.color = newItem.color ?? Theme.of(context).primaryColor;
-      Firestore.instance.collection('services').add(newItem.toMap());
-    }
-  }
 
   void _deleteService(DocumentSnapshot service) async {
     Firestore.instance.collection('services')

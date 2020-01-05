@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import 'package:better_together_app/model/ServiceDocument.dart';
 import 'package:better_together_app/screens/service/service_form.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,6 +21,15 @@ class ServicePreset extends StatefulWidget {
 class _ServicePresetState extends State<ServicePreset> {
   final _PresetSearchDelegate _delegate = _PresetSearchDelegate();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  ServiceParticipantFirebase _repository;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = ServiceParticipantFirebase();
+  }
 
 
   @override
@@ -86,6 +95,7 @@ class _ServicePresetState extends State<ServicePreset> {
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
+            border: Border.all(color: backgroundColor, width: 2,),
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -136,8 +146,7 @@ class _ServicePresetState extends State<ServicePreset> {
         arguments: service
     );
     if (newItem != null) {
-      newItem.color = newItem.color ?? Theme.of(context).primaryColor;
-      var result = await Firestore.instance.collection('services').add(newItem.toMap());
+      _repository.createService(context, newItem);
       Navigator.pop(context);
     }
   }

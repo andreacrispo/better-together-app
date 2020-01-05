@@ -1,6 +1,7 @@
 
 import 'package:better_together_app/model/ParticipantDocument.dart';
 import 'package:better_together_app/screens/participant/participant_form.dart';
+import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,7 +19,7 @@ class ParticipantDetailWidget extends StatefulWidget {
 class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
 
   String appBarTitle = 'Better Together';
- // ServiceParticipantFirebase _repository;
+  ServiceParticipantFirebase _repository;
   ParticipantDocument currentParticipant;
   String currentServiceId;
 
@@ -26,7 +27,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
 
   @override
   void initState() {
-  //  _repository = ServiceParticipantFirebase();
+    _repository = ServiceParticipantFirebase();
     super.initState();
   }
 
@@ -43,7 +44,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-      stream: Firestore.instance.collection('participants').document(currentParticipant.participantId).snapshots(),
+      stream: _repository.getParticipantDetail(currentParticipant.participantId),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
@@ -173,11 +174,9 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
         ParticipantForm.routeName,
         arguments: currentParticipant
     );
-    if (edited != null) {
-      Firestore.instance.collection('participants')
-          .document(currentParticipant.reference.documentID)
-          .setData(edited.toMap());
-    }
+    if (edited != null)
+      _repository.editParticipant(currentParticipant.reference.documentID, edited);
+
   }
 
 
