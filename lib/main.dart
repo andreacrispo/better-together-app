@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/screens/login-signup/login_signup.dart';
 import 'package:better_together_app/screens/participant/participant_detail.dart';
 import 'package:better_together_app/screens/participant/participant_form.dart';
 import 'package:better_together_app/screens/participant/participant_list.dart';
@@ -7,6 +8,7 @@ import 'package:better_together_app/screens/service/service_form.dart';
 import 'package:better_together_app/screens/service/service_list.dart';
 import 'package:better_together_app/screens/service/service_participant_form.dart';
 import 'package:better_together_app/screens/service/service_preset.dart';
+import 'package:better_together_app/service/auth_service.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,19 +25,13 @@ Future<Null> main() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool darkThemeActive = sharedPreferences.getBool('darkThemeActive') ?? true;
 
-  // TODO: Add option to signin with email
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  await auth.signInAnonymously();
-  var user = await auth.currentUser();
-  print("USerID"); print(user.uid);
-  final ServiceParticipantFirebase _repository = ServiceParticipantFirebase();
-  _repository.uid = user.uid;
 
   runApp(
       MultiProvider(
         providers: [
           ChangeNotifierProvider<ThemeNotifier>(create: (_) => ThemeNotifier(darkThemeActive ? darkTheme : lightTheme)),
           ChangeNotifierProvider<ServiceListNotifier>(create: (_) => ServiceListNotifier()),
+          ChangeNotifierProvider<AuthService>(create: (_) => AuthService()),
         ],
         child: BetterTogetherApp()
       )
@@ -54,14 +50,37 @@ class BetterTogetherApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme:  themeNotifier.getTheme(),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => ServiceListWidget()
-       },
+   //   initialRoute: '/',
+   //   routes: {
+     //   '/': (context) => ServiceListWidget()
+   //    },
       onGenerateRoute: (settings) => Router.generate(settings),
+      home: FutureBuilder<FirebaseUser>(
+        future: Provider.of<AuthService>(context).getUser(),
+        builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.error != null) {
+              print("error");
+              return Text(snapshot.error.toString());
+            }
+            if(snapshot.hasData) {
+              final ServiceParticipantFirebase _repository = ServiceParticipantFirebase();
+              _repository.uid = snapshot.data.uid;
+
+
+               return ServiceListWidget();
+            }else {
+              return LoginSignUpWidget();
+            }
+          } else {
+            return LinearProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }
+
 
 
 abstract class Router {

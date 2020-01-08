@@ -3,6 +3,7 @@ import 'package:better_together_app/app_theme.dart';
 import 'package:better_together_app/main.dart';
 import 'package:better_together_app/screens/participant/participant_list.dart';
 import 'package:better_together_app/screens/service/service_list.dart';
+import 'package:better_together_app/service/auth_service.dart';
 import 'package:better_together_app/utils/custom_route_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -107,6 +108,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
     var prefs = await SharedPreferences.getInstance();
     bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final authUser = await Provider.of<AuthService>(context).getUser();
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc){
@@ -114,6 +116,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
             child: Wrap(
               children: <Widget>[
                 ListTile(
+                    leading: Icon(Icons.opacity),
                     title: Text(isDarkThemeActive ? 'Enable light mode' : 'Enable dark mode'),
                     onTap: ()  {
                       if(isDarkThemeActive) {
@@ -126,10 +129,23 @@ class BTBottomAppBarWidget extends StatelessWidget {
                       Navigator.pop(context);
                     }
                 ),
-
+                _logOut(context, authUser?.isAnonymous)
               ],
             ),
           );
+        }
+    );
+  }
+
+  _logOut(context, isAnonymous){
+    if(isAnonymous) return Container();
+
+    return  ListTile(
+        leading: Icon(Icons.lock_open),
+        title: Text("Logout"),
+        onTap: ()  {
+          Provider.of<AuthService>(context).logout();
+          Navigator.pop(context);
         }
     );
   }
