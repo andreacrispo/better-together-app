@@ -32,7 +32,8 @@ class ServiceParticipantFirebase {
   createService(context, ServiceDocument newService) async {
 
     newService.uid = this.uid;
-    newService.color = newService.color ?? Theme.of(context).primaryColor;
+    newService.color = newService.color ?? Colors.white60.value; // Theme.of(context).primaryColor.value;
+    newService.icon = newService.icon ?? DEFAULT_ICON;
     Firestore.instance.collection('services').add(newService.toMap());
   }
 

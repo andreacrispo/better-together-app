@@ -107,17 +107,17 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
       child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.circular(8.0),
+           borderRadius: BorderRadius.circular(4.0),
           ),
           child:
           ListTile(
             onTap: () => _openParticipantDetail(participant),
-            contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
             title: Text(
               "${participant.name}",
               style: TextStyle(color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 32),
+                  fontSize: 28),
             ),
             trailing: Text(
                 "Credit: ${participant.credit ?? 0} €",

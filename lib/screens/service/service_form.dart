@@ -39,6 +39,12 @@ class _ServiceFormState extends State<ServiceForm> {
       appBarTitle = "Edit Service";
     }
 
+    final iconField =  CircleAvatar(
+        backgroundColor: _service.icon != null ? Color(_service.color) : Colors.white60,
+        radius: 50,
+        child: Image.asset(_service.icon != null ? 'assets/${_service.icon}.png' :  'assets/$DEFAULT_ICON.png'),
+    );
+
     final nameField = TextFormField(
       initialValue: _service.name,
       decoration: getInputDecoration('Name'),
@@ -145,6 +151,7 @@ class _ServiceFormState extends State<ServiceForm> {
               shrinkWrap: true,
               padding: EdgeInsets.only(left: 16.0, right: 16.0),
               children: <Widget>[
+                  iconField,
                   nameField,
                   monthlyPriceField,
                   participantNumberField,

@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+
+final String DEFAULT_ICON = "default";
+
 Color hexToColor(String code, Color defaultColor) {
   try {
     return new Color(int.parse(code, radix: 16) + 0xFF000000);
