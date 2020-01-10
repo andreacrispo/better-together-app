@@ -6,14 +6,23 @@ import 'package:flutter/material.dart';
 
 final String DEFAULT_ICON = "default";
 
-Color hexToColor(String code, Color defaultColor) {
-  try {
-    return new Color(int.parse(code, radix: 16) + 0xFF000000);
-  } catch (Ex) {
-    print("hexToColor EX" + Ex.toString());
-    return defaultColor;
+class HexColor extends Color {
+
+  static int getColorFromHex(String hexColor) {
+    hexColor = hexColor.replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    if (hexColor.length == 8) {
+      return int.parse("0x$hexColor");
+    }
+
+    return int.parse("0xffffffff");
   }
+
+  HexColor(final String hexColor) : super(getColorFromHex(hexColor));
 }
+
 
 List<String> monthString = [
   '',
@@ -31,19 +40,6 @@ List<String> monthString = [
   'December'
 ];
 
-SnackBar createSnackBar(String text) {
-  return SnackBar(
-    content: Text(text),
-    /*
-     action: SnackBarAction(
-       label: 'Undo',
-       onPressed: () {
-         // Some code to undo the change.
-       },
-     ),
-     */
-  );
-}
 
 bool isNumeric(String s) {
   if (s == null) {

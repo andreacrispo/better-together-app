@@ -22,9 +22,10 @@ import 'model/ServiceDocument.dart';
 
 
 Future<Null> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool darkThemeActive = sharedPreferences.getBool('darkThemeActive') ?? true;
-
 
   runApp(
       MultiProvider(

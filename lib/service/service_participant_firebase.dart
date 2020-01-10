@@ -20,7 +20,6 @@ class ServiceParticipantFirebase {
   String uid;
 
   Stream<QuerySnapshot> getServices(String sortByVariable, bool isSortByDesc) {
-    print("USERID UID   " + this.uid);
     return Firestore.instance
                     .collection('services')
                     .where('uid', isEqualTo: this.uid)

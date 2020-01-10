@@ -471,7 +471,9 @@ final ThemeData darkTheme = ThemeData(
 ///****************************************/
 
 final ThemeData lightTheme = ThemeData(
-  primarySwatch: MaterialColor(4282008406,{50: Color( 0xfff0f1f5 )
+  /*
+  primarySwatch: MaterialColor(4282008406, {
+      50: Color( 0xfff0f1f5 )
     , 100: Color( 0xffe1e4ea )
     , 200: Color( 0xffc2c8d6 )
     , 300: Color( 0xffa4adc1 )
@@ -482,16 +484,17 @@ final ThemeData lightTheme = ThemeData(
     , 800: Color( 0xff292f3d )
     , 900: Color( 0xff15181e )
   }),
+  */
   brightness: Brightness.light,
-  primaryColor: Color( 0xff3a4356 ),
+  primaryColor: Color(0xFF313A44),
   primaryColorBrightness: Brightness.dark,
   primaryColorLight: Color( 0xffe1e4ea ),
   primaryColorDark: Color( 0xff3e475b ),
-  accentColor: Color( 0xff677798 ),
+  accentColor: Color( 0xFF3A5160 ),
   accentColorBrightness: Brightness.dark,
   canvasColor: Color( 0xfffafafa ),
   scaffoldBackgroundColor: Color( 0xfffafafa ),
-  bottomAppBarColor: Color( 0xffffffff ),
+  bottomAppBarColor: Color( 0xFF313A44 ),
   cardColor: Color( 0xffffffff ),
   dividerColor: Color( 0x1f000000 ),
   highlightColor: Color( 0x66bcbcbc ),
@@ -859,7 +862,7 @@ final ThemeData lightTheme = ThemeData(
     ),
   ),
   iconTheme: IconThemeData(
-    color: Color( 0xdd000000 ),
+    color: Color(0xffffffff),  // Color( 0xdd000000 ),
     opacity: 1,
     size: 24,
   ),
