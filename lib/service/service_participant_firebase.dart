@@ -116,6 +116,7 @@ class ServiceParticipantFirebase {
     return Firestore.instance
         .collection('participants')
         .where('uid', isEqualTo: this.uid)
+        .orderBy('name', descending: false)
         .snapshots();
   }
 

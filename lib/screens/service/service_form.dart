@@ -79,7 +79,7 @@ class _ServiceFormState extends State<ServiceForm> {
       margin: EdgeInsets.only(top: 10, bottom: 10),
       child: TextFormField(
         initialValue: _service.participantNumber != null ?_service.participantNumber.toString() : "",
-        decoration: getInputDecoration('Number of pariticipant'),
+        decoration: getInputDecoration('Number of participants'),
         keyboardType: TextInputType.numberWithOptions(),
         inputFormatters: <TextInputFormatter>[
           WhitelistingTextInputFormatter.digitsOnly
