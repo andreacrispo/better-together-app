@@ -12,6 +12,7 @@ import 'package:better_together_app/service/auth_service.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,6 +52,11 @@ class BetterTogetherApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme:  themeNotifier.getTheme(),
+      localizationsDelegates: [
+        FlutterI18nDelegate(),
+   //     GlobalMaterialLocalizations.delegate,
+    //    GlobalWidgetsLocalizations.delegate
+      ],
    //   initialRoute: '/',
    //   routes: {
      //   '/': (context) => ServiceListWidget()

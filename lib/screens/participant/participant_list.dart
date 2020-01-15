@@ -3,6 +3,7 @@ import 'package:better_together_app/model/ParticipantDocument.dart';
 import 'package:better_together_app/screens/participant/participant_detail.dart';
 import 'package:better_together_app/screens/participant/participant_form.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -120,7 +121,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
                   fontSize: 28),
             ),
             trailing: Text(
-                "Credit: ${participant.credit ?? 0} €",
+                "${i18n(context,'credit')}: ${participant.credit ?? 0} €",
                 style: TextStyle(color: Colors.white, fontSize: 16),
                 textAlign: TextAlign.right
             ),

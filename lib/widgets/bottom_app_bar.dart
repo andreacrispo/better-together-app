@@ -5,6 +5,7 @@ import 'package:better_together_app/screens/participant/participant_list.dart';
 import 'package:better_together_app/screens/service/service_list.dart';
 import 'package:better_together_app/service/auth_service.dart';
 import 'package:better_together_app/utils/custom_route_animation.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,15 +87,15 @@ class BTBottomAppBarWidget extends StatelessWidget {
             child: Wrap(
               children: <Widget>[
                 ListTile(
-                    title: Text('Name'),
+                    title:Text( i18n(context, "name")),
                     onTap: () { serviceProvider.setSortByVariable("name", false); Navigator.pop(context); }
                 ),
                 ListTile(
-                  title: Text('Price'),
+                  title: Text( i18n(context, "price")),
                   onTap: () { serviceProvider.setSortByVariable("price", false); Navigator.pop(context); }
                 ),
                 ListTile(
-                  title: Text('Number of participants'),
+                  title: Text( i18n(context, "number_of_participants")),
                   onTap: () { serviceProvider.setSortByVariable("participantNumber", false); Navigator.pop(context); }
                 )
               ],
@@ -117,7 +118,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
               children: <Widget>[
                 ListTile(
                     leading: Icon(Icons.opacity),
-                    title: Text(isDarkThemeActive ? 'Enable light theme' : 'Enable dark theme'),
+                    title: Text(isDarkThemeActive ? i18n(context, "enable_light_theme") : i18n(context, "enable_dark_theme")),
                     onTap: ()  {
                       if(isDarkThemeActive) {
                         themeNotifier.setTheme(lightTheme);
@@ -138,7 +139,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
   }
 
   _logOut(context, isAnonymous){
-    if(isAnonymous) return Container();
+   if(isAnonymous) return Container();
 
     return  ListTile(
         leading: Icon(Icons.lock_open),

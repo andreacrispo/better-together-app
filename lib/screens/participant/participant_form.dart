@@ -19,18 +19,18 @@ class _ParticipantFormState extends State<ParticipantForm> {
   @override
   Widget build(BuildContext context) {
 
-    String appBarTitle = "Add Participant";
+    String appBarTitle = "${i18n(context, 'add')} ${i18n(context, 'participant')}";
     final ParticipantDocument passArgs = ModalRoute.of(context).settings.arguments;
     if(passArgs != null) {
       _participant = passArgs;
-      appBarTitle = "Edit Participant";
+      appBarTitle = "${i18n(context, 'edit')} ${i18n(context, 'participant')}";
     }
 
     final nameField = TextFormField(
       initialValue: _participant.name ?? "",
-      decoration: getInputDecoration('Name'),
+      decoration: getInputDecoration(i18n(context, 'name')),
       validator: (value) {
-        if (value.isEmpty) return "Mandatory field";
+        if (value.isEmpty) return i18n(context, "mandatory_field");
         return null;
       },
       onSaved: (value) => _participant.name = value,
@@ -44,10 +44,10 @@ class _ParticipantFormState extends State<ParticipantForm> {
 
     final creditField = TextFormField(
       initialValue: _participant.credit != null ? _participant.credit.toString() : "",
-      decoration: getInputDecoration('Credit'),
+      decoration: getInputDecoration(i18n(context, 'credit')),
       validator: (value) {
-        if (value.isEmpty) return "Mandatory field";
-        if(!isNumeric(value)) return "Only numeric value";
+        if (value.isEmpty) return i18n(context, "mandatory_field");
+        if(!isNumeric(value)) return i18n(context,"only_numeric_value");
         return null;
       },
       onSaved: (value) {

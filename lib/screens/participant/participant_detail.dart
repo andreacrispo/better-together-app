@@ -2,6 +2,7 @@
 import 'package:better_together_app/model/ParticipantDocument.dart';
 import 'package:better_together_app/screens/participant/participant_form.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -114,7 +115,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                      )
                   ),
                   subtitle: Text(
-                    "Credit:  ${currentParticipant.credit.toString()}",
+                    "${i18n(context,'credit')}:  ${currentParticipant.credit.toString()}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -141,7 +142,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
          ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return  ListTile(
-                title: Text("Credit History"),
+                title: Text(i18n(context,'credit_history')),
               );
           },
           body: ListView.builder(
@@ -150,7 +151,13 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
             itemCount: currentParticipant.creditHistory.length,
             itemBuilder: (BuildContext context, int index) {
               String key = currentParticipant.creditHistory.keys.elementAt(index);
-              String dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(key));
+              String dateFormatted = key;
+              try {
+                // TODO: CHECK 
+                 dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(key));
+              }catch(e) {
+                print(e);
+              }
               return  Column(
                 children: <Widget>[
                   ListTile(

@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:better_together_app/model/ServiceDocument.dart';
 import 'package:better_together_app/screens/service/service_form.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,7 +38,7 @@ class _ServicePresetState extends State<ServicePreset> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Presets'),
+        title: Text(i18n(context,'service')),
         actions: <Widget>[
           /*
           IconButton(

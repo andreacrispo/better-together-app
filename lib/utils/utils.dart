@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 
 
 final String DEFAULT_ICON = "default";
@@ -39,6 +40,10 @@ List<String> monthString = [
   'November',
   'December'
 ];
+
+
+String i18n(context, placeholder) => FlutterI18n.translate(context, placeholder);
+
 
 
 bool isNumeric(String s) {

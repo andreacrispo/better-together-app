@@ -117,7 +117,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               actions: <Widget>[
                 IconButton(
                   icon: new Icon(Icons.edit),
-                  tooltip: 'Edit',
+                  tooltip: i18n(context, 'edit'),
                   onPressed: () => _editService(currentService)
                 ),
               ],
@@ -138,6 +138,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     snapshot.forEach((DocumentSnapshot docSnap) {
       participants.add(ParticipantDocument.fromSnapshot(docSnap));
     });
+
     return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -208,7 +209,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
           children: <Widget>[
             Container(
               child: RaisedButton(
-                child: Text("Copy participants from previous month"),
+                child: Text(i18n(context,'copy_participants_previous_month') ),
                 onPressed: () => copyParticipantsFromPreviousMonth(context),
               ),
             ),
@@ -219,16 +220,16 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: DataTable(
-        columnSpacing: 30,
+        columnSpacing: 10,
         sortAscending: sort,
         sortColumnIndex: 1,
         columns: [
           DataColumn(
-            label: Text("Name"),
+            label: Text(i18n(context,'name')),
             numeric: false,
           ),
           DataColumn(
-              label: Text("Has paid?"),
+              label: Text(i18n(context,'has_paid')),
               numeric: false,
               onSort: (columnIndex, ascending) {
                 setState(() {
@@ -238,11 +239,11 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               }
           ),
           DataColumn(
-            label: Text("Price Paid"),
+            label: Text(i18n(context,'price_paid')),
             numeric: true,
           ),
           DataColumn(
-            label: Text(""),
+            label: const Text(""),
           ),
         ],
         rows: participants
@@ -255,8 +256,6 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                         HasPaidWidget(hasPaid: participant.hasPaid,
                             callback: (updatePaid) {
                               participant.hasPaid = updatePaid;
-                              print("hasPaid");
-                              print(this.currentService);
                               if (participant.hasPaid) {
                                 participant.pricePaid =
                                 participant.pricePaid != null
@@ -280,11 +279,11 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                         [
                           PopupMenuItem(
                             value: 1,
-                            child: Text("Edit"),
+                            child: Text(i18n(context,'edit')),
                           ),
                           PopupMenuItem(
                             value: 2,
-                            child: Text("Delete"),
+                            child: Text(i18n(context,'delete')),
                           ),
                         ],
                         onSelected: (value) {
@@ -308,7 +307,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       if (ascending) {
         users.sort((a, b) => a.hasPaid == b.hasPaid ? 1 : -1);
       } else {
-        users.sort((a, b) => b.hasPaid == a.hasPaid ? 1 : -1);
+        users.sort((a, b) => a.hasPaid == b.hasPaid ? -1 : 1);
       }
     }
   }
@@ -318,6 +317,9 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         context,
         ServiceParticipantForm.routeName
     );
+    if(result == null)
+      return;
+
     ParticipantDocument newParticipant = result[0];
     bool useCredit = result[1];
 

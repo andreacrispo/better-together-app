@@ -37,7 +37,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
   @override
   Widget build(BuildContext context) {
-    String appBarTitle = "Add Participant to Service";
+    String appBarTitle = i18n(context,'add_participant_to_service');
     final ParticipantDocument passArgs = ModalRoute
         .of(context)
         .settings
@@ -45,7 +45,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     if(passArgs != null) {
       _participant = passArgs;
       _participantId = passArgs.participantId;
-      appBarTitle = "Edit Participant from Service";
+      appBarTitle = i18n(context,'edit_participant_from_service');
     }
 
 
@@ -53,7 +53,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       return  Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-              Text("Select participant"),
+          Text( i18n(context, 'select_participant')  ),
              // Icon(Icons.add)
               IconButton(
                 icon: Icon(Icons.add),
@@ -73,7 +73,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
             return Center(
               child: DropdownButton(
-                hint: Text( "Participants"),
+                hint: Text( i18n(context, 'participant')  ),
                 isExpanded: true,
                 value:  _participantId != null ? snapshot.data.documents.firstWhere((doc) => doc.documentID == _participantId) : null,
                 onChanged: (DocumentSnapshot newValue) {
@@ -100,7 +100,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text("Has paid"),
+          Text(i18n(context, "has_paid")),
           Switch(
             value: _participant.hasPaid ?? false,
             onChanged: (value) {
@@ -120,9 +120,9 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text("Credit: "),
+          Text(i18n(context,"credit") + ": "),
           Text(_participant.credit != null ? _participant.credit.toString() : "0"),
-          Text("Use money from credit?"),
+          Text(i18n(context,'money_from_credit')),
           Switch(
             value: _useCredit,
             onChanged: (value) {
@@ -140,11 +140,11 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
     final pricePaidField = TextFormField(
         initialValue: _participant.pricePaid != null ?  _participant.pricePaid.toString() : "",
-        decoration:  getInputDecoration('Price Paid'),
+        decoration:  getInputDecoration(i18n(context, 'price_paid')),
         keyboardType: TextInputType.number,
         validator: (value) {
-          if (value.isEmpty) return "Mandatory field";
-          if(!isNumeric(value)) return "Only numeric value";
+          if (value.isEmpty) return i18n(context, "mandatory_field");
+          if(!isNumeric(value)) return i18n(context,"only_numeric_value");
           return null;
         },
         onSaved: (value) {

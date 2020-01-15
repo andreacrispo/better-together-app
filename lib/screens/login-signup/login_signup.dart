@@ -1,4 +1,5 @@
 import 'package:better_together_app/service/auth_service.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
 
     final _passwordField = TextFormField(
         validator: (value) {
-          if (value.isEmpty) return "Mandatory field";
+          if (value.isEmpty) return i18n(context, 'mandatory_field');
           return null;
         },
         onSaved: (value) => _password = value,
@@ -48,44 +49,48 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
     Widget _buildPasswordConfirmField() {
       return TextFormField(
         decoration: InputDecoration(
-            labelText: 'Confirm Password',
+            labelText: i18n(context,'confirm_password'),
             filled: true,
             errorStyle: TextStyle(color: Theme.of(context).errorColor)
         ),
         obscureText: true,
         validator: (value) {
-          if (value.isEmpty) return "Mandatory field";
+          if (value.isEmpty) return i18n(context, 'mandatory_field');
           if(value != _password) return "Password not match";
           return null;
         },
       );
     }
 
-    final loginButton =  RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Text(  _authMode == AuthMode.Login
-          ? "Login"
-          : "Signup"
-      ),
-      onPressed: () async {
+    final loginButton = SizedBox(
+      width: MediaQuery.of(context).size.width - 150, // double.infinity,
+      child:
+        RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(  _authMode == AuthMode.Login
+              ? i18n(context,"login")
+              : i18n(context,"signup")
+          ),
+          onPressed: () async {
 
-        // save the fields..
-        final form = _formKey.currentState;
-        form.save();
+            // save the fields..
+            final form = _formKey.currentState;
+            form.save();
 
-        if (form.validate()) {
-          _loginOrSignup();
-        }
-      },
+            if (form.validate()) {
+              _loginOrSignup();
+            }
+          },
+        )
     );
 
     final switchBetween = FlatButton(
       child: Text(
         _authMode == AuthMode.Login
-            ? "Doesn't have an account? Create new Account"
-            : 'Already have an account? Login',
+            ? i18n(context, "signup_phrase")
+            : i18n(context, "login_phrase"),
         style: TextStyle(color: Colors.white),
       ),
       onPressed: ()  {
@@ -97,7 +102,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
 
     final skipLogin = FlatButton(
       child: Text(
-        'Sign in anonymously',
+        i18n(context,   'sign_in_anonymously'),
         style: TextStyle(color: Colors.white),
       ),
       onPressed: () async {
@@ -118,7 +123,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
                     SizedBox(height: 60.0),
                     TextFormField(
                         validator: (value) {
-                          if (value.isEmpty) return "Mandatory field";
+                          if (value.isEmpty) return i18n(context, 'mandatory_field');
                           return null;
                         },
                         onSaved: (value) => _email = value,
@@ -149,7 +154,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
           content: Text(_message),
           actions: <Widget>[
             FlatButton(
-                child: Text('Cancel'),
+                child: Text(i18n(context,'cancel')),
                 onPressed: () {
                   Navigator.of(context).pop();
                 })

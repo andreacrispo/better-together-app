@@ -32,11 +32,11 @@ class _ServiceFormState extends State<ServiceForm> {
   @override
   Widget build(BuildContext context) {
 
-    String appBarTitle = "Add Service";
+    String appBarTitle = i18n(context, "add") + " " + i18n(context, "service");
     final ServiceDocument passArgs = ModalRoute.of(context).settings.arguments;
     if(passArgs != null) {
       _service = passArgs;
-      appBarTitle = "Edit Service";
+      appBarTitle = i18n(context, "edit")  + " " + i18n(context, "service");
     }
 
     final iconField =  CircleAvatar(
@@ -47,9 +47,9 @@ class _ServiceFormState extends State<ServiceForm> {
 
     final nameField = TextFormField(
       initialValue: _service.name,
-      decoration: getInputDecoration('Name'),
+      decoration: getInputDecoration(i18n(context, "name")),
       validator: (value) {
-        if (value.isEmpty) return "Mandatory field";
+        if (value.isEmpty) return i18n(context, "mandatory_field");
         return null;
       },
       onSaved: (value) => _service.name = value,
@@ -59,14 +59,14 @@ class _ServiceFormState extends State<ServiceForm> {
         margin: EdgeInsets.only(top: 10),
         child: TextFormField(
           initialValue: _service.price != null ? _service.price.toString() : "",
-          decoration: getInputDecoration( 'Price'),
+          decoration: getInputDecoration(i18n(context, "price")),
           keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
           inputFormatters: <TextInputFormatter>[
             //   WhitelistingTextInputFormatter.digitsOnly
           ],
           validator: (value) {
-            if (value.isEmpty) return "Mandatory field";
-            if(!isNumeric(value)) return "Only numeric value";
+            if (value.isEmpty) return i18n(context, "mandatory_field");
+            if(!isNumeric(value)) return i18n(context,"only_numeric_value");
             return null;
           },
           onSaved: (value) => _service.price = double.parse(value)
@@ -79,14 +79,14 @@ class _ServiceFormState extends State<ServiceForm> {
       margin: EdgeInsets.only(top: 10, bottom: 10),
       child: TextFormField(
         initialValue: _service.participantNumber != null ?_service.participantNumber.toString() : "",
-        decoration: getInputDecoration('Number of participants'),
+        decoration: getInputDecoration(i18n(context, 'number_of_participants')),
         keyboardType: TextInputType.numberWithOptions(),
         inputFormatters: <TextInputFormatter>[
           WhitelistingTextInputFormatter.digitsOnly
         ],
         validator: (value) {
-          if (value.isEmpty) return "Mandatory field";
-          if(!isNumeric(value)) return "Only numeric value";
+          if (value.isEmpty) return i18n(context, "mandatory_field");
+          if(!isNumeric(value)) return i18n(context,"only_numeric_value");
           return null;
         },
         onSaved: (value) => _service.participantNumber = int.parse(value)
@@ -98,16 +98,14 @@ class _ServiceFormState extends State<ServiceForm> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         const SizedBox(height: 10.0),
-        Text(
-          "Service Color",
-         ),
+        Text(i18n(context, 'color')),
         const SizedBox(height: 10.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             OutlineButton(
               onPressed: _openColorPicker,
-              child: const Text('Choose color'),
+              child: Text(i18n(context, "choose_color")),
             ),
         //    const SizedBox(height: 16.0),
             CircleAvatar(
@@ -166,7 +164,7 @@ class _ServiceFormState extends State<ServiceForm> {
 
   void _openColorPicker() async {
     _openDialog(
-      "Choose one color",
+      i18n(context, "choose_color"),
       MaterialColorPicker(
         allowShades: false,
         onMainColorChange: (color) =>
@@ -185,11 +183,11 @@ class _ServiceFormState extends State<ServiceForm> {
           content: content,
           actions: [
             FlatButton(
-              child: Text('Cancel'),
+              child: Text(i18n(context, 'cancel')),
               onPressed: Navigator.of(context).pop,
             ),
             FlatButton(
-              child: Text('Select'),
+              child: Text(i18n(context, 'select')),
               onPressed: () => Navigator.of(context).pop()
             ),
           ],

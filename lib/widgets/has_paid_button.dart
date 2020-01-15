@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class HasPaidWidget extends StatelessWidget {
@@ -16,7 +17,7 @@ class HasPaidWidget extends StatelessWidget {
         callback(!hasPaid);
       },
       child: Text(
-        hasPaid ? 'Paid' : 'NOT Paid',
+        hasPaid ? i18n(context, 'paid') : i18n(context, 'not_paid'),
         style: TextStyle(fontSize: 10.0),
       ),
     );
