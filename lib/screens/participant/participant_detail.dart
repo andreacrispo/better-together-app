@@ -6,6 +6,7 @@ import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class ParticipantDetailWidget extends StatefulWidget {
@@ -132,6 +133,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
 
 
   _buildCreditHistorySection() {
+    var sortedHistory =  currentParticipant.creditHistory.keys.toList()..sort((a,b) => b.compareTo(a));
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
@@ -148,16 +150,10 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
           body: ListView.builder(
             padding: EdgeInsets.all(2),
             shrinkWrap: true,
-            itemCount: currentParticipant.creditHistory.length,
+            itemCount: sortedHistory.length,
             itemBuilder: (BuildContext context, int index) {
-              String key = currentParticipant.creditHistory.keys.elementAt(index);
-              String dateFormatted = key;
-              try {
-                // TODO: CHECK 
-                 dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(key));
-              }catch(e) {
-                print(e);
-              }
+              String key = sortedHistory.elementAt(index);
+              String dateFormatted = _dateFormated(key);
               return  Column(
                 children: <Widget>[
                   ListTile(
@@ -184,6 +180,18 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
     if (edited != null)
       _repository.editParticipant(currentParticipant.reference.documentID, edited);
 
+  }
+
+
+  _dateFormated(dateAsString) {
+    String dateFormatted = dateAsString;
+      try {
+        dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(dateAsString));
+      } catch(e) {
+        initializeDateFormatting();
+        dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(dateAsString));
+      }
+      return dateFormatted;
   }
 
 
