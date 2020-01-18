@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:better_together_app/app_theme.dart';
 import 'package:better_together_app/model/ServiceDocument.dart';
 import 'package:better_together_app/screens/service/service_form.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
@@ -20,10 +21,12 @@ class ServicePreset extends StatefulWidget {
 }
 
 class _ServicePresetState extends State<ServicePreset> {
-  final _PresetSearchDelegate _delegate = _PresetSearchDelegate();
+ // final _PresetSearchDelegate _delegate = _PresetSearchDelegate();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   ServiceParticipantFirebase _repository;
+
+  List<ServiceDocument> _servicePresetList;
 
 
   @override
@@ -40,18 +43,19 @@ class _ServicePresetState extends State<ServicePreset> {
       appBar: AppBar(
         title: Text(i18n(context,'service')),
         actions: <Widget>[
-          /*
+
           IconButton(
             tooltip: 'Search',
             icon: const Icon(Icons.search),
             onPressed: () async {
               final selected = await showSearch(
                 context: context,
-                delegate: _delegate,
+                delegate: _PresetSearchDelegate(_servicePresetList) // _delegate,
               );
+              _addServicePreset(selected);
             },
           ),
-          */
+
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => _addServicePreset(null),
@@ -70,6 +74,7 @@ class _ServicePresetState extends State<ServicePreset> {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
 
+        _servicePresetList = snapshot.data;
         return _buildList(context, snapshot.data);
       },
     );
@@ -130,9 +135,8 @@ class _ServicePresetState extends State<ServicePreset> {
   Future<List<ServiceDocument>> _loadPresetService() async {
     String jsonString = await rootBundle.loadString('assets/data/service_preset.json');
     var parsedJson = jsonDecode(jsonString);
-    print(parsedJson);
     assert(parsedJson is List);
-    List<ServiceDocument> result = List(); //= parsedJson.map((item) =>  ServiceDocument.fromMap(item)).toList();
+    List<ServiceDocument> result = List();
     for(var item in parsedJson) {
       result.add(ServiceDocument.fromMap(item));
     }
@@ -156,6 +160,20 @@ class _ServicePresetState extends State<ServicePreset> {
 
 
 class _PresetSearchDelegate extends SearchDelegate {
+
+  List<ServiceDocument> serviceList;
+
+  _PresetSearchDelegate(this.serviceList);
+
+  @override
+  String get searchFieldLabel => super.searchFieldLabel;
+
+
+
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    return darkTheme;
+  }
 
   @override
   Widget buildLeading(BuildContext context) {
@@ -185,18 +203,67 @@ class _PresetSearchDelegate extends SearchDelegate {
       ),
     ];
   }
-
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    return Container();
+    final List<ServiceDocument> suggestionList = query.isEmpty
+        ? []
+        : serviceList.where((p) => p.name.contains(query)).toList();
+
+    return null;
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) =>
+          ListTile(
+            leading: Icon(Icons.add),
+            onTap: () =>  showResults(context), //close(context, suggestionList[index]),
+            title: RichText(
+                text:
+                TextSpan(
+                    text: suggestionList[index].name.substring(0, query.length),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 32),
+                    children: [
+                      TextSpan(
+                          text: suggestionList[index].name.substring(query.length),
+                          style: TextStyle(color: Colors.white)
+                      )
+                    ]
+                )
+            ),
+          ),
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
-    return Container();
+    final List<ServiceDocument> suggestionList = query.isEmpty
+        ? []
+        : serviceList.where((ServiceDocument p) => p.name.toLowerCase().contains(query.toLowerCase())).toList();
+
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) =>
+          ListTile(
+            trailing: Icon(Icons.add),
+            onTap: () => this.close(context, suggestionList[index]), // showResults(context),
+            title: RichText(
+                text:
+                  TextSpan(
+                    text: suggestionList[index].name.substring(0, query.length),
+                    style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold,fontSize: 32),
+                    children: [
+                      TextSpan(
+                        text: suggestionList[index].name.substring(query.length),
+                        style: TextStyle(color: Colors.white)
+                      )
+                    ]
+                  )
+            ),
+          ),
+    );
   }
+
+
+
 
 }
 

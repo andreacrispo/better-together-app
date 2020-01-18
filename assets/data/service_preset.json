@@ -7,6 +7,7 @@
     "icon": "amazon",
     "color": 4294951175
   },
+
   {
     "name": "Netflix",
     "price": 11,
@@ -14,6 +15,7 @@
     "color": 4294198070
 
   },
+
   {
     "name": "Spotify",
     "price": 15,
