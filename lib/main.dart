@@ -57,10 +57,6 @@ class BetterTogetherApp extends StatelessWidget {
    //     GlobalMaterialLocalizations.delegate,
     //    GlobalWidgetsLocalizations.delegate
       ],
-   //   initialRoute: '/',
-   //   routes: {
-     //   '/': (context) => ServiceListWidget()
-   //    },
       onGenerateRoute: (settings) => Router.generate(settings),
       home: FutureBuilder<FirebaseUser>(
         future: Provider.of<AuthService>(context).getUser(),

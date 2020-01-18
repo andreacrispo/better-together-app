@@ -106,6 +106,9 @@ class BTBottomAppBarWidget extends StatelessWidget {
   }
 
   _showMoreMenu(BuildContext context) async {
+    var prefs = await SharedPreferences.getInstance();
+    bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
     final authUser = await Provider.of<AuthService>(context).getUser();
     showModalBottomSheet(
         context: context,
@@ -113,31 +116,24 @@ class BTBottomAppBarWidget extends StatelessWidget {
           return Container(
             child: Wrap(
               children: <Widget>[
-                _switchTheme(context),
+                ListTile(
+                    leading: Icon(Icons.opacity),
+                    title: Text(isDarkThemeActive ? i18n(context, "enable_light_theme") : i18n(context, "enable_dark_theme")),
+                    onTap: ()  {
+                      if(isDarkThemeActive) {
+                        themeNotifier.setTheme(lightTheme);
+                        prefs.setBool('darkThemeActive', false);
+                      }else {
+                        themeNotifier.setTheme(darkTheme);
+                        prefs.setBool('darkThemeActive', true);
+                      }
+                      Navigator.pop(context);
+                    }
+                ),
                 _logOut(context, authUser?.isAnonymous)
               ],
             ),
           );
-        }
-    );
-  }
-
-  _switchTheme(context) async {
-    var prefs = await SharedPreferences.getInstance();
-    bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
-    ListTile(
-        leading: Icon(Icons.opacity),
-        title: Text(isDarkThemeActive ? i18n(context, "enable_light_theme") : i18n(context, "enable_dark_theme")),
-        onTap: ()  {
-          if(isDarkThemeActive) {
-            themeNotifier.setTheme(lightTheme);
-            prefs.setBool('darkThemeActive', false);
-          }else {
-            themeNotifier.setTheme(darkTheme);
-            prefs.setBool('darkThemeActive', true);
-          }
-          Navigator.pop(context);
         }
     );
   }

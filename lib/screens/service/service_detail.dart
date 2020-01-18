@@ -12,6 +12,7 @@ import 'package:better_together_app/widgets/has_paid_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:swipedetector/swipedetector.dart';
 
@@ -139,6 +140,9 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       participants.add(ParticipantDocument.fromSnapshot(docSnap));
     });
 
+    Locale locale = FlutterI18n.currentLocale(context);
+    String currentMonth = localeMonthString[locale.languageCode][passArgs.monthPaid];
+
     return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -151,14 +155,13 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             children: <Widget>[
               IconButton(
                   icon: Icon(Icons.arrow_back),
-                  onPressed: () =>
-                      previousMonth(passArgs.monthPaid, passArgs.yearPaid)
+                  onPressed: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid)
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Text(
-                    "${monthString[passArgs.monthPaid]} ${passArgs.yearPaid}",
+                    "$currentMonth ${passArgs.yearPaid}",
                     style: TextStyle(fontSize: 32),
                   ),
                   IconButton(
