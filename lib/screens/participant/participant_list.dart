@@ -100,8 +100,11 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final participant = ParticipantDocument.fromSnapshot(data);
+    final ParticipantDocument participant = ParticipantDocument.fromSnapshot(data);
 
+    String currencySymbol = participant.currencyCode != null
+        ? currenciesMap[participant.currencyCode][0]
+        : "€";
     return Card(
       key: ValueKey(participant.name),
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -121,7 +124,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
                   fontSize: 28),
             ),
             trailing: Text(
-                "${i18n(context,'credit')}: ${participant.credit ?? 0} €",
+                "${i18n(context,'credit')}: ${participant.credit ?? 0} $currencySymbol",
                 style: TextStyle(color: Colors.white, fontSize: 16),
                 textAlign: TextAlign.right
             ),

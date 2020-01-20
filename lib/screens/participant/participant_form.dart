@@ -59,6 +59,26 @@ class _ParticipantFormState extends State<ParticipantForm> {
       }
     );
 
+    final currenciesField = Container(
+      child:DropdownButton(
+        hint: Text( i18n(context, 'currency')  ),
+        isExpanded: true,
+        value: _participant.currencyCode ??  null,
+        onChanged: (currencySelected) {
+          setState(() {
+            _participant.currencyCode = currencySelected;
+          });
+        },
+        items: currenciesMap.keys.map((currencyCode) {
+          String currencyName = currenciesMap[currencyCode][1];
+          return DropdownMenuItem(
+            value: currencyCode,
+            child: Text(currencyName),
+          );
+        }).toList(),
+      ),
+    );
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -93,7 +113,8 @@ class _ParticipantFormState extends State<ParticipantForm> {
               children: <Widget>[
                   nameField,
                   emailField,
-                  creditField
+                  creditField,
+                  currenciesField
                 ],
             ),
           ),

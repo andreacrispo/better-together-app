@@ -55,7 +55,7 @@ class _ServiceFormState extends State<ServiceForm> {
       onSaved: (value) => _service.name = value,
     );
 
-    final monthlyPriceField = Container(
+    final priceField = Container(
         margin: EdgeInsets.only(top: 10),
         child: TextFormField(
           initialValue: _service.price != null ? _service.price.toString() : "",
@@ -93,6 +93,26 @@ class _ServiceFormState extends State<ServiceForm> {
       )
     );
 
+
+    final currenciesField = Container(
+      child:DropdownButton(
+        hint: Text( i18n(context, 'currency')  ),
+        isExpanded: true,
+        value:_service.currencyCode ??  null,
+        onChanged: (currencySelected) {
+          setState(() {
+            _service.currencyCode = currencySelected;
+          });
+        },
+        items: currenciesMap.keys.map((currencyCode) {
+          String currencyName = currenciesMap[currencyCode][1];
+          return DropdownMenuItem(
+            value: currencyCode,
+            child: Text(currencyName),
+          );
+        }).toList(),
+      ),
+    );
 
     final colorPickerField = Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -151,8 +171,9 @@ class _ServiceFormState extends State<ServiceForm> {
               children: <Widget>[
                   iconField,
                   nameField,
-                  monthlyPriceField,
+                  priceField,
                   participantNumberField,
+                  currenciesField,
                   colorPickerField,
                 ],
             ),

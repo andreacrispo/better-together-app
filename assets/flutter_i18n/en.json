@@ -33,6 +33,8 @@
   "login_phrase":  "Already have an account? Login",
   "signup_phrase": "Doesn't have an account? Create new Account",
   "cancel": "Cancel",
-  "select": "Select"
+  "select": "Select",
+  "currencies": "currencies",
+  "currency": "currency"
 
 }

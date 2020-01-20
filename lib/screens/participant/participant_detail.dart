@@ -80,6 +80,9 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   }
 
    _buildSummaryCard(BuildContext context) {
+     String currencySymbol = currentParticipant.currencyCode != null
+         ? currenciesMap[currentParticipant.currencyCode][0]
+         : "€";
     return Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -116,7 +119,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                      )
                   ),
                   subtitle: Text(
-                    "${i18n(context,'credit')}:  ${currentParticipant.credit.toString()}",
+                    "${i18n(context,'credit')}:  ${currentParticipant.credit} $currencySymbol",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,

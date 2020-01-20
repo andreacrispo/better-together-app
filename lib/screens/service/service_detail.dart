@@ -82,7 +82,10 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
-       return CustomScrollView(
+        String currencySymbol = currentService.currencyCode != null
+            ? currenciesMap[currentService.currencyCode][0]
+            : "€";
+        return CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
               pinned: true,
@@ -106,7 +109,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                         )
                     ),
                     Center(
-                        child: Text(currentService.price.toString(),
+                        child: Text("${currentService.price} $currencySymbol",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 16.0)
                         )

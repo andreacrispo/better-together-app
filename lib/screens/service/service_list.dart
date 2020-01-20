@@ -3,6 +3,7 @@ import 'package:better_together_app/model/ServiceDocument.dart';
 import 'package:better_together_app/screens/service/service_detail.dart';
 import 'package:better_together_app/screens/service/service_preset.dart';
 import 'package:better_together_app/service/service_participant_firebase.dart';
+import 'package:better_together_app/utils/utils.dart';
 import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -69,7 +70,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
       appBar: topAppBar,
       body: _buildBody(context),
         floatingActionButton: FloatingActionButton(
-            onPressed: () => Navigator.pushNamed(context, ServicePreset.routeName),  // _createNewService(),
+            onPressed: () => Navigator.pushNamed(context, ServicePreset.routeName),
             child: Icon(Icons.add)
         ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -130,12 +131,11 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final service = ServiceDocument.fromSnapshot(data);
 
-    Color backgroundColor = service.color != null
-        ? Color(service.color)
-        : Theme.of(context).primaryColor;
+    Color backgroundColor = service.color != null ? Color(service.color) : Theme.of(context).primaryColor;
+    String currencySymbol = service.currencyCode != null ? currenciesMap[service.currencyCode][0] : "€";
     return Card(
       key: ValueKey(service.name),
-      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: backgroundColor, width: 2,),
@@ -155,9 +155,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
               );
             },
             contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-
             leading: _iconLeading(service, backgroundColor),
-
             title: Text(
               "${service.name}",
               style: TextStyle(color: Colors.white,
@@ -165,7 +163,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
                   fontSize: 28),
             ),
             trailing: Text(
-                "${service.price} €",
+                "${service.price} $currencySymbol",
                 style: TextStyle(color: Colors.white, fontSize: 14),
                 textAlign: TextAlign.right
             ),

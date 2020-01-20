@@ -8,6 +8,7 @@ class ParticipantDocument {
   bool hasPaid;
   num pricePaid;
   Timestamp datePaid;
+  String currencyCode;
   Map<dynamic, dynamic> creditHistory;
   DocumentReference reference;
 
@@ -18,6 +19,7 @@ class ParticipantDocument {
       this.email,
       this.hasPaid,
       this.pricePaid,
+      this.currencyCode,
       this.uid
   }) {
     this.hasPaid = false;
@@ -33,6 +35,7 @@ class ParticipantDocument {
         hasPaid = map['hasPaid'],
         pricePaid = map['pricePaid'],
         datePaid = map['datePaid'],
+        currencyCode = map['currencyCode'],
         creditHistory  = map['creditHistory'],
         uid  = map['uid']
   ;
@@ -48,6 +51,7 @@ class ParticipantDocument {
         "hasPaid": hasPaid,
         "pricePaid": pricePaid,
         "datePaid": datePaid,
+        "currencyCode": currencyCode,
         "creditHistory": creditHistory,
         "uid": uid
       };

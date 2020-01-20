@@ -10,6 +10,7 @@ class ServiceDocument {
   num price;
   int participantNumber;
   String icon; // To be define better
+  String currencyCode;
   List<ParticipantDocument> participants;
   DocumentReference reference;
 
@@ -21,6 +22,8 @@ class ServiceDocument {
       this.description,
       this.color,
       this.price,
+      this.icon,
+      this.currencyCode,
       this.participantNumber,
       this.uid
   });
@@ -33,6 +36,7 @@ class ServiceDocument {
         color = map['color'],
         price = map['price'],
         icon  = map['icon'],
+        currencyCode = map['currencyCode'],
         participantNumber = map['participantNumber'],
         participants = map['participants'],
         uid = map['uid']
@@ -48,6 +52,7 @@ class ServiceDocument {
         "color": color,
         "price": price,
         "icon": icon,
+        "currencyCode": currencyCode,
         "participantNumber": participantNumber,
         "uid": uid,
   };

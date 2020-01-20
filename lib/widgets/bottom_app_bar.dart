@@ -130,9 +130,44 @@ class BTBottomAppBarWidget extends StatelessWidget {
                       Navigator.pop(context);
                     }
                 ),
+                /*
+                ListTile(
+                  leading: Icon(Icons.adb),
+                  title: Text("Currency"),
+                  onTap: () {
+                    _currenciesBottomSheet(context);
+                  },
+                ),
+                */
                 _logOut(context, authUser?.isAnonymous)
               ],
             ),
+          );
+        }
+    );
+  }
+
+
+  _currenciesBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext buildCtx) {
+          return ListView.builder(
+            padding: EdgeInsets.all(2),
+            shrinkWrap: true,
+            itemCount: currenciesMap.length,
+            itemBuilder: (BuildContext context, int index) {
+               String key = currenciesMap.keys.elementAt(index);
+               String currencyName = currenciesMap[key][1];
+              return  Column(
+                children: <Widget>[
+                  ListTile(
+                    title:  Text(currencyName),
+                  ),
+                  Divider(height: 2.0,),
+                ],
+              );
+            },
           );
         }
     );
@@ -150,6 +185,8 @@ class BTBottomAppBarWidget extends StatelessWidget {
         }
     );
   }
+
+
 
 }
 
