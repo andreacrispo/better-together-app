@@ -1,6 +1,7 @@
 
 import 'package:better_together_app/model/ParticipantDocument.dart';
 import 'package:better_together_app/screens/participant/participant_form.dart';
+import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +16,19 @@ class ServiceParticipantForm extends StatefulWidget {
 }
 
 class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
+  ServiceParticipantFirebase _repository;
 
   ParticipantDocument _participant = ParticipantDocument();
   final _formKey = GlobalKey<FormState>();
   bool _useCredit = false;
   String _participantId;
 
+
+  @override
+  void initState() {
+    _repository = ServiceParticipantFirebase();
+    super.initState();
+  }
 
   getInputDecoration(labelText) {
     return InputDecoration(
@@ -65,7 +73,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
     Widget participantSelector() {
       return StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('participants').snapshots(),
+          stream: _repository.getParticipants(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return LinearProgressIndicator();
@@ -203,7 +211,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     );
 
     if (newParticipant != null) {
-      DocumentReference doc = await Firestore.instance.collection('participants').add(newParticipant.toMap());
+      DocumentReference doc = await _repository.createParticipant(newParticipant);
       setState(() {
         _participant = newParticipant;
         _participant.participantId = doc.documentID;

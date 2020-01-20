@@ -128,12 +128,12 @@ class ServiceParticipantFirebase {
   }
 
 
-  createParticipant(ParticipantDocument newParticipant) async {
+  Future<DocumentReference> createParticipant(ParticipantDocument newParticipant) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     FirebaseUser user = await _auth.currentUser();
 
     newParticipant.uid = user.uid;
-    Firestore.instance.collection('participants').add(newParticipant.toMap());
+    return Firestore.instance.collection('participants').add(newParticipant.toMap());
   }
 
   editParticipant(documentID, edited) {
