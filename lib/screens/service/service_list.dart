@@ -23,13 +23,13 @@ class ServiceListNotifier with ChangeNotifier {
 
   get isSortByDesc => _isSortByDesc;
 
-  setSortByVariable(String variable, isDesc) async {
+  setSortByVariable(String variable, bool isDesc) async {
     if(!whiteListVariable.contains(variable)) {
       return;
     }
 
     _sortByVariable = variable;
-    _isSortByDesc = _isSortByDesc;
+    _isSortByDesc = isDesc;
     notifyListeners();
   }
 

@@ -79,29 +79,40 @@ class BTBottomAppBarWidget extends StatelessWidget {
   }
 
   void _showSortByBottomSheet(context) {
-    final serviceProvider = Provider.of<ServiceListNotifier>(context);
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc){
           return Container(
             child: Wrap(
               children: <Widget>[
-                ListTile(
-                    title:Text( i18n(context, "name")),
-                    onTap: () { serviceProvider.setSortByVariable("name", false); Navigator.pop(context); }
-                ),
-                ListTile(
-                  title: Text( i18n(context, "price")),
-                  onTap: () { serviceProvider.setSortByVariable("price", false); Navigator.pop(context); }
-                ),
-                ListTile(
-                  title: Text( i18n(context, "number_of_participants")),
-                  onTap: () { serviceProvider.setSortByVariable("participantNumber", false); Navigator.pop(context); }
-                )
+                _listTileSort(context: context, title: "name", variableToSort: "name"),
+                _listTileSort(context: context, title: "price", variableToSort: "price"),
+                _listTileSort(context: context, title: "number_of_participants", variableToSort: "participantNumber"),
               ],
             ),
           );
         }
+    );
+  }
+
+  ListTile _listTileSort({BuildContext context, String title, String variableToSort}) {
+    final ServiceListNotifier serviceProvider = Provider.of<ServiceListNotifier>(context);
+
+    return ListTile(
+      title: Text( i18n(context, title)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(
+            icon:  Icon(Icons.keyboard_arrow_up ),
+            onPressed: () { serviceProvider.setSortByVariable(variableToSort, false); Navigator.pop(context); },
+          ),
+          IconButton(
+            icon:   Icon(Icons.keyboard_arrow_down),
+            onPressed: () { serviceProvider.setSortByVariable(variableToSort, true); Navigator.pop(context); },
+          ),
+        ],
+      ),
     );
   }
 
@@ -174,7 +185,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
   }
 
   _logOut(context, isAnonymous){
-   if(isAnonymous) return Container();
+    if(isAnonymous) return Container();
 
     return  ListTile(
         leading: Icon(Icons.lock_open),
@@ -185,8 +196,6 @@ class BTBottomAppBarWidget extends StatelessWidget {
         }
     );
   }
-
-
 
 }
 
