@@ -31,7 +31,7 @@
   "password": "Password",
   "confirm_password": "Conferma password",
   "login_phrase":  "Possiedi già un account? Login",
-  "signup_phrase": "Non possiedi un account? Crea un nuovo account",
+  "signup_phrase": "Non possiedi un account? ",
   "cancel": "Annulla",
   "select": "Seleziona",
   "currencies": "Valute",

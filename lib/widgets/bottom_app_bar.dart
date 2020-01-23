@@ -81,13 +81,13 @@ class BTBottomAppBarWidget extends StatelessWidget {
   void _showSortByBottomSheet(context) {
     showModalBottomSheet(
         context: context,
-        builder: (BuildContext bc){
+        builder: (BuildContext bc) {
           return Container(
             child: Wrap(
               children: <Widget>[
-                _listTileSort(context: context, title: "name", variableToSort: "name"),
-                _listTileSort(context: context, title: "price", variableToSort: "price"),
-                _listTileSort(context: context, title: "number_of_participants", variableToSort: "participantNumber"),
+                ListTileVariableSort(title: "name", variableToSort: "name",),
+                ListTileVariableSort(title: "price", variableToSort: "price",),
+                ListTileVariableSort(title: "number_of_participants", variableToSort: "participantNumber",),
               ],
             ),
           );
@@ -185,7 +185,8 @@ class BTBottomAppBarWidget extends StatelessWidget {
   }
 
   _logOut(context, isAnonymous){
-    if(isAnonymous) return Container();
+    // TODO: FIXME Uncomment before prod
+    //  if(isAnonymous) return Container();
 
     return  ListTile(
         leading: Icon(Icons.lock_open),
@@ -199,3 +200,34 @@ class BTBottomAppBarWidget extends StatelessWidget {
 
 }
 
+
+
+class ListTileVariableSort extends StatelessWidget {
+
+  final String title;
+  final String variableToSort;
+
+  ListTileVariableSort({Key key, this.title, this.variableToSort}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final ServiceListNotifier serviceProvider = Provider.of<ServiceListNotifier>(context);
+    return ListTile(
+      title: Text( i18n(context, this.title)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(
+            icon:  Icon(Icons.keyboard_arrow_up ),
+            onPressed: () { serviceProvider.setSortByVariable(this.variableToSort, false); Navigator.pop(context); },
+          ),
+          IconButton(
+            icon:   Icon(Icons.keyboard_arrow_down),
+            onPressed: () { serviceProvider.setSortByVariable(this.variableToSort, true); Navigator.pop(context); },
+          ),
+        ],
+      ),
+    );
+  }
+
+}
