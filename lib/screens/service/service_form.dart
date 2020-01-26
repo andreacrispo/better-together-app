@@ -76,6 +76,7 @@ class _ServiceFormState extends State<ServiceForm> {
 
     final currenciesField = Container(
       child:DropdownButton(
+        itemHeight: 80,
         hint: Text( i18n(context, 'currency')  ),
         isExpanded: true,
         value:_service.currencyCode ??  null,
@@ -95,7 +96,6 @@ class _ServiceFormState extends State<ServiceForm> {
     );
 
 
-
     final priceCurrencyField = Row(
       children: <Widget>[
         Expanded(
@@ -105,6 +105,7 @@ class _ServiceFormState extends State<ServiceForm> {
                 flex: 6,
                 child: priceField,
               ),
+              Container(margin: EdgeInsets.only(right: 20)),
               Expanded(
                 flex: 6,
                 child: currenciesField,
@@ -189,7 +190,7 @@ class _ServiceFormState extends State<ServiceForm> {
               padding: EdgeInsets.only(left: 16.0, right: 16.0),
               children: <Widget>[
                   iconField,
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 30.0),
                   nameField,
                   const SizedBox(height: 10.0),
                   priceCurrencyField,

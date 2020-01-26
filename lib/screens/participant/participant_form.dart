@@ -79,6 +79,26 @@ class _ParticipantFormState extends State<ParticipantForm> {
       ),
     );
 
+    final creditCurrencyField = Row(
+      children: <Widget>[
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 6,
+                child: creditField,
+              ),
+              Container(margin: EdgeInsets.only(right: 20)),
+              Expanded(
+                flex: 6,
+                child: currenciesField,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -91,7 +111,7 @@ class _ParticipantFormState extends State<ParticipantForm> {
 
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.save),
               onPressed: () {
                 if(_formKey.currentState.validate()) {
                   _formKey.currentState.save();
@@ -111,10 +131,12 @@ class _ParticipantFormState extends State<ParticipantForm> {
               shrinkWrap: true,
               padding: EdgeInsets.only(left: 16.0, right: 16.0),
               children: <Widget>[
+                  const SizedBox(height: 20.0),
                   nameField,
+                  const SizedBox(height: 30.0),
                   emailField,
-                  creditField,
-                  currenciesField
+                  const SizedBox(height: 30.0),
+                  creditCurrencyField
                 ],
             ),
           ),

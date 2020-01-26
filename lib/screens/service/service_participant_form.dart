@@ -128,9 +128,9 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text(i18n(context,"credit") + ": "),
-          Text(_participant.credit != null ? _participant.credit.toString() : "0"),
-          Text(i18n(context,'money_from_credit')),
+          Text(i18n(context,"credit") + ": ", style: TextStyle(fontSize: 18),),
+          Text(_participant.credit != null ? _participant.credit.toString() : "0",style: TextStyle(fontSize: 18),),
+          Text(i18n(context,'money_from_credit'),),
           Switch(
             value: _useCredit,
             onChanged: (value) {

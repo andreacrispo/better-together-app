@@ -150,7 +150,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
                   },
                 ),
                 */
-                _logOut(context, authUser?.isAnonymous)
+                _logOut(bc, authUser?.isAnonymous)
               ],
             ),
           );
