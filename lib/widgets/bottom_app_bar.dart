@@ -129,7 +129,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
               children: <Widget>[
                 ListTile(
                     leading: Icon(Icons.opacity),
-                    title: Text(isDarkThemeActive ? i18n(context, "enable_light_theme") : i18n(context, "enable_dark_theme")),
+                    title: Text(isDarkThemeActive ? i18n(bc, "enable_light_theme") : i18n(bc, "enable_dark_theme")),
                     onTap: ()  {
                       if(isDarkThemeActive) {
                         themeNotifier.setTheme(lightTheme);
@@ -138,7 +138,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
                         themeNotifier.setTheme(darkTheme);
                         prefs.setBool('darkThemeActive', true);
                       }
-                      Navigator.pop(context);
+                      Navigator.pop(bc);
                     }
                 ),
                 /*

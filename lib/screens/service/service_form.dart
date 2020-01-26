@@ -20,9 +20,9 @@ class _ServiceFormState extends State<ServiceForm> {
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
-      border: new OutlineInputBorder(
-        borderRadius: new BorderRadius.circular(8.0),
-        borderSide: new BorderSide(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide(
         ),
       ),
       //fillColor: Colors.green
@@ -74,26 +74,6 @@ class _ServiceFormState extends State<ServiceForm> {
     );
 
 
-
-    final participantNumberField = Container(
-      margin: EdgeInsets.only(top: 10, bottom: 10),
-      child: TextFormField(
-        initialValue: _service.participantNumber != null ?_service.participantNumber.toString() : "",
-        decoration: getInputDecoration(i18n(context, 'number_of_participants')),
-        keyboardType: TextInputType.numberWithOptions(),
-        inputFormatters: <TextInputFormatter>[
-          WhitelistingTextInputFormatter.digitsOnly
-        ],
-        validator: (value) {
-          if (value.isEmpty) return i18n(context, "mandatory_field");
-          if(!isNumeric(value)) return i18n(context,"only_numeric_value");
-          return null;
-        },
-        onSaved: (value) => _service.participantNumber = int.parse(value)
-      )
-    );
-
-
     final currenciesField = Container(
       child:DropdownButton(
         hint: Text( i18n(context, 'currency')  ),
@@ -112,6 +92,45 @@ class _ServiceFormState extends State<ServiceForm> {
           );
         }).toList(),
       ),
+    );
+
+
+
+    final priceCurrencyField = Row(
+      children: <Widget>[
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 6,
+                child: priceField,
+              ),
+              Expanded(
+                flex: 6,
+                child: currenciesField,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    final participantNumberField = Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10),
+        child: TextFormField(
+            initialValue: _service.participantNumber != null ?_service.participantNumber.toString() : "",
+            decoration: getInputDecoration(i18n(context, 'number_of_participants')),
+            keyboardType: TextInputType.numberWithOptions(),
+            inputFormatters: <TextInputFormatter>[
+              WhitelistingTextInputFormatter.digitsOnly
+            ],
+            validator: (value) {
+              if (value.isEmpty) return i18n(context, "mandatory_field");
+              if(!isNumeric(value)) return i18n(context,"only_numeric_value");
+              return null;
+            },
+            onSaved: (value) => _service.participantNumber = int.parse(value)
+        )
     );
 
     final colorPickerField = Column(
@@ -170,10 +189,12 @@ class _ServiceFormState extends State<ServiceForm> {
               padding: EdgeInsets.only(left: 16.0, right: 16.0),
               children: <Widget>[
                   iconField,
+                  const SizedBox(height: 20.0),
                   nameField,
-                  priceField,
+                  const SizedBox(height: 10.0),
+                  priceCurrencyField,
+                  const SizedBox(height: 10.0),
                   participantNumberField,
-                  currenciesField,
                   colorPickerField,
                 ],
             ),
