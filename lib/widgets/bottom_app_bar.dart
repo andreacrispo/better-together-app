@@ -191,9 +191,9 @@ class BTBottomAppBarWidget extends StatelessWidget {
     return  ListTile(
         leading: Icon(Icons.lock_open),
         title: Text("Logout"),
-        onTap: ()  {
-          Provider.of<AuthService>(context).logout();
-          Navigator.pop(context);
+        onTap: ()  async {
+          await  Provider.of<AuthService>(context).logout();
+          Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
         }
     );
   }

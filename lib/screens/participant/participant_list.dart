@@ -8,6 +8,7 @@ import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class ParticipantListWidget extends StatefulWidget {
@@ -59,6 +60,9 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
+
+        if( snapshot.data.documents.length == 0)
+          return _buildEmptyParticipantList();
 
         return _buildList(context, snapshot.data.documents);
       },
@@ -149,6 +153,31 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
         context,
         ParticipantDetailWidget.routeName,
         arguments: participant
+    );
+  }
+
+  Widget _buildEmptyParticipantList() {
+    return Column(
+        children: [
+          Center(
+            child:
+            CircleAvatar(
+              backgroundColor: Colors.transparent,
+              radius: 100,
+              child: Image.asset('assets/images/icon-users.png', color: Theme.of(context).accentColor ),
+            ),
+          ),
+          SizedBox(height: 50,),
+          Center(
+              child: Text(
+                i18n(context, 'no_participant_added'),
+                style: GoogleFonts.lato(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                )
+              )
+          )
+        ]
     );
   }
 

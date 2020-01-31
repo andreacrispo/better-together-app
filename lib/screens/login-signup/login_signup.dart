@@ -143,7 +143,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
           form.save();
 
           if (form.validate()) {
-            _loginOrSignup();
+            await _loginOrSignup();
           }
         },
       ),

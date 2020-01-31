@@ -116,7 +116,7 @@ class ServiceParticipantFirebase {
     return Firestore.instance
         .collection('participants')
         .where('uid', isEqualTo: this.uid)
-        .orderBy('name', descending: false)
+        //.orderBy('name', descending: false) // Problema con orderBy, la query carica all'infinito
         .snapshots();
   }
 

@@ -8,6 +8,7 @@ import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 
@@ -88,6 +89,9 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
+
+        if( snapshot.data.documents.length == 0)
+          return _buildEmptyServiceList();
 
         return _buildList(context, snapshot.data.documents);
       },
@@ -192,6 +196,34 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     Firestore.instance.collection('services')
         .document(service.documentID)
         .delete();
+  }
+
+  Widget _buildEmptyServiceList() {
+    return Column(
+        children: [
+          Center(
+            child:
+            CircleAvatar(
+              backgroundColor: Colors.transparent,
+              radius: 120,
+              child: Image.asset(
+                  'assets/images/icon-service.png',
+                  color: Theme.of(context).accentColor,
+              ),
+            ),
+          ),
+          SizedBox(height: 50,),
+          Center(
+              child: Text(
+                  i18n(context, 'no_service_added'),
+                  style: GoogleFonts.lato(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )
+              )
+          )
+        ]
+    );
   }
 
 

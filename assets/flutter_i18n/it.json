@@ -35,6 +35,8 @@
   "cancel": "Annulla",
   "select": "Seleziona",
   "currencies": "Valute",
-  "currency": "Valuta"
+  "currency": "Valuta",
+  "no_service_added":  "Non è stato aggiunto nessun servizio",
+  "no_participant_added": "Non è stato aggiunto nessun partecipante"
 
 }
