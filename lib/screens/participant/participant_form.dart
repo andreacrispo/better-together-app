@@ -1,8 +1,8 @@
-
-import 'package:better_together_app/model/ParticipantDocument.dart';
-import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../../model/participant_document.dart';
+import '../../utils/utils.dart';
 
 
 class ParticipantForm extends StatefulWidget {
@@ -30,7 +30,8 @@ class _ParticipantFormState extends State<ParticipantForm> {
       initialValue: _participant.name ?? "",
       decoration: getInputDecoration(i18n(context, 'name')),
       validator: (value) {
-        if (value.isEmpty) return i18n(context, "mandatory_field");
+        if (value.isEmpty)
+          return i18n(context, "mandatory_field");
         return null;
       },
       onSaved: (value) => _participant.name = value,
@@ -46,37 +47,37 @@ class _ParticipantFormState extends State<ParticipantForm> {
       initialValue: _participant.credit != null ? _participant.credit.toString() : "",
       decoration: getInputDecoration(i18n(context, 'credit')),
       validator: (value) {
-        if (value.isEmpty) return i18n(context, "mandatory_field");
-        if(!isNumeric(value)) return i18n(context,"only_numeric_value");
+        if (value.isEmpty)
+          return i18n(context, "mandatory_field");
+        if(!isNumeric(value))
+          return i18n(context,"only_numeric_value");
         return null;
       },
       onSaved: (value) {
         if(double.parse(value) != _participant.credit) {
           _participant.credit = double.parse(value);
-          String dateKey = Timestamp.now().toDate().toIso8601String();
+          final String dateKey = Timestamp.now().toDate().toIso8601String();
          _participant.creditHistory.putIfAbsent(dateKey, () => _participant.credit);
         }
       }
     );
 
-    final currenciesField = Container(
-      child:DropdownButton(
-        hint: Text( i18n(context, 'currency')  ),
-        isExpanded: true,
-        value: _participant.currencyCode ??  null,
-        onChanged: (currencySelected) {
-          setState(() {
-            _participant.currencyCode = currencySelected;
-          });
-        },
-        items: currenciesMap.keys.map((currencyCode) {
-          String currencyName = currenciesMap[currencyCode][1];
-          return DropdownMenuItem(
-            value: currencyCode,
-            child: Text(currencyName),
-          );
-        }).toList(),
-      ),
+    final currenciesField = DropdownButton(
+      hint: Text( i18n(context, 'currency')  ),
+      isExpanded: true,
+      value: _participant.currencyCode,
+      onChanged: (currencySelected) {
+        setState(() {
+          _participant.currencyCode = currencySelected;
+        });
+      },
+      items: currenciesMap.keys.map((currencyCode) {
+        final String currencyName = currenciesMap[currencyCode][1];
+        return DropdownMenuItem(
+          value: currencyCode,
+          child: Text(currencyName),
+        );
+      }).toList(),
     );
 
     final creditCurrencyField = Row(
@@ -146,7 +147,7 @@ class _ParticipantFormState extends State<ParticipantForm> {
   }
 
 
-  InputDecoration getInputDecoration(labelText){
+  InputDecoration getInputDecoration(String labelText){
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,

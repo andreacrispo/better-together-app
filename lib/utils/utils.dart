@@ -12,8 +12,8 @@ class HexColor extends Color {
 
   HexColor(final String hexColor) : super(getColorFromHex(hexColor));
 
-  static int getColorFromHex(String hexColor) {
-    hexColor = hexColor.replaceAll("#", "");
+  static int getColorFromHex(String stringColor) {
+    String hexColor = stringColor.replaceAll("#", "");
     if (hexColor.length == 6) {
       hexColor = "FF$hexColor";
     }
@@ -102,8 +102,7 @@ Map<String, List<String>> currenciesMap =  {
   */
 };
 
-String i18n(context, placeholder) => FlutterI18n.translate(context, placeholder);
-
+String i18n(BuildContext context, String placeholder) => FlutterI18n.translate(context, placeholder);
 
 
 bool isNumeric(String s) {

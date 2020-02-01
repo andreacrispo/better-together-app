@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_theme.dart';
-import 'model/ParticipantDocument.dart';
-import 'model/ServiceDocument.dart';
+import 'model/participant_document.dart';
+import 'model/service_document.dart';
 import 'screens/login-signup/login_signup.dart';
 import 'screens/participant/participant_detail.dart';
 import 'screens/participant/participant_form.dart';
@@ -22,7 +22,7 @@ import 'service/service_participant_firebase.dart';
 
 
 
-Future<Null> main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -115,13 +115,14 @@ abstract class Router {
 
 
 class ThemeNotifier with ChangeNotifier {
-  ThemeData _themeData;
 
   ThemeNotifier(this._themeData);
 
+  ThemeData _themeData;
+
   ThemeData getTheme() => _themeData;
 
-  void setTheme(ThemeData themeData) async {
+  Future<void> setTheme(ThemeData themeData) async {
     _themeData = themeData;
     notifyListeners();
   }

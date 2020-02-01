@@ -85,14 +85,12 @@ class BTBottomAppBarWidget extends StatelessWidget {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
-          return Container(
-            child: Wrap(
-              children: <Widget>[
-                ListTileVariableSort(title: "name", variableToSort: "name",),
-                ListTileVariableSort(title: "price", variableToSort: "price",),
-                ListTileVariableSort(title: "number_of_participants", variableToSort: "participantNumber",),
-              ],
-            ),
+          return Wrap(
+            children: <Widget>[
+              ListTileVariableSort(title: "name", variableToSort: "name",),
+              ListTileVariableSort(title: "price", variableToSort: "price",),
+              ListTileVariableSort(title: "number_of_participants", variableToSort: "participantNumber",),
+            ],
           );
         }
     );
@@ -103,38 +101,36 @@ class BTBottomAppBarWidget extends StatelessWidget {
     final bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     final authUser = await Provider.of<AuthService>(context).getUser();
-    showModalBottomSheet(
+    await showModalBottomSheet(
         context: context,
         builder: (BuildContext bc){
-          return Container(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                    leading: Icon(Icons.opacity),
-                    title: Text(isDarkThemeActive ? i18n(bc, "enable_light_theme") : i18n(bc, "enable_dark_theme")),
-                    onTap: ()  {
-                      if(isDarkThemeActive) {
-                        themeNotifier.setTheme(lightTheme);
-                        prefs.setBool('darkThemeActive', false);
-                      }else {
-                        themeNotifier.setTheme(darkTheme);
-                        prefs.setBool('darkThemeActive', true);
-                      }
-                      Navigator.pop(bc);
+          return Wrap(
+            children: <Widget>[
+              ListTile(
+                  leading: Icon(Icons.opacity),
+                  title: Text(isDarkThemeActive ? i18n(bc, "enable_light_theme") : i18n(bc, "enable_dark_theme")),
+                  onTap: ()  {
+                    if(isDarkThemeActive) {
+                      themeNotifier.setTheme(lightTheme);
+                      prefs.setBool('darkThemeActive', false);
+                    }else {
+                      themeNotifier.setTheme(darkTheme);
+                      prefs.setBool('darkThemeActive', true);
                     }
-                ),
-                /*
-                ListTile(
-                  leading: Icon(Icons.adb),
-                  title: Text("Currency"),
-                  onTap: () {
-                    _currenciesBottomSheet(context);
-                  },
-                ),
-                */
-                _logOut(bc, authUser?.isAnonymous)
-              ],
-            ),
+                    Navigator.pop(bc);
+                  }
+              ),
+              /*
+              ListTile(
+                leading: Icon(Icons.adb),
+                title: Text("Currency"),
+                onTap: () {
+                  _currenciesBottomSheet(context);
+                },
+              ),
+              */
+              _logOut(bc, authUser?.isAnonymous)
+            ],
           );
         }
     );
@@ -166,7 +162,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
     );
   }
 
-  _logOut(context, isAnonymous) {
+  Widget _logOut(context, isAnonymous) {
     // TODO: FIXME Uncomment before prod
     //  if(isAnonymous) return Container();
 
@@ -180,13 +176,18 @@ class BTBottomAppBarWidget extends StatelessWidget {
     );
   }
 
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('target', target));
+  }
+
 }
 
-
-
+@immutable
 class ListTileVariableSort extends StatelessWidget {
 
-  ListTileVariableSort({Key key, this.title, this.variableToSort}) : super(key: key);
+  const ListTileVariableSort({Key key, this.title, this.variableToSort}) : super(key: key);
 
   final String title;
   final String variableToSort;

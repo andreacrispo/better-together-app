@@ -1,20 +1,18 @@
-
-
-
-import 'package:better_together_app/model/ParticipantDocument.dart';
-import 'package:better_together_app/model/ServiceDocument.dart';
-import 'package:better_together_app/screens/service/service_form.dart';
-import 'package:better_together_app/screens/service/service_participant_form.dart';
-import 'package:better_together_app/service/service_participant_firebase.dart';
-import 'package:better_together_app/utils/custom_route_animation.dart';
-import 'package:better_together_app/utils/utils.dart';
-import 'package:better_together_app/widgets/has_paid_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:swipedetector/swipedetector.dart';
+
+import '../../model/participant_document.dart';
+import '../../model/service_document.dart';
+import '../../service/service_participant_firebase.dart';
+import '../../utils/custom_route_animation.dart';
+import '../../utils/utils.dart';
+import '../../widgets/has_paid_button.dart';
+import 'service_form.dart';
+import 'service_participant_form.dart';
 
 
 class ServiceDetailArgs {
@@ -82,7 +80,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
-        String currencySymbol = currentService.currencyCode != null
+        final String currencySymbol = currentService.currencyCode != null
             ? currenciesMap[currentService.currencyCode][0]
             : "€";
         return CustomScrollView(
@@ -120,7 +118,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               ),
               actions: <Widget>[
                 IconButton(
-                  icon: new Icon(Icons.edit),
+                  icon: Icon(Icons.edit),
                   tooltip: i18n(context, 'edit'),
                   onPressed: () => _editService(currentService)
                 ),
@@ -138,13 +136,13 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   Widget _buildTable(BuildContext context, List<DocumentSnapshot> snapshot) {
     final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
-    List<ParticipantDocument> participants = [];
+    final List<ParticipantDocument> participants = [];
     snapshot.forEach((DocumentSnapshot docSnap) {
       participants.add(ParticipantDocument.fromSnapshot(docSnap));
     });
 
-    Locale locale = FlutterI18n.currentLocale(context);
-    String currentMonth = localeMonthString[locale.languageCode][passArgs.monthPaid];
+    final Locale locale = FlutterI18n.currentLocale(context);
+    final String currentMonth = localeMonthString[locale.languageCode][passArgs.monthPaid];
 
     return Column(
         mainAxisSize: MainAxisSize.min,
@@ -207,17 +205,15 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
 
-  createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
+  Widget createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
     if (participants.isEmpty) {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              child: RaisedButton(
-                child: Text(i18n(context,'copy_participants_previous_month') ),
-                onPressed: () => copyParticipantsFromPreviousMonth(context),
-              ),
+            RaisedButton(
+              onPressed: () => copyParticipantsFromPreviousMonth(context),
+              child: Text(i18n(context,'copy_participants_previous_month') ),
             ),
           ],
       );
@@ -238,10 +234,10 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               label: Text(i18n(context,'has_paid')),
               numeric: false,
               onSort: (columnIndex, ascending) {
+                onSortColumn(columnIndex, ascending, participants);
                 setState(() {
                   sort = !sort;
                 });
-                onSortColumn(columnIndex, ascending, participants);
               }
           ),
           DataColumn(
@@ -264,10 +260,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                               participant.hasPaid = updatePaid;
                               if (participant.hasPaid) {
                                 participant.pricePaid =
-                                participant.pricePaid != null
-                                    ? participant.pricePaid
-                                    : this.currentService.price /
-                                    this.currentService.participantNumber;
+                                    participant.pricePaid ??
+                                    ( this.currentService.price / this.currentService.participantNumber);
                               } else {
                                 participant.pricePaid = null;
                               }
@@ -307,8 +301,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     );
   }
 
-  onSortColumn(int columnIndex, bool ascending,
-      List<ParticipantDocument> users) {
+  void onSortColumn(int columnIndex, bool ascending, List<ParticipantDocument> users) {
     if (columnIndex == 1) {
       if (ascending) {
         users.sort((a, b) => a.hasPaid == b.hasPaid ? 1 : -1);
@@ -319,15 +312,15 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
   addParticipantToService(BuildContext context) async {
-    var result = await Navigator.pushNamed<dynamic>(
+    final result = await Navigator.pushNamed<dynamic>(
         context,
         ServiceParticipantForm.routeName
     );
     if(result == null)
       return;
 
-    ParticipantDocument newParticipant = result[0];
-    bool useCredit = result[1];
+    final ParticipantDocument newParticipant = result[0];
+    final bool useCredit = result[1];
 
     if (newParticipant != null) {
       final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
@@ -342,12 +335,12 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
   editParticipantFromService(ParticipantDocument participant) async {
-    var result = await Navigator.pushNamed<dynamic>(
+    final result = await Navigator.pushNamed<dynamic>(
         context,
         ServiceParticipantForm.routeName,
         arguments: participant
     );
-    ParticipantDocument editedParticipant = result[0];
+    final ParticipantDocument editedParticipant = result[0];
 
     if (editedParticipant != null) {
       await _repository.editParticipantFromService(currentServiceId, editedParticipant);
@@ -372,8 +365,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         .of(context)
         .settings
         .arguments;
-    int month = passArgs.monthPaid;
-    int year = passArgs.yearPaid;
+    final int month = passArgs.monthPaid;
+    final int year = passArgs.yearPaid;
     await _repository.copyParticipantsFromPreviousMonth(
         currentServiceId, year, month);
     setState(() {});
@@ -390,7 +383,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     }
   }
 
-  previousMonth(month, year) {
+  void previousMonth(int month, int year) {
     if (month - 1 <= 0) {
       month = 12;
       year -= 1;
@@ -400,7 +393,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     changeMonthNavigator(month, year);
   }
 
-  nextMonth(int month, int year) {
+  void nextMonth(int month, int year) {
     if (month + 1 >= 13) {
       month = 1;
       year += 1;
@@ -410,7 +403,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     changeMonthNavigator(month, year);
   }
 
-  changeMonthNavigator(month, year) {
+  void changeMonthNavigator(int month, int year) {
     Navigator.pushReplacement(
       context,
       CustomRouteFadeAnimation(
@@ -435,6 +428,15 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     if (editedService != null) {
       await _repository.editService(service.reference.documentID, editedService);
     }
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties..add(StringProperty('appBarTitle', appBarTitle))
+              ..add(DiagnosticsProperty<bool>('sort', sort))
+              ..add(DiagnosticsProperty<ServiceDocument>('currentService', currentService))
+              ..add(StringProperty('currentServiceId', currentServiceId));
   }
 
 

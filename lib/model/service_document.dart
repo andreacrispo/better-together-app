@@ -1,35 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'ParticipantDocument.dart';
+import 'participant_document.dart';
 
 class ServiceDocument {
-  String serviceId;
-  String name;
-  String description;
-  num color;
-  num price;
-  int participantNumber;
-  String icon; // To be define better
-  String currencyCode;
-  List<ParticipantDocument> participants;
-  DocumentReference reference;
-
-  String uid;
 
   ServiceDocument({
-      this.serviceId,
-      this.name,
-      this.description,
-      this.color,
-      this.price,
-      this.icon,
-      this.currencyCode,
-      this.participantNumber,
-      this.uid
+    this.serviceId,
+    this.name,
+    this.description,
+    this.color,
+    this.price,
+    this.icon,
+    this.currencyCode,
+    this.participantNumber,
+    this.uid
   });
 
   ServiceDocument.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null),
+      : assert(map['name'] != null, ""),
         serviceId = map['serviceId'],
         name = map['name'],
         description = map['description'],
@@ -44,6 +32,21 @@ class ServiceDocument {
 
   ServiceDocument.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+
+  String serviceId;
+  String name;
+  String description;
+  num color;
+  num price;
+  int participantNumber;
+  String icon; // To be define better
+  String currencyCode;
+  List<ParticipantDocument> participants;
+  DocumentReference reference;
+
+  String uid;
+
 
   Map<String, dynamic> toMap() => {
         "serviceId": serviceId,

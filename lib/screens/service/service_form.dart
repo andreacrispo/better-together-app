@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
-import '../../model/ServiceDocument.dart';
+import '../../model/service_document.dart';
 import '../../utils/utils.dart';
 
 class ServiceForm extends StatefulWidget {
@@ -16,7 +16,7 @@ class _ServiceFormState extends State<ServiceForm> {
   ServiceDocument _service = ServiceDocument();
   final _formKey = GlobalKey<FormState>();
 
-  getInputDecoration(labelText){
+  InputDecoration getInputDecoration(String labelText){
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
@@ -49,7 +49,8 @@ class _ServiceFormState extends State<ServiceForm> {
       initialValue: _service.name,
       decoration: getInputDecoration(i18n(context, "name")),
       validator: (value) {
-        if (value.isEmpty) return i18n(context, "mandatory_field");
+        if (value.isEmpty)
+          return i18n(context, "mandatory_field");
         return null;
       },
       onSaved: (value) => _service.name = value,
@@ -65,8 +66,10 @@ class _ServiceFormState extends State<ServiceForm> {
             //   WhitelistingTextInputFormatter.digitsOnly
           ],
           validator: (value) {
-            if (value.isEmpty) return i18n(context, "mandatory_field");
-            if(!isNumeric(value)) return i18n(context,"only_numeric_value");
+            if (value.isEmpty)
+              return i18n(context, "mandatory_field");
+            if(!isNumeric(value))
+              return i18n(context,"only_numeric_value");
             return null;
           },
           onSaved: (value) => _service.price = double.parse(value)
@@ -74,25 +77,23 @@ class _ServiceFormState extends State<ServiceForm> {
     );
 
 
-    final currenciesField = Container(
-      child:DropdownButton(
-        itemHeight: 80,
-        hint: Text( i18n(context, 'currency')  ),
-        isExpanded: true,
-        value:_service.currencyCode ??  null,
-        onChanged: (currencySelected) {
-          setState(() {
-            _service.currencyCode = currencySelected;
-          });
-        },
-        items: currenciesMap.keys.map((currencyCode) {
-          String currencyName = currenciesMap[currencyCode][1];
-          return DropdownMenuItem(
-            value: currencyCode,
-            child: Text(currencyName),
-          );
-        }).toList(),
-      ),
+    final currenciesField = DropdownButton(
+      itemHeight: 80,
+      hint: Text( i18n(context, 'currency')  ),
+      isExpanded: true,
+      value:_service.currencyCode,
+      onChanged: (currencySelected) {
+        setState(() {
+          _service.currencyCode = currencySelected;
+        });
+      },
+      items: currenciesMap.keys.map((currencyCode) {
+        final String currencyName = currenciesMap[currencyCode][1];
+        return DropdownMenuItem(
+          value: currencyCode,
+          child: Text(currencyName),
+        );
+      }).toList(),
     );
 
 
@@ -126,8 +127,10 @@ class _ServiceFormState extends State<ServiceForm> {
               WhitelistingTextInputFormatter.digitsOnly
             ],
             validator: (value) {
-              if (value.isEmpty) return i18n(context, "mandatory_field");
-              if(!isNumeric(value)) return i18n(context,"only_numeric_value");
+              if (value.isEmpty)
+                return i18n(context, "mandatory_field");
+              if(!isNumeric(value))
+                return i18n(context,"only_numeric_value");
               return null;
             },
             onSaved: (value) => _service.participantNumber = int.parse(value)
@@ -205,7 +208,7 @@ class _ServiceFormState extends State<ServiceForm> {
     );
   }
 
-  void _openColorPicker() async {
+  Future<void> _openColorPicker() async {
     _openDialog(
       i18n(context, "choose_color"),
       MaterialColorPicker(
@@ -226,12 +229,12 @@ class _ServiceFormState extends State<ServiceForm> {
           content: content,
           actions: [
             FlatButton(
-              child: Text(i18n(context, 'cancel')),
               onPressed: Navigator.of(context).pop,
+              child: Text(i18n(context, 'cancel')),
             ),
             FlatButton(
+              onPressed: () => Navigator.of(context).pop(),
               child: Text(i18n(context, 'select')),
-              onPressed: () => Navigator.of(context).pop()
             ),
           ],
         );

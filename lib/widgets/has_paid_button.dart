@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../utils/utils.dart';
 
-
+@immutable
 class HasPaidWidget extends StatelessWidget {
 
-  HasPaidWidget({@required this.hasPaid, @required this.callback, Key key}) : super(key: key);
+  const HasPaidWidget({@required this.hasPaid, @required this.callback, Key key}) : super(key: key);
 
   final bool hasPaid;
   final Function(bool) callback;

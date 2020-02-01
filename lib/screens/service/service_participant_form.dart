@@ -1,11 +1,12 @@
 
-import 'package:better_together_app/model/ParticipantDocument.dart';
-import 'package:better_together_app/screens/participant/participant_form.dart';
-import 'package:better_together_app/service/service_participant_firebase.dart';
-import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../model/participant_document.dart';
+import '../../service/service_participant_firebase.dart';
+import '../../utils/utils.dart';
+import '../participant/participant_form.dart';
 
 
 class ServiceParticipantForm extends StatefulWidget {
@@ -30,14 +31,13 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     super.initState();
   }
 
-  getInputDecoration(labelText) {
+  InputDecoration getInputDecoration(String labelText) {
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
-      border: new OutlineInputBorder(
-        borderRadius: new BorderRadius.circular(8.0),
-        borderSide: new BorderSide(
-        ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide(),
       ),
       //fillColor: Colors.green
     );
@@ -65,7 +65,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
              // Icon(Icons.add)
               IconButton(
                 icon: Icon(Icons.add),
-                onPressed: () => _addParticipant(),
+                onPressed: _addParticipant,
               )
             ],
       );
@@ -91,7 +91,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
                   setState(() {});
                 },
                 items: snapshot.data.documents.map((DocumentSnapshot document) {
-                  return new DropdownMenuItem(
+                  return DropdownMenuItem(
                       value: document,
                       child: Text(document.data['name'] ?? ""),
                   );
@@ -151,8 +151,10 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         decoration:  getInputDecoration(i18n(context, 'price_paid')),
         keyboardType: TextInputType.number,
         validator: (value) {
-          if (value.isEmpty) return i18n(context, "mandatory_field");
-          if(!isNumeric(value)) return i18n(context,"only_numeric_value");
+          if (value.isEmpty)
+            return i18n(context, "mandatory_field");
+          if(!isNumeric(value)) 
+            return i18n(context,"only_numeric_value");
           return null;
         },
         onSaved: (value) {
@@ -205,13 +207,13 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
 
   _addParticipant() async {
-    ParticipantDocument newParticipant = await Navigator.pushNamed(
+    final ParticipantDocument newParticipant = await Navigator.pushNamed(
         context,
         ParticipantForm.routeName,
     );
 
     if (newParticipant != null) {
-      DocumentReference doc = await _repository.createParticipant(newParticipant);
+      final DocumentReference doc = await _repository.createParticipant(newParticipant);
       setState(() {
         _participant = newParticipant;
         _participant.participantId = doc.documentID;

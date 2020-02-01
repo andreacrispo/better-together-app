@@ -58,7 +58,8 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
       ),
       child: TextFormField(
           validator: (value) {
-            if (value.isEmpty) return i18n(context, 'mandatory_field');
+            if (value.isEmpty)
+              return i18n(context, 'mandatory_field');
             return null;
           },
           onSaved: (value) => this._email = value,
@@ -83,7 +84,8 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
         ),
         child: TextFormField(
             validator: (value) {
-              if (value.isEmpty) return i18n(context, 'mandatory_field');
+              if (value.isEmpty)
+                return i18n(context, 'mandatory_field');
               return null;
             },
             onSaved: (value) => this._password = value,
@@ -121,8 +123,10 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
           ),
           obscureText: true,
           validator: (value) {
-            if (value.isEmpty) return i18n(context, 'mandatory_field');
-            if(value != _password) return "Password not match";
+            if (value.isEmpty)
+              return i18n(context, 'mandatory_field');
+            if(value != _password)
+              return "Password not match";
             return null;
           },
         )

@@ -2,21 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../model/ParticipantDocument.dart';
-import '../model/ServiceDocument.dart';
+import '../model/participant_document.dart';
+import '../model/service_document.dart';
 import '../utils/utils.dart';
 
 
 class ServiceParticipantFirebase {
 
-  static final ServiceParticipantFirebase _singleton = ServiceParticipantFirebase._internal();
+  ServiceParticipantFirebase._internal();
 
   factory ServiceParticipantFirebase() {
     return _singleton;
   }
 
-  ServiceParticipantFirebase._internal();
-
+  static final ServiceParticipantFirebase _singleton = ServiceParticipantFirebase._internal();
 
 
   String uid;
@@ -53,11 +52,11 @@ class ServiceParticipantFirebase {
         .snapshots();
   }
 
-  copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
-    var previousPaid = getTimestamp(year, month - 1);
-    var currentPaid = getTimestamp(year, month);
+  Future<void> copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
+    final previousPaid = getTimestamp(year, month - 1);
+    final currentPaid = getTimestamp(year, month);
 
-    QuerySnapshot previousParticipants = await Firestore.instance
+    final QuerySnapshot previousParticipants = await Firestore.instance
         .collection("services")
         .document(serviceId)
         .collection('participants')
@@ -66,7 +65,7 @@ class ServiceParticipantFirebase {
         .getDocuments();
 
     previousParticipants.documents.forEach((DocumentSnapshot snapshot) {
-      var participant = snapshot.data;
+      final participant = snapshot.data;
       participant['datePaid'] = currentPaid;
       participant['pricePaid'] = null;
       participant['hasPaid'] = false;
@@ -80,11 +79,11 @@ class ServiceParticipantFirebase {
   }
 
   addParticipantIntoService({String serviceId, ParticipantDocument participant, bool useCredit}) {
-    String participantId = participant.participantId;
+    final String participantId = participant.participantId;
 
     if(useCredit) {
       participant.credit -= participant.pricePaid;
-      String dateKey = Timestamp.now().toDate().toIso8601String();
+      final String dateKey = Timestamp.now().toDate().toIso8601String();
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
     }
     Firestore.instance.collection('participants').document(participantId).setData({
@@ -99,8 +98,8 @@ class ServiceParticipantFirebase {
         .add(participant.toMap());
   }
 
-  editParticipantFromService(String serviceId, ParticipantDocument participant) {
-    String participantId = participant.reference.documentID;
+  Future<void> editParticipantFromService(String serviceId, ParticipantDocument participant) {
+    final String participantId = participant.reference.documentID;
     return Firestore.instance
         .collection('services')
         .document(serviceId)
@@ -109,7 +108,7 @@ class ServiceParticipantFirebase {
         .setData(participant.toMap());
   }
 
-  deleteParticipantFromService(String serviceId, ParticipantDocument participant) {
+  Future<void> deleteParticipantFromService(String serviceId, ParticipantDocument participant) {
     final String participantId = participant.reference.documentID;
     return Firestore.instance
         .collection('services')
@@ -120,7 +119,7 @@ class ServiceParticipantFirebase {
   }
 
 
-  getParticipants() {
+  Stream<QuerySnapshot> getParticipants() {
     return Firestore.instance
         .collection('participants')
         .where('uid', isEqualTo: this.uid)
@@ -128,7 +127,7 @@ class ServiceParticipantFirebase {
         .snapshots();
   }
 
-  getParticipantDetail(String participantId) {
+  Stream<DocumentSnapshot> getParticipantDetail(String participantId) {
     return Firestore.instance
           .collection('participants')
           .document(participantId)
@@ -138,14 +137,14 @@ class ServiceParticipantFirebase {
 
   Future<DocumentReference> createParticipant(ParticipantDocument newParticipant) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    FirebaseUser user = await _auth.currentUser();
+    final FirebaseUser user = await _auth.currentUser();
 
     newParticipant.uid = user.uid;
     return Firestore.instance.collection('participants').add(newParticipant.toMap());
   }
 
-  editParticipant(documentID, edited) {
-    Firestore.instance
+  void editParticipant(String documentID, ParticipantDocument edited) {
+     Firestore.instance
         .collection('participants')
         .document(documentID)
         .setData(edited.toMap());

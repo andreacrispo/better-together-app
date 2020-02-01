@@ -1,14 +1,15 @@
 
-import 'package:better_together_app/model/ParticipantDocument.dart';
-import 'package:better_together_app/screens/participant/participant_detail.dart';
-import 'package:better_together_app/screens/participant/participant_form.dart';
-import 'package:better_together_app/service/service_participant_firebase.dart';
-import 'package:better_together_app/utils/utils.dart';
-import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../model/participant_document.dart';
+import '../../service/service_participant_firebase.dart';
+import '../../utils/utils.dart';
+import '../../widgets/bottom_app_bar.dart';
+import 'participant_detail.dart';
+import 'participant_form.dart';
 
 
 class ParticipantListWidget extends StatefulWidget {
@@ -45,7 +46,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
       appBar: topAppBar,
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => _createNewParticipant(),
+          onPressed: _createNewParticipant,
           child: Icon(Icons.add)
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -93,7 +94,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
             ),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) {
-              DocumentSnapshot item = snapshot[index];
+              final DocumentSnapshot item = snapshot[index];
               snapshot.removeAt(index);
               _deleteParticipant(item);
             },
@@ -106,7 +107,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final ParticipantDocument participant = ParticipantDocument.fromSnapshot(data);
 
-    String currencySymbol = participant.currencyCode != null
+    final String currencySymbol = participant.currencyCode != null
         ? currenciesMap[participant.currencyCode][0]
         : "€";
     return Card(
@@ -137,14 +138,14 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
     );
   }
 
-  void _createNewParticipant() async {
-    ParticipantDocument newItem = await Navigator.pushNamed<ParticipantDocument>(
+  Future<void> _createNewParticipant() async {
+    final ParticipantDocument newItem = await Navigator.pushNamed<ParticipantDocument>(
         context, ParticipantForm.routeName);
     if (newItem != null)
      await _repository.createParticipant(newItem);
   }
 
-  void _deleteParticipant(DocumentSnapshot service) async {
+  Future<void> _deleteParticipant(DocumentSnapshot service) async {
     _repository.deleteParticipant(service.documentID);
   }
 

@@ -1,16 +1,13 @@
-
-
-
-
 import 'dart:convert';
 
-import 'package:better_together_app/app_theme.dart';
-import 'package:better_together_app/model/ServiceDocument.dart';
-import 'package:better_together_app/screens/service/service_form.dart';
-import 'package:better_together_app/service/service_participant_firebase.dart';
-import 'package:better_together_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../app_theme.dart';
+import '../../model/service_document.dart';
+import '../../service/service_participant_firebase.dart';
+import '../../utils/utils.dart';
+import 'service_form.dart';
 
 
 class ServicePreset extends StatefulWidget {
@@ -93,12 +90,12 @@ class _ServicePresetState extends State<ServicePreset> {
 
   Widget _buildListItem(BuildContext context, ServiceDocument service) {
 
-    Color backgroundColor = service.color != null
+    final Color backgroundColor = service.color != null
         ? Color(service.color)
         : Colors.white24;
     return Card(
       key: ValueKey(service.name),
-      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: backgroundColor, width: 2,),
@@ -133,11 +130,11 @@ class _ServicePresetState extends State<ServicePreset> {
 
 
   Future<List<ServiceDocument>> _loadPresetService() async {
-    String jsonString = await rootBundle.loadString('assets/data/service_preset.json');
-    var parsedJson = jsonDecode(jsonString);
-    assert(parsedJson is List);
-    List<ServiceDocument> result = List();
-    for(var item in parsedJson) {
+    final String jsonString = await rootBundle.loadString('assets/data/service_preset.json');
+    final parsedJson = jsonDecode(jsonString);
+    assert(parsedJson is List, "Must be a list");
+    final List<ServiceDocument> result = [];
+    for(final item in parsedJson) {
       result.add(ServiceDocument.fromMap(item));
     }
     return result;
@@ -145,7 +142,7 @@ class _ServicePresetState extends State<ServicePreset> {
 
 
   _addServicePreset(service) async {
-    ServiceDocument newItem = await Navigator.pushNamed<ServiceDocument>(
+    final ServiceDocument newItem = await Navigator.pushNamed<ServiceDocument>(
         context,
         ServiceForm.routeName,
         arguments: service
@@ -161,9 +158,9 @@ class _ServicePresetState extends State<ServicePreset> {
 
 class _PresetSearchDelegate extends SearchDelegate {
 
-  List<ServiceDocument> serviceList;
-
   _PresetSearchDelegate(this.serviceList);
+
+  List<ServiceDocument> serviceList;
 
   @override
   String get searchFieldLabel => super.searchFieldLabel;

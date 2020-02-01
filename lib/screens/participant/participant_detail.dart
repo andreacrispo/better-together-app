@@ -1,11 +1,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import '../../model/ParticipantDocument.dart';
+import '../../model/participant_document.dart';
 import '../../service/service_participant_firebase.dart';
 import '../../utils/utils.dart';
 import 'participant_form.dart';
@@ -82,7 +83,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   }
 
   Card _buildSummaryCard(BuildContext context) {
-     String currencySymbol = currentParticipant.currencyCode != null
+     final String currencySymbol = currentParticipant.currencyCode != null
          ? currenciesMap[currentParticipant.currencyCode][0]
          : "€";
     return Card(
@@ -105,7 +106,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                   IconButton(
                     icon: Icon(Icons.edit),
                     color: Colors.white,
-                    onPressed: () => _editParticipant()
+                    onPressed: _editParticipant
                   ),
                 ],
               ),
@@ -137,8 +138,8 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   }
 
 
-  _buildCreditHistorySection() {
-    var sortedHistory =  currentParticipant.creditHistory.keys.toList()..sort((a,b) => b.compareTo(a));
+  Widget _buildCreditHistorySection() {
+    final sortedHistory =  currentParticipant.creditHistory.keys.toList()..sort((a,b) => b.compareTo(a));
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
@@ -157,8 +158,8 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
             shrinkWrap: true,
             itemCount: sortedHistory.length,
             itemBuilder: (BuildContext context, int index) {
-              String key = sortedHistory.elementAt(index);
-              String dateFormatted = _dateFormated(key);
+              final String key = sortedHistory.elementAt(index);
+              final String dateFormatted = _dateFormated(key);
               return  Column(
                 children: <Widget>[
                   ListTile(
@@ -176,8 +177,8 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
     );
   }
 
-  _editParticipant() async {
-    ParticipantDocument edited = await Navigator.pushNamed<ParticipantDocument>(
+  Future<void> _editParticipant() async {
+    final ParticipantDocument edited = await Navigator.pushNamed<ParticipantDocument>(
         context,
         ParticipantForm.routeName,
         arguments: currentParticipant
@@ -188,15 +189,24 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   }
 
 
-  _dateFormated(dateAsString) {
+  String _dateFormated(dateAsString) {
     String dateFormatted = dateAsString;
       try {
         dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(dateAsString));
-      } catch(e) {
+      } on Exception {
         initializeDateFormatting();
         dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(dateAsString));
       }
       return dateFormatted;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties..add(StringProperty('appBarTitle', appBarTitle))
+              ..add(DiagnosticsProperty<ParticipantDocument>('currentParticipant', currentParticipant))
+              ..add(StringProperty('currentServiceId', currentServiceId))
+              ..add(DiagnosticsProperty<bool>('isHistoryExpanded', isHistoryExpanded));
   }
 
 

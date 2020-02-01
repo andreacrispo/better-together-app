@@ -1,11 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ServiceParticipantDocument {
-  String serviceId;
-  String participantId;
-  num pricePaid;
-  bool hasPaid;
-  DocumentReference reference;
 
   ServiceParticipantDocument({
     this.serviceId,
@@ -15,7 +10,7 @@ class ServiceParticipantDocument {
   });
 
   ServiceParticipantDocument.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null),
+      : assert(map['name'] != null,""),
         serviceId = map['serviceId'],
         participantId = map['participantId'],
         pricePaid = map['pricePaid'],
@@ -23,6 +18,13 @@ class ServiceParticipantDocument {
 
   ServiceParticipantDocument.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+  String serviceId;
+  String participantId;
+  num pricePaid;
+  bool hasPaid;
+  DocumentReference reference;
+
 
   Map<String, dynamic> toMap() => {
         "serviceId": serviceId,

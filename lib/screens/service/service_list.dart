@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/ServiceDocument.dart';
+import '../../model/service_document.dart';
 import '../../service/service_participant_firebase.dart';
 import '../../utils/utils.dart';
 import '../../widgets/bottom_app_bar.dart';
@@ -26,7 +26,7 @@ class ServiceListNotifier with ChangeNotifier {
 
   bool get isSortByDesc => _isSortByDesc;
 
-  void setSortByVariable(String variable, bool isDesc) async {
+  Future<void> setSortByVariable(String variable, bool isDesc) async {
     if(!whiteListVariable.contains(variable)) {
       return;
     }
@@ -124,7 +124,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             ),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) {
-              DocumentSnapshot item = snapshot[index];
+              final DocumentSnapshot item = snapshot[index];
               snapshot.removeAt(index);
               _deleteService(item);
             },
@@ -178,7 +178,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     );
   }
 
-  _iconLeading(ServiceDocument service, Color backgroundColor) {
+  Widget _iconLeading(ServiceDocument service, Color backgroundColor) {
     if(service.icon == null)
       return null;
 
@@ -194,7 +194,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   }
 
 
-  void _deleteService(DocumentSnapshot service) async {
+  Future<void> _deleteService(DocumentSnapshot service) async {
     await Firestore.instance.collection('services')
         .document(service.documentID)
         .delete();
