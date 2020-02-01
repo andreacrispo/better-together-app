@@ -146,14 +146,13 @@ class _ParticipantFormState extends State<ParticipantForm> {
   }
 
 
-  getInputDecoration(labelText){
+  InputDecoration getInputDecoration(labelText){
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
-      border: new OutlineInputBorder(
-        borderRadius: new BorderRadius.circular(8.0),
-        borderSide: new BorderSide(
-        ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide(),
       ),
       //fillColor: Colors.green
     );

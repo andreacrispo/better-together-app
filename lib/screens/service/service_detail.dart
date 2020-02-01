@@ -208,7 +208,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 
   createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
-    if (participants.length == 0) {
+    if (participants.isEmpty) {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -348,7 +348,6 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         arguments: participant
     );
     ParticipantDocument editedParticipant = result[0];
-    bool useCredit = result[1];
 
     if (editedParticipant != null) {
       await _repository.editParticipantFromService(currentServiceId, editedParticipant);
@@ -428,13 +427,13 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 
   _editService(ServiceDocument service) async {
-    ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(
+    final ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(
         context,
         ServiceForm.routeName,
         arguments: service
     );
     if (editedService != null) {
-      Firestore.instance.collection('services').document(service.reference.documentID).setData(editedService.toMap());
+      await _repository.editService(service.reference.documentID, editedService);
     }
   }
 

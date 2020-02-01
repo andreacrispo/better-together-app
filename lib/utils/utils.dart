@@ -5,14 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 
 
-final String DEFAULT_ICON = "default";
+// ignore: constant_identifier_names
+const String DEFAULT_ICON = "default";
 
 class HexColor extends Color {
+
+  HexColor(final String hexColor) : super(getColorFromHex(hexColor));
 
   static int getColorFromHex(String hexColor) {
     hexColor = hexColor.replaceAll("#", "");
     if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
+      hexColor = "FF$hexColor";
     }
     if (hexColor.length == 8) {
       return int.parse("0x$hexColor");
@@ -21,7 +24,6 @@ class HexColor extends Color {
     return int.parse("0xffffffff");
   }
 
-  HexColor(final String hexColor) : super(getColorFromHex(hexColor));
 }
 
 
@@ -108,10 +110,10 @@ bool isNumeric(String s) {
   if (s == null) {
     return false;
   }
-  return double.parse(s, (e) => null) != null;
+  return double.parse(s) != null;
 }
 
 
-Timestamp getTimestamp(yearPaid, monthPaid) {
+Timestamp getTimestamp(int yearPaid, int monthPaid) {
   return Timestamp.fromDate(DateTime(yearPaid, monthPaid));
 }

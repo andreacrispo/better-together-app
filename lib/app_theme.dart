@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 final ThemeData darkTheme = ThemeData(
-  primarySwatch: MaterialColor(4280361249,{50: Color( 0xfff2f2f2 )
+  primarySwatch: MaterialColor(4280361249, {50: Color( 0xfff2f2f2 )
     , 100: Color( 0xffe6e6e6 )
     , 200: Color( 0xffcccccc )
     , 300: Color( 0xffb3b3b3 )
@@ -48,7 +48,7 @@ final ThemeData darkTheme = ThemeData(
     padding: EdgeInsets.only(top:0,bottom:0,left:16, right:16),
     shape:     RoundedRectangleBorder(
       side: BorderSide(color: Color( 0xff000000 ), width: 0, style: BorderStyle.none, ),
-      borderRadius: BorderRadius.all(Radius.circular(2.0)),
+      borderRadius: BorderRadius.all(Radius.circular(2)),
     )
     ,
     alignedDropdown: false ,
@@ -383,7 +383,7 @@ final ThemeData darkTheme = ThemeData(
   dialogTheme: DialogTheme(
       shape:     RoundedRectangleBorder(
         side: BorderSide(color: Color( 0xff000000 ), width: 0, style: BorderStyle.none, ),
-        borderRadius: BorderRadius.all(Radius.circular(0.0)),
+        borderRadius: BorderRadius.all(Radius.circular(0)),
       )
 
   ),
@@ -445,7 +445,7 @@ final ThemeData lightTheme = ThemeData(
     padding: EdgeInsets.only(top:0,bottom:0,left:16, right:16),
     shape:     RoundedRectangleBorder(
       side: BorderSide(color: Color( 0xff000000 ), width: 0, style: BorderStyle.none, ),
-      borderRadius: BorderRadius.all(Radius.circular(2.0)),
+      borderRadius: BorderRadius.all(Radius.circular(2)),
     )
     ,
     alignedDropdown: false ,
@@ -780,7 +780,7 @@ final ThemeData lightTheme = ThemeData(
   dialogTheme: DialogTheme(
       shape:     RoundedRectangleBorder(
         side: BorderSide(color: Color( 0xff000000 ), width: 0, style: BorderStyle.none, ),
-        borderRadius: BorderRadius.all(Radius.circular(0.0)),
+        borderRadius: BorderRadius.all(Radius.circular(0)),
       )
 
   ),

@@ -1,15 +1,4 @@
 
-import 'package:better_together_app/screens/login-signup/login_signup.dart';
-import 'package:better_together_app/screens/participant/participant_detail.dart';
-import 'package:better_together_app/screens/participant/participant_form.dart';
-import 'package:better_together_app/screens/participant/participant_list.dart';
-import 'package:better_together_app/screens/service/service_detail.dart';
-import 'package:better_together_app/screens/service/service_form.dart';
-import 'package:better_together_app/screens/service/service_list.dart';
-import 'package:better_together_app/screens/service/service_participant_form.dart';
-import 'package:better_together_app/screens/service/service_preset.dart';
-import 'package:better_together_app/service/auth_service.dart';
-import 'package:better_together_app/service/service_participant_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
@@ -19,14 +8,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app_theme.dart';
 import 'model/ParticipantDocument.dart';
 import 'model/ServiceDocument.dart';
+import 'screens/login-signup/login_signup.dart';
+import 'screens/participant/participant_detail.dart';
+import 'screens/participant/participant_form.dart';
+import 'screens/participant/participant_list.dart';
+import 'screens/service/service_detail.dart';
+import 'screens/service/service_form.dart';
+import 'screens/service/service_list.dart';
+import 'screens/service/service_participant_form.dart';
+import 'screens/service/service_preset.dart';
+import 'service/auth_service.dart';
+import 'service/service_participant_firebase.dart';
 
 
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  bool darkThemeActive = sharedPreferences.getBool('darkThemeActive') ?? true;
+  final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  final bool darkThemeActive = sharedPreferences.getBool('darkThemeActive') ?? true;
 
   runApp(
       MultiProvider(
@@ -48,7 +48,7 @@ class BetterTogetherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
       title: _title,
       theme:  themeNotifier.getTheme(),
@@ -57,13 +57,12 @@ class BetterTogetherApp extends StatelessWidget {
    //     GlobalMaterialLocalizations.delegate,
     //    GlobalWidgetsLocalizations.delegate
       ],
-      onGenerateRoute: (settings) => Router.generate(settings),
+      onGenerateRoute: Router.generate,
       home: FutureBuilder<FirebaseUser>(
         future: Provider.of<AuthService>(context).getUser(),
-        builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.error != null) {
-              print("error");
               return Text(snapshot.error.toString());
             }
             if(snapshot.hasData) {
@@ -120,9 +119,9 @@ class ThemeNotifier with ChangeNotifier {
 
   ThemeNotifier(this._themeData);
 
-  getTheme() => _themeData;
+  ThemeData getTheme() => _themeData;
 
-  setTheme(ThemeData themeData) async {
+  void setTheme(ThemeData themeData) async {
     _themeData = themeData;
     notifyListeners();
   }

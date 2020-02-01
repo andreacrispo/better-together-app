@@ -61,7 +61,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
-        if( snapshot.data.documents.length == 0)
+        if(snapshot.data.documents.isEmpty)
           return _buildEmptyParticipantList();
 
         return _buildList(context, snapshot.data.documents);
@@ -111,7 +111,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
         : "€";
     return Card(
       key: ValueKey(participant.name),
-      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColor,
@@ -141,14 +141,14 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
     ParticipantDocument newItem = await Navigator.pushNamed<ParticipantDocument>(
         context, ParticipantForm.routeName);
     if (newItem != null)
-      _repository.createParticipant(newItem);
+     await _repository.createParticipant(newItem);
   }
 
   void _deleteParticipant(DocumentSnapshot service) async {
     _repository.deleteParticipant(service.documentID);
   }
 
-  _openParticipantDetail(ParticipantDocument participant) {
+  void _openParticipantDetail(ParticipantDocument participant) {
     Navigator.pushNamed(
         context,
         ParticipantDetailWidget.routeName,

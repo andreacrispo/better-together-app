@@ -1,9 +1,11 @@
-import 'package:better_together_app/service/auth_service.dart';
-import 'package:better_together_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import '../../service/auth_service.dart';
+import '../../utils/utils.dart';
+
 
 enum AuthMode { Signup, Login }
 
@@ -134,6 +136,14 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
         ),
+        onPressed: () async {
+          final form = _formKey.currentState;
+          form.save();
+
+          if (form.validate()) {
+            await _loginOrSignup();
+          }
+        },
         child: Center(
           child: Text(  _authMode == AuthMode.Login
               ? i18n(context,"login")
@@ -145,41 +155,33 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
               ),
           ),
         ),
-        onPressed: () async {
-          final form = _formKey.currentState;
-          form.save();
-
-          if (form.validate()) {
-            await _loginOrSignup();
-          }
-        },
       ),
     );
 
     final switchBetween = FlatButton(
+      onPressed: ()  {
+        setState(() {
+          this._authMode = (_authMode == AuthMode.Login) ? AuthMode.Signup : AuthMode.Login;
+        });
+      },
       child: Text(
         _authMode == AuthMode.Login
             ? i18n(context, "signup_phrase") + " " + i18n(context, 'signup')
             : i18n(context, "login_phrase"),
         style: TextStyle(color: Colors.grey[600]),
       ),
-      onPressed: ()  {
-        setState(() {
-          this._authMode = (_authMode == AuthMode.Login) ? AuthMode.Signup : AuthMode.Login;
-        });
-      },
     );
 
     final skipLogin = FlatButton(
-      padding: EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8),
       splashColor: Colors.blueGrey[700],
+      onPressed: () async {
+        await Provider.of<AuthService>(context).signInAnonymously();
+      },
        child: Text(
         i18n(context,   'sign_in_anonymously'),
         style: TextStyle(color: Colors.grey[600]),
       ),
-      onPressed: () async {
-        await Provider.of<AuthService>(context).signInAnonymously();
-      },
     );
 
     return Scaffold(

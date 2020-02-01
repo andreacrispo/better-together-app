@@ -1,14 +1,17 @@
 
-import 'package:better_together_app/app_theme.dart';
-import 'package:better_together_app/main.dart';
-import 'package:better_together_app/screens/participant/participant_list.dart';
-import 'package:better_together_app/screens/service/service_list.dart';
-import 'package:better_together_app/service/auth_service.dart';
-import 'package:better_together_app/utils/custom_route_animation.dart';
-import 'package:better_together_app/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../app_theme.dart';
+import '../main.dart';
+import '../screens/participant/participant_list.dart';
+import '../screens/service/service_list.dart';
+import '../service/auth_service.dart';
+import '../utils/custom_route_animation.dart';
+import '../utils/utils.dart';
+
 
 
 class BTBottomAppBarWidget extends StatelessWidget {
@@ -95,30 +98,9 @@ class BTBottomAppBarWidget extends StatelessWidget {
     );
   }
 
-  ListTile _listTileSort({BuildContext context, String title, String variableToSort}) {
-    final ServiceListNotifier serviceProvider = Provider.of<ServiceListNotifier>(context);
-
-    return ListTile(
-      title: Text( i18n(context, title)),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          IconButton(
-            icon:  Icon(Icons.keyboard_arrow_up ),
-            onPressed: () { serviceProvider.setSortByVariable(variableToSort, false); Navigator.pop(context); },
-          ),
-          IconButton(
-            icon:   Icon(Icons.keyboard_arrow_down),
-            onPressed: () { serviceProvider.setSortByVariable(variableToSort, true); Navigator.pop(context); },
-          ),
-        ],
-      ),
-    );
-  }
-
   _showMoreMenu(BuildContext context) async {
-    var prefs = await SharedPreferences.getInstance();
-    bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
+    final prefs = await SharedPreferences.getInstance();
+    final bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     final authUser = await Provider.of<AuthService>(context).getUser();
     showModalBottomSheet(
@@ -168,8 +150,8 @@ class BTBottomAppBarWidget extends StatelessWidget {
             shrinkWrap: true,
             itemCount: currenciesMap.length,
             itemBuilder: (BuildContext context, int index) {
-               String key = currenciesMap.keys.elementAt(index);
-               String currencyName = currenciesMap[key][1];
+              final String key = currenciesMap.keys.elementAt(index);
+              final String currencyName = currenciesMap[key][1];
               return  Column(
                 children: <Widget>[
                   ListTile(
@@ -184,7 +166,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
     );
   }
 
-  _logOut(context, isAnonymous){
+  _logOut(context, isAnonymous) {
     // TODO: FIXME Uncomment before prod
     //  if(isAnonymous) return Container();
 
@@ -193,7 +175,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
         title: Text("Logout"),
         onTap: ()  async {
           await  Provider.of<AuthService>(context).logout();
-          Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+          await Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
         }
     );
   }
@@ -204,10 +186,10 @@ class BTBottomAppBarWidget extends StatelessWidget {
 
 class ListTileVariableSort extends StatelessWidget {
 
+  ListTileVariableSort({Key key, this.title, this.variableToSort}) : super(key: key);
+
   final String title;
   final String variableToSort;
-
-  ListTileVariableSort({Key key, this.title, this.variableToSort}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -228,6 +210,14 @@ class ListTileVariableSort extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+          ..add(StringProperty('title', title))
+          ..add(StringProperty('variableToSort', variableToSort));
   }
 
 }

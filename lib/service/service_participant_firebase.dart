@@ -1,9 +1,11 @@
-import 'package:better_together_app/model/ParticipantDocument.dart';
-import 'package:better_together_app/model/ServiceDocument.dart';
-import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../model/ParticipantDocument.dart';
+import '../model/ServiceDocument.dart';
+import '../utils/utils.dart';
+
 
 class ServiceParticipantFirebase {
 
@@ -29,11 +31,17 @@ class ServiceParticipantFirebase {
 
 
   createService(context, ServiceDocument newService) async {
+    newService
+          ..uid = this.uid
+          ..color = newService.color ?? Colors.white60.value
+          ..icon = newService.icon ?? DEFAULT_ICON;
+    await Firestore.instance.collection('services').add(newService.toMap());
+  }
 
-    newService.uid = this.uid;
-    newService.color = newService.color ?? Colors.white60.value; // Theme.of(context).primaryColor.value;
-    newService.icon = newService.icon ?? DEFAULT_ICON;
-    Firestore.instance.collection('services').add(newService.toMap());
+  editService(documentID, ServiceDocument editedService) async {
+    await Firestore.instance.collection('services')
+          .document(documentID)
+          .setData(editedService.toMap());
   }
 
   Stream<QuerySnapshot> getServiceWithParticipants(String serviceId, Timestamp datePaid) {
@@ -102,7 +110,7 @@ class ServiceParticipantFirebase {
   }
 
   deleteParticipantFromService(String serviceId, ParticipantDocument participant) {
-    String participantId = participant.reference.documentID;
+    final String participantId = participant.reference.documentID;
     return Firestore.instance
         .collection('services')
         .document(serviceId)

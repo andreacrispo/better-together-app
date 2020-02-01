@@ -1,11 +1,16 @@
 
-import 'package:better_together_app/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/utils.dart';
+
+
 class HasPaidWidget extends StatelessWidget {
+
+  HasPaidWidget({@required this.hasPaid, @required this.callback, Key key}) : super(key: key);
+
   final bool hasPaid;
   final Function(bool) callback;
-  HasPaidWidget({Key key, @required this.hasPaid, @required this.callback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,5 +26,12 @@ class HasPaidWidget extends StatelessWidget {
         style: TextStyle(fontSize: 10.0),
       ),
     );
+  }
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+          ..add(DiagnosticsProperty<bool>('hasPaid', hasPaid))
+          ..add(DiagnosticsProperty<Function(bool)>('callback', callback));
   }
 }

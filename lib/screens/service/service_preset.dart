@@ -205,32 +205,7 @@ class _PresetSearchDelegate extends SearchDelegate {
   }
   @override
   Widget buildResults(BuildContext context) {
-    final List<ServiceDocument> suggestionList = query.isEmpty
-        ? []
-        : serviceList.where((p) => p.name.contains(query)).toList();
-
     return null;
-    return ListView.builder(
-      itemCount: suggestionList.length,
-      itemBuilder: (context, index) =>
-          ListTile(
-            leading: Icon(Icons.add),
-            onTap: () =>  showResults(context), //close(context, suggestionList[index]),
-            title: RichText(
-                text:
-                TextSpan(
-                    text: suggestionList[index].name.substring(0, query.length),
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 32),
-                    children: [
-                      TextSpan(
-                          text: suggestionList[index].name.substring(query.length),
-                          style: TextStyle(color: Colors.white)
-                      )
-                    ]
-                )
-            ),
-          ),
-    );
   }
 
   @override

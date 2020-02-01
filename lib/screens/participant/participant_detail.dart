@@ -1,13 +1,15 @@
 
-import 'package:better_together_app/model/ParticipantDocument.dart';
-import 'package:better_together_app/screens/participant/participant_form.dart';
-import 'package:better_together_app/service/service_participant_firebase.dart';
-import 'package:better_together_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+
+import '../../model/ParticipantDocument.dart';
+import '../../service/service_participant_firebase.dart';
+import '../../utils/utils.dart';
+import 'participant_form.dart';
+
 
 class ParticipantDetailWidget extends StatefulWidget {
   ParticipantDetailWidget({Key key}) : super(key: key);
@@ -79,7 +81,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
     );
   }
 
-   _buildSummaryCard(BuildContext context) {
+  Card _buildSummaryCard(BuildContext context) {
      String currencySymbol = currentParticipant.currencyCode != null
          ? currenciesMap[currentParticipant.currencyCode][0]
          : "€";

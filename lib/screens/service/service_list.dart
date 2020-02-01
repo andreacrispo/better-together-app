@@ -1,30 +1,32 @@
 
-import 'package:better_together_app/model/ServiceDocument.dart';
-import 'package:better_together_app/screens/service/service_detail.dart';
-import 'package:better_together_app/screens/service/service_preset.dart';
-import 'package:better_together_app/service/service_participant_firebase.dart';
-import 'package:better_together_app/utils/utils.dart';
-import 'package:better_together_app/widgets/bottom_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/ServiceDocument.dart';
+import '../../service/service_participant_firebase.dart';
+import '../../utils/utils.dart';
+import '../../widgets/bottom_app_bar.dart';
+import 'service_detail.dart';
+import 'service_preset.dart';
+
+
 
 
 class ServiceListNotifier with ChangeNotifier {
 
-  final whiteListVariable = ["name", "price", "participantNumber"];
+  final List<String> whiteListVariable = ["name", "price", "participantNumber"];
 
   String _sortByVariable = "name";
   bool _isSortByDesc = false;
 
-  get sortByVariable => _sortByVariable;
+  String get sortByVariable => _sortByVariable;
 
-  get isSortByDesc => _isSortByDesc;
+  bool get isSortByDesc => _isSortByDesc;
 
-  setSortByVariable(String variable, bool isDesc) async {
+  void setSortByVariable(String variable, bool isDesc) async {
     if(!whiteListVariable.contains(variable)) {
       return;
     }
@@ -38,7 +40,7 @@ class ServiceListNotifier with ChangeNotifier {
 
 class ServiceListWidget extends StatefulWidget {
   ServiceListWidget({Key key}) : super(key: key);
-  static const routeName = '/serviceList';
+  static const String routeName = '/serviceList';
 
 
   @override
@@ -62,7 +64,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final topAppBar = AppBar(
+    final AppBar topAppBar = AppBar(
         elevation: 0.2,
         title:  Text('Better Together')
     );
@@ -90,7 +92,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
-        if( snapshot.data.documents.length == 0)
+        if(snapshot.data.documents.isEmpty)
           return _buildEmptyServiceList();
 
         return _buildList(context, snapshot.data.documents);
@@ -133,10 +135,10 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final service = ServiceDocument.fromSnapshot(data);
+    final ServiceDocument service = ServiceDocument.fromSnapshot(data);
 
-    Color backgroundColor = service.color != null ? Color(service.color) : Theme.of(context).primaryColor;
-    String currencySymbol = service.currencyCode != null ? currenciesMap[service.currencyCode][0] : "€";
+    final Color backgroundColor = service.color != null ? Color(service.color) : Theme.of(context).primaryColor;
+    final String currencySymbol = service.currencyCode != null ? currenciesMap[service.currencyCode][0] : "€";
     return Card(
       key: ValueKey(service.name),
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -193,14 +195,14 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
 
   void _deleteService(DocumentSnapshot service) async {
-    Firestore.instance.collection('services')
+    await Firestore.instance.collection('services')
         .document(service.documentID)
         .delete();
   }
 
   Widget _buildEmptyServiceList() {
     return Column(
-        children: [
+        children: <Widget>[
           Center(
             child:
             CircleAvatar(

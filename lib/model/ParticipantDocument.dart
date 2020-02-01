@@ -23,7 +23,7 @@ class ParticipantDocument {
       this.uid
   }) {
     this.hasPaid = false;
-    this.creditHistory = new Map();
+    this.creditHistory = Map();
   }
 
   ParticipantDocument.fromMap(Map<String, dynamic> map, {this.reference})
