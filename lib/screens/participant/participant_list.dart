@@ -71,6 +71,11 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    // TODO: FIXME: Remove when sort order works in firebase
+    snapshot.sort((a, b) {
+      return a.data['name'].toString().toLowerCase().compareTo(b.data['name'].toString().toLowerCase());
+    });
+
     return ListView.builder(
       padding: EdgeInsets.all(8),
       shrinkWrap: true,

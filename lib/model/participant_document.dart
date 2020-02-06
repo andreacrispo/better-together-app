@@ -12,6 +12,7 @@ class ParticipantDocument {
   }) {
     this.hasPaid = false;
     this.creditHistory = {};
+    this.serviceIds = [];
   }
 
   ParticipantDocument.fromMap(Map<String, dynamic> map, {this.reference})
@@ -25,11 +26,13 @@ class ParticipantDocument {
         datePaid = map['datePaid'],
         currencyCode = map['currencyCode'],
         creditHistory  = map['creditHistory'],
+        serviceIds = map['serviceIds'],
         uid  = map['uid']
   ;
 
   ParticipantDocument.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
+
 
   String participantId;
   String name;
@@ -40,9 +43,10 @@ class ParticipantDocument {
   Timestamp datePaid;
   String currencyCode;
   Map<dynamic, dynamic> creditHistory;
+  List<dynamic> serviceIds;
   DocumentReference reference;
-
   String uid;
+
 
   Map<String, dynamic> toMap() => {
         "participantId": participantId,
@@ -54,6 +58,7 @@ class ParticipantDocument {
         "datePaid": datePaid,
         "currencyCode": currencyCode,
         "creditHistory": creditHistory,
+        "serviceIds": serviceIds,
         "uid": uid
-      };
+  };
 }

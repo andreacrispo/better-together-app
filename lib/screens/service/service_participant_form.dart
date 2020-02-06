@@ -46,10 +46,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
   @override
   Widget build(BuildContext context) {
     String appBarTitle = i18n(context,'add_participant_to_service');
-    final ParticipantDocument passArgs = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
+    final ParticipantDocument passArgs = ModalRoute.of(context).settings.arguments;
     if(passArgs != null) {
       _participant = passArgs;
       _participantId = passArgs.participantId;
@@ -128,7 +125,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text(i18n(context,"credit") + ": ", style: TextStyle(fontSize: 18),),
+          Text("${i18n(context,"credit")}: ", style: TextStyle(fontSize: 18),),
           Text(_participant.credit != null ? _participant.credit.toString() : "0",style: TextStyle(fontSize: 18),),
           Text(i18n(context,'money_from_credit'),),
           Switch(
@@ -144,6 +141,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         ],
       ),
     );
+
 
 
     final pricePaidField = TextFormField(

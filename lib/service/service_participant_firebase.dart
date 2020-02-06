@@ -1,5 +1,6 @@
+import 'dart:developer' as developer;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../model/participant_document.dart';
@@ -9,11 +10,11 @@ import '../utils/utils.dart';
 
 class ServiceParticipantFirebase {
 
-  ServiceParticipantFirebase._internal();
-
   factory ServiceParticipantFirebase() {
     return _singleton;
   }
+
+  ServiceParticipantFirebase._internal();
 
   static final ServiceParticipantFirebase _singleton = ServiceParticipantFirebase._internal();
 
@@ -29,12 +30,13 @@ class ServiceParticipantFirebase {
   }
 
 
-  createService(context, ServiceDocument newService) async {
+  Future<DocumentReference> createService(context, ServiceDocument newService) async {
     newService
           ..uid = this.uid
           ..color = newService.color ?? Colors.white60.value
           ..icon = newService.icon ?? DEFAULT_ICON;
-    await Firestore.instance.collection('services').add(newService.toMap());
+    final result = await Firestore.instance.collection('services').add(newService.toMap());
+    return result;
   }
 
   editService(documentID, ServiceDocument editedService) async {
@@ -86,11 +88,18 @@ class ServiceParticipantFirebase {
       final String dateKey = Timestamp.now().toDate().toIso8601String();
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
     }
+
+    final serviceListIds = participant.serviceIds.toSet()
+                ..add(serviceId);
+    developer.log("services $serviceListIds");
+    developer.log("serviceIds.toList() ${serviceListIds.toList()}");
     Firestore.instance.collection('participants').document(participantId).setData({
       'credit': participant.credit,
-      'creditHistory': participant.creditHistory
+      'creditHistory': participant.creditHistory,
+      'serviceIds': serviceListIds.toList()
     }, merge: true);
 
+    
     Firestore.instance
         .collection('services')
         .document(serviceId)
@@ -136,15 +145,38 @@ class ServiceParticipantFirebase {
 
 
   Future<DocumentReference> createParticipant(ParticipantDocument newParticipant) async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final FirebaseUser user = await _auth.currentUser();
-
-    newParticipant.uid = user.uid;
+    newParticipant.uid = this.uid;
     return Firestore.instance.collection('participants').add(newParticipant.toMap());
   }
 
-  void editParticipant(String documentID, ParticipantDocument edited) {
-     Firestore.instance
+  Future<void> editParticipant(String documentID, ParticipantDocument edited) async {
+      //TODO: Find if there is a better way
+     developer.log("documentID $documentID");
+     final serviceListIds = edited.serviceIds;
+     for(final String serviceId in serviceListIds) {
+
+        final QuerySnapshot participants = await Firestore.instance
+            .collection('services')
+            .document(serviceId)
+            .collection('participants')
+            .where('uid', isEqualTo: this.uid)
+            .where('participantId', isEqualTo: edited.reference.documentID)
+            .getDocuments();
+
+        for(final DocumentSnapshot docParticipant in participants.documents) {
+          final participantMapData = docParticipant.data;
+          participantMapData['name'] = edited.name;
+          participantMapData['credit'] = edited.credit;
+          await Firestore.instance
+              .collection('services')
+              .document(serviceId)
+              .collection('participants')
+              .document(docParticipant.documentID)
+              .setData(participantMapData, merge: true);
+        }
+     }
+     
+     await Firestore.instance
         .collection('participants')
         .document(documentID)
         .setData(edited.toMap());

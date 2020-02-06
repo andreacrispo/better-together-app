@@ -54,29 +54,31 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
 
-        return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            verticalDirection: VerticalDirection.down,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[ Container()],
-              ),
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: 20),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              verticalDirection: VerticalDirection.down,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[ Container()],
+                ),
 
-              Container(
-                  margin: EdgeInsets.only(top: 50, left: 10, right: 10),
-                  child: _buildSummaryCard(context)
-              ),
+                Container(
+                    margin: EdgeInsets.only(top: 50, left: 10, right: 10),
+                    child: _buildSummaryCard(context)
+                ),
 
-              Container(
-                margin: EdgeInsets.only(top: 10, left: 15, right: 15),
-                child:
-                   _buildCreditHistorySection(),
-              )
-            ]
+                Container(
+                  margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+                  child: _buildCreditHistorySection(),
+                )
+              ]
+          ),
         );
       },
     );
@@ -184,7 +186,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
         arguments: currentParticipant
     );
     if (edited != null)
-      _repository.editParticipant(currentParticipant.reference.documentID, edited);
+      await _repository.editParticipant(currentParticipant.reference.documentID, edited);
 
   }
 

@@ -74,8 +74,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   Widget _buildBody(BuildContext context, ServiceDetailArgs args) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _repository.getServiceWithParticipants(
-          args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
+      stream: _repository.getServiceWithParticipants(args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
@@ -219,12 +218,17 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       );
     }
 
+    // TODO: FIXME: Remove when sort order works in firebase
+    participants.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: DataTable(
         columnSpacing: 10,
         sortAscending: sort,
-        sortColumnIndex: 1,
+       // sortColumnIndex: 1,
         columns: [
           DataColumn(
             label: Text(i18n(context,'name')),
@@ -314,7 +318,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   addParticipantToService(BuildContext context) async {
     final result = await Navigator.pushNamed<dynamic>(
         context,
-        ServiceParticipantForm.routeName
+        ServiceParticipantForm.routeName,
     );
     if(result == null)
       return;
@@ -340,6 +344,9 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         ServiceParticipantForm.routeName,
         arguments: participant
     );
+    if(result == null)
+      return;
+
     final ParticipantDocument editedParticipant = result[0];
 
     if (editedParticipant != null) {
