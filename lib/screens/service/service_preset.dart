@@ -35,30 +35,36 @@ class _ServicePresetState extends State<ServicePreset> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(i18n(context,'service')),
-        actions: <Widget>[
 
-          IconButton(
-            tooltip: 'Search',
-            icon: const Icon(Icons.search),
-            onPressed: () async {
-              final selected = await showSearch(
+    final fab = FloatingActionButton.extended(
+      label: Text(i18n(context,'add_custom_service')),
+      icon: Icon(Icons.add),
+      backgroundColor: Theme.of(context).accentColor,
+      onPressed: () => _addServicePreset(null),
+    );
+
+    final appBar = AppBar(
+      title: Text(i18n(context,'service')),
+      actions: <Widget>[
+        IconButton(
+          tooltip: 'Search',
+          icon: const Icon(Icons.search),
+          onPressed: () async {
+            final selected = await showSearch(
                 context: context,
                 delegate: _PresetSearchDelegate(_servicePresetList) // _delegate,
-              );
-              _addServicePreset(selected);
-            },
-          ),
+            );
+            _addServicePreset(selected);
+          },
+        ),
+      ],
+    );
 
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _addServicePreset(null),
-          ),
-        ],
-      ),
+    return Scaffold(
+      key: _scaffoldKey,
+      floatingActionButton: fab,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      appBar: appBar,
       body: _buildBody(context)
     );
   }
@@ -80,7 +86,7 @@ class _ServicePresetState extends State<ServicePreset> {
 
   Widget _buildList(BuildContext context, List<ServiceDocument> serviceList) {
      return ListView.builder(
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.fromLTRB(8, 16, 8, 70), //.all(8),
       shrinkWrap: true,
       itemCount: serviceList == null ? 0 : serviceList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -90,15 +96,14 @@ class _ServicePresetState extends State<ServicePreset> {
 
   Widget _buildListItem(BuildContext context, ServiceDocument service) {
 
-    final Color backgroundColor = service.color != null
-        ? Color(service.color)
-        : Colors.white24;
+    final Color borderColor = service.color != null ? HexColor(service.color) : Colors.white24;
+    final Color iconColor = service.color != "" ? borderColor : null;
     return Card(
       key: ValueKey(service.name),
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: backgroundColor, width: 2,),
+            border: Border.all(color: borderColor, width: 2,),
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -114,7 +119,7 @@ class _ServicePresetState extends State<ServicePreset> {
                       right: BorderSide(width: 1.0, color: Colors.white24),
                   )
               ),
-              child: Tab(icon: Image.asset("assets/${service.icon}.png",color: backgroundColor,)),
+              child: Tab(icon: Image.asset("assets/${service.icon}.png",color: iconColor,)),
             ),
 
             title: Text(
@@ -148,7 +153,7 @@ class _ServicePresetState extends State<ServicePreset> {
         arguments: service
     );
     if (newItem != null) {
-      _repository.createService(context, newItem);
+      await _repository.createService(context, newItem);
       Navigator.pop(context);
     }
   }

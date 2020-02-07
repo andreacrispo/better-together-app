@@ -5,22 +5,145 @@
     "name": "Amazon",
     "price": 38,
     "icon": "amazon",
-    "color": 4294951175
+    "color": "#ff9900"
   },
+
+
+  {
+    "name": "Apple Music",
+    "price": 9.99,
+    "icon": "apple",
+    "color": "#999999"
+  },
+
+  {
+    "name": "Audible",
+    "price": 14.95,
+    "icon": "audible",
+    "color": "#ff9900"
+
+  },
+
+  {
+    "name": "Dazn",
+    "price": 9.99,
+    "icon": "dazn",
+    "color": ""
+  },
+
+
+
+  {
+    "name": "Google Drive",
+    "price": 2.99,
+    "icon": "drive",
+    "color": ""
+  },
+
+  {
+    "name": "Dropbox",
+    "price": 11,
+    "icon": "dropbox",
+    "color": "#0060FF"
+
+  },
+
+  {
+    "name": "Github",
+    "price": 15,
+    "icon": "github",
+    "color": "#f5f5f5"
+  },
+
+  {
+    "name": "Discord",
+    "price": 15,
+    "icon": "discord",
+    "color": "#7289d9"
+  },
+
+
 
   {
     "name": "Netflix",
     "price": 11,
     "icon": "netflix",
-    "color": 4294198070
+    "color": "#D81F26"
 
+  },
+
+
+  {
+    "name": "Office",
+    "price": 13,
+    "icon": "office",
+    "color": ""
+  },
+
+  {
+    "name": "Skype",
+    "price": 3.66,
+    "icon": "skype",
+    "color": "#00AFF0"
+  },
+
+  {
+    "name": "Slack",
+    "price": 6.25,
+    "icon": "slack",
+    "color": ""
+
+  },
+
+  {
+    "name": "Sound Cloud",
+    "price": 11,
+    "icon": "soundcloud",
+    "color": "#FE5000"
   },
 
   {
     "name": "Spotify",
     "price": 15,
     "icon": "spotify",
-    "color": 4283215696
+    "color": "#1ed761"
+  },
+
+  {
+    "name": "Tidal",
+    "price": 9.99,
+    "icon": "tidal",
+    "color": "#000000"
+  },
+
+  {
+    "name": "Twitch Prime",
+    "price": 19.99,
+    "icon": "twitch",
+    "color": "#6441A4"
+  },
+
+  {
+    "name": "Xbox",
+    "price": 9.99,
+    "icon": "xbox",
+    "color": "#0e7a0d"
+
+  },
+
+  {
+    "name": "Youtube Premium",
+    "price": 14.99,
+    "icon": "youtube",
+    "color": "#FF0000"
+  },
+
+
+  {
+    "name": "Youtube Music",
+    "price": 9.99,
+    "icon": "youtube_music",
+    "color": "#FF0000"
   }
 
 

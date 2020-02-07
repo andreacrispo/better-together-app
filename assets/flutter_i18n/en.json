@@ -37,5 +37,7 @@
   "currencies": "currencies",
   "currency": "currency",
   "no_service_added": "No service has been added yet",
-  "no_participant_added": "No participants has been added yet"
+  "no_participant_added": "No participants has been added yet",
+  "add_custom_service": "Add custom service"
+
 }

@@ -32,15 +32,15 @@ class _ServiceFormState extends State<ServiceForm> {
   @override
   Widget build(BuildContext context) {
 
-    String appBarTitle = i18n(context, "add") + " " + i18n(context, "service");
+    String appBarTitle = "${i18n(context, "add")} ${i18n(context, "service")}";
     final ServiceDocument passArgs = ModalRoute.of(context).settings.arguments;
     if(passArgs != null) {
       _service = passArgs;
-      appBarTitle = i18n(context, "edit")  + " " + i18n(context, "service");
+      appBarTitle = "${i18n(context, "edit")} ${i18n(context, "service")}";
     }
 
     final iconField =  CircleAvatar(
-        backgroundColor: _service.icon != null ? Color(_service.color) : Colors.white60,
+        backgroundColor: (_service.color != null || _service.color != "") ? HexColor(_service.color) : Colors.grey,
         radius: 50,
         child: Image.asset(_service.icon != null ? 'assets/${_service.icon}.png' :  'assets/$DEFAULT_ICON.png'),
     );
@@ -152,7 +152,7 @@ class _ServiceFormState extends State<ServiceForm> {
             ),
         //    const SizedBox(height: 16.0),
             CircleAvatar(
-              backgroundColor: Color(_service.color ?? Theme.of(context).primaryColor.value),
+              backgroundColor: _service.color != null ? HexColor(_service.color) : Colors.grey,
               radius: 22.0
             ),
           ],
@@ -213,8 +213,8 @@ class _ServiceFormState extends State<ServiceForm> {
       i18n(context, "choose_color"),
       MaterialColorPicker(
         allowShades: false,
-        onMainColorChange: (color) =>
-            setState(() => _service.color = color.value),
+        onMainColorChange: (Color color) =>
+            setState(() => _service.color = HexColor.from(color)),
       ),
     );
   }

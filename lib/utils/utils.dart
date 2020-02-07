@@ -13,6 +13,9 @@ class HexColor extends Color {
   HexColor(final String hexColor) : super(getColorFromHex(hexColor));
 
   static int getColorFromHex(String stringColor) {
+    if(stringColor == null)
+      return int.parse("0xffffffff");
+
     String hexColor = stringColor.replaceAll("#", "");
     if (hexColor.length == 6) {
       hexColor = "FF$hexColor";
@@ -22,6 +25,10 @@ class HexColor extends Color {
     }
 
     return int.parse("0xffffffff");
+  }
+
+  static String from(Color color) {
+    return '#${color.value.toRadixString(16)}';
   }
 
 }

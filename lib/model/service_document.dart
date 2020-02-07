@@ -37,7 +37,7 @@ class ServiceDocument {
   String serviceId;
   String name;
   String description;
-  num color;
+  String color;
   num price;
   int participantNumber;
   String icon; // To be define better

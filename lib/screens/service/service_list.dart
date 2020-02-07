@@ -137,7 +137,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final ServiceDocument service = ServiceDocument.fromSnapshot(data);
 
-    final Color backgroundColor = service.color != null ? Color(service.color) : Theme.of(context).primaryColor;
+    final Color backgroundColor = service.color != null ? HexColor(service.color) : Theme.of(context).primaryColor;
     final String currencySymbol = service.currencyCode != null ? currenciesMap[service.currencyCode][0] : "€";
     return Card(
       key: ValueKey(service.name),

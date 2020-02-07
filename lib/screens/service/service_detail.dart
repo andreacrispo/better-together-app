@@ -92,7 +92,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               elevation: 4,
               forceElevated: true,
               centerTitle: true,
-              backgroundColor: Color(currentService.color),
+              backgroundColor: HexColor(currentService.color),
               flexibleSpace:  FlexibleSpaceBar(
                 title:  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
