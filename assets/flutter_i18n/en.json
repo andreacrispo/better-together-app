@@ -14,6 +14,7 @@
   "enable_light_theme": "Enable light theme",
   "enable_dark_theme": "Enable dark theme",
   "copy_participants_previous_month": "Copy participants from previous month",
+  "copy_participants_from":  "Copy participants from",
   "paid": "Pagato",
   "not_paid": "Non pagato",
   "mandatory_field": "Mandatory field",

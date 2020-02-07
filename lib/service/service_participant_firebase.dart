@@ -55,30 +55,51 @@ class ServiceParticipantFirebase {
   }
 
   Future<void> copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
-    final previousPaid = getTimestamp(year, month - 1);
     final currentPaid = getTimestamp(year, month);
+    if (month - 1 <= 0) {
+      month = 12;
+      year -= 1;
+    } else {
+      month -= 1;
+    }
+    final previousPaid = getTimestamp(year, month);
+
+    await this.copyParticipantsFromAnotherDate(
+      serviceId: serviceId,
+      fromAnotherTimestamp: previousPaid,
+      currentToTimestamp: currentPaid
+    );
+  }
+
+  Future<void> copyParticipantsFromAnotherDate({
+    String serviceId,
+    Timestamp fromAnotherTimestamp,
+    Timestamp currentToTimestamp
+  }) async {
 
     final QuerySnapshot previousParticipants = await Firestore.instance
-        .collection("services")
-        .document(serviceId)
-        .collection('participants')
-        .where('uid', isEqualTo: this.uid)
-        .where('datePaid', isEqualTo: previousPaid)
-        .getDocuments();
-
-    previousParticipants.documents.forEach((DocumentSnapshot snapshot) {
-      final participant = snapshot.data;
-      participant['datePaid'] = currentPaid;
-      participant['pricePaid'] = null;
-      participant['hasPaid'] = false;
-
-      Firestore.instance
           .collection("services")
           .document(serviceId)
           .collection('participants')
-          .add(participant);
-    });
+          .where('uid', isEqualTo: this.uid)
+          .where('datePaid', isEqualTo: fromAnotherTimestamp)
+          .getDocuments();
+
+    for(final DocumentSnapshot snapshot in previousParticipants.documents){
+       final participant = snapshot.data;
+       participant['datePaid'] = currentToTimestamp;
+       participant['pricePaid'] = null;
+       participant['hasPaid'] = false;
+
+       await Firestore.instance
+                      .collection("services")
+                      .document(serviceId)
+                      .collection('participants')
+                      .add(participant);
+    }
+
   }
+
 
   addParticipantIntoService({String serviceId, ParticipantDocument participant, bool useCredit}) {
     final String participantId = participant.participantId;

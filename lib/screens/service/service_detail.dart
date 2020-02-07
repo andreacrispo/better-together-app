@@ -206,14 +206,40 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   Widget createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
     if (participants.isEmpty) {
+      final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
       return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+         mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            SizedBox(height: 150,),
             RaisedButton(
               onPressed: () => copyParticipantsFromPreviousMonth(context),
               child: Text(i18n(context,'copy_participants_previous_month') ),
             ),
+            SizedBox(height: 40,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text(i18n(context,'copy_participants_from'), style: TextStyle(fontSize: 22),),
+                IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () {
+                    showMonthPicker(
+                      initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
+                      context: context,
+                    ).then((dateTime) async {
+                      await _repository.copyParticipantsFromAnotherDate(
+                          serviceId: currentServiceId,
+                          currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid),
+                          fromAnotherTimestamp: getTimestamp(dateTime.year, dateTime.month)
+                      );
+                      setState(() {});
+                    });
+                  },
+                )
+              ],
+            ),
+
           ],
       );
     }
@@ -368,14 +394,22 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
   copyParticipantsFromPreviousMonth(BuildContext context) async {
-    final ServiceDetailArgs passArgs = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
+    final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
     final int month = passArgs.monthPaid;
     final int year = passArgs.yearPaid;
-    await _repository.copyParticipantsFromPreviousMonth(
-        currentServiceId, year, month);
+    await _repository.copyParticipantsFromPreviousMonth(currentServiceId, year, month);
+    setState(() {});
+  }
+
+
+  copyParticipantsFromAnotherDate() async {
+    final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
+
+    await _repository.copyParticipantsFromAnotherDate(
+      serviceId: currentServiceId,
+      fromAnotherTimestamp: null, // TIMESTAMP
+      currentToTimestamp: getTimestamp( passArgs.yearPaid, passArgs.monthPaid)
+    );
     setState(() {});
   }
 
