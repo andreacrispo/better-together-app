@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -56,26 +55,21 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
 
 
   Widget _buildBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<List<ParticipantDocument>>(
       stream: _repository.getParticipants(),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
-        if(snapshot.data.documents.isEmpty)
+        if(snapshot.data.isEmpty)
           return _buildEmptyParticipantList();
 
-        return _buildList(context, snapshot.data.documents);
+        return _buildList(context, snapshot.data);
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    // TODO: FIXME: Remove when sort order works in firebase
-    snapshot.sort((a, b) {
-      return a.data['name'].toString().toLowerCase().compareTo(b.data['name'].toString().toLowerCase());
-    });
-
+  Widget _buildList(BuildContext context, List<ParticipantDocument> snapshot) {
     return ListView.builder(
       padding: EdgeInsets.all(8),
       shrinkWrap: true,
@@ -99,7 +93,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
             ),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) {
-              final DocumentSnapshot item = snapshot[index];
+              final item = snapshot[index];
               snapshot.removeAt(index);
               _deleteParticipant(item);
             },
@@ -109,9 +103,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final ParticipantDocument participant = ParticipantDocument.fromSnapshot(data);
-
+  Widget _buildListItem(BuildContext context, ParticipantDocument participant) {
     final String currencySymbol = participant.currencyCode != null
         ? currenciesMap[participant.currencyCode][0]
         : "€";
@@ -150,8 +142,8 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
      await _repository.createParticipant(newItem);
   }
 
-  Future<void> _deleteParticipant(DocumentSnapshot service) async {
-    _repository.deleteParticipant(service.documentID);
+  Future<void> _deleteParticipant(ParticipantDocument p) async {
+    await _repository.deleteParticipant(p.reference.documentID);
   }
 
   void _openParticipantDetail(ParticipantDocument participant) {

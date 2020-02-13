@@ -1,11 +1,23 @@
 import 'dart:developer' as developer;
 
+import 'package:better_together_app/service/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../model/participant_document.dart';
 import '../model/service_document.dart';
 import '../utils/utils.dart';
+
+
+class FireStorePath {
+  static String services() => "services";
+  static String service(String documentId) => "services/$documentId";
+  static String participants() => "participants";
+  static String participant(String documentId) => "participants/$documentId";
+  static String participantsOfService(String serviceDocId) =>  "services/$serviceDocId/participants";
+  static String serviceParticipant(String serviceDocId, String participantDocId) =>  "services/$serviceDocId/participants/$participantDocId";
+}
+
 
 
 class ServiceParticipantFirebase {
@@ -18,40 +30,49 @@ class ServiceParticipantFirebase {
 
   static final ServiceParticipantFirebase _singleton = ServiceParticipantFirebase._internal();
 
-
   String uid;
 
-  Stream<QuerySnapshot> getServices(String sortByVariable, bool isSortByDesc) {
-    return Firestore.instance
-                    .collection('services')
-                    .where('uid', isEqualTo: this.uid)
-                    .orderBy(sortByVariable, descending: isSortByDesc)
-                    .snapshots();
+
+  final _database = FirestoreService.instance;
+
+  Stream<List<ServiceDocument>> getServices(String sortByVariable, {bool isSortByDesc }) {
+
+    return _database.collectionStream(
+        path: FireStorePath.services(),
+        builder: (data, reference) => ServiceDocument.fromMap(data, reference: reference),
+        queryBuilder: (Query query) => query
+                                        .where('uid', isEqualTo: this.uid)
+                                        .orderBy(sortByVariable, descending: isSortByDesc),
+    );
   }
 
 
-  Future<DocumentReference> createService(context, ServiceDocument newService) async {
+  Future<DocumentReference> createService(ServiceDocument newService) async {
     newService
           ..uid = this.uid
           ..color = newService.color ?? Colors.white60.value
           ..icon = newService.icon ?? DEFAULT_ICON;
-    final result = await Firestore.instance.collection('services').add(newService.toMap());
+    final result = await _database.addData(path: FireStorePath.services(), data: newService.toMap());
     return result;
   }
 
-  editService(documentID, ServiceDocument editedService) async {
-    await Firestore.instance.collection('services')
-          .document(documentID)
-          .setData(editedService.toMap());
+  Future<void> editService(String documentID, ServiceDocument editedService) async {
+    await _database.setData(
+      path: FireStorePath.service(documentID),
+      data: editedService.toMap()
+    );
   }
 
-  Stream<QuerySnapshot> getServiceWithParticipants(String serviceId, Timestamp datePaid) {
-    return Firestore.instance
-        .collection('services')
-        .document(serviceId)
-        .collection('participants')
-        .where('datePaid', isEqualTo: datePaid)
-        .snapshots();
+  Future<void> deleteService(String documentID) async {
+    await _database.deleteData(path: FireStorePath.service(documentID));
+  }
+
+  Stream<List<ParticipantDocument>> getServiceWithParticipants(String serviceId, Timestamp datePaid) {
+    return _database.collectionStream(
+      path: FireStorePath.participantsOfService(serviceId),
+      builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference),
+      queryBuilder: (Query query) => query.where('datePaid', isEqualTo: datePaid)
+    );
   }
 
   Future<void> copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
@@ -101,7 +122,7 @@ class ServiceParticipantFirebase {
   }
 
 
-  addParticipantIntoService({String serviceId, ParticipantDocument participant, bool useCredit}) {
+  addParticipantIntoService({String serviceId, ParticipantDocument participant, bool useCredit}) async {
     final String participantId = participant.participantId;
 
     if(useCredit) {
@@ -110,64 +131,57 @@ class ServiceParticipantFirebase {
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
     }
 
-    final serviceListIds = participant.serviceIds.toSet()
-                ..add(serviceId);
-    developer.log("services $serviceListIds");
-    developer.log("serviceIds.toList() ${serviceListIds.toList()}");
-    Firestore.instance.collection('participants').document(participantId).setData({
-      'credit': participant.credit,
-      'creditHistory': participant.creditHistory,
-      'serviceIds': serviceListIds.toList()
-    }, merge: true);
+    final serviceListIds = participant.serviceIds.toSet()..add(serviceId);
 
-    
-    Firestore.instance
-        .collection('services')
-        .document(serviceId)
-        .collection('participants')
-        .add(participant.toMap());
+    await _database.setData(
+        path: FireStorePath.participant(participantId),
+        data: {
+          'credit': participant.credit,
+          'creditHistory': participant.creditHistory,
+          'serviceIds': serviceListIds.toList()
+        },
+        merge: true
+    );
+
+    await _database.addData(path: FireStorePath.participantsOfService(serviceId), data: participant.toMap());
   }
 
-  Future<void> editParticipantFromService(String serviceId, ParticipantDocument participant) {
+  Future<void> editParticipantFromService(String serviceId, ParticipantDocument participant) async {
     final String participantId = participant.reference.documentID;
-    return Firestore.instance
-        .collection('services')
-        .document(serviceId)
-        .collection('participants')
-        .document(participantId)
-        .setData(participant.toMap());
+    await _database.setData(
+        path: FireStorePath.serviceParticipant(serviceId, participantId),
+        data: participant.toMap()
+    );
   }
 
-  Future<void> deleteParticipantFromService(String serviceId, ParticipantDocument participant) {
+  Future<void> deleteParticipantFromService(String serviceId, ParticipantDocument participant) async {
     final String participantId = participant.reference.documentID;
-    return Firestore.instance
-        .collection('services')
-        .document(serviceId)
-        .collection('participants')
-        .document(participantId)
-        .delete();
+    await  _database.deleteData(path: FireStorePath.serviceParticipant(serviceId, participantId));
   }
 
 
-  Stream<QuerySnapshot> getParticipants() {
-    return Firestore.instance
-        .collection('participants')
-        .where('uid', isEqualTo: this.uid)
-        //.orderBy('name', descending: false) // Problema con orderBy, la query carica all'infinito
-        .snapshots();
+  Stream<List<ParticipantDocument>> getParticipants() {
+    return _database.collectionStream(
+        path: FireStorePath.participants(),
+        builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference),
+        queryBuilder: (Query query) => query .where('uid', isEqualTo: this.uid),
+        // TODO: FIXME: Remove when sort order works in firebase
+        // Problema con orderBy di firebase, la query carica all'infinito
+        sort: (a, b) => a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase())
+    );
   }
 
-  Stream<DocumentSnapshot> getParticipantDetail(String participantId) {
-    return Firestore.instance
-          .collection('participants')
-          .document(participantId)
-          .snapshots();
+  Stream<ParticipantDocument> getParticipantDetail(String participantId) {
+    return _database.documentStream(
+          path: FireStorePath.participant(participantId),
+          builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference)
+    );
   }
 
 
   Future<DocumentReference> createParticipant(ParticipantDocument newParticipant) async {
     newParticipant.uid = this.uid;
-    return Firestore.instance.collection('participants').add(newParticipant.toMap());
+    return _database.addData(path: FireStorePath.participants(), data: newParticipant.toMap());
   }
 
   Future<void> editParticipant(String documentID, ParticipantDocument edited) async {
@@ -203,11 +217,8 @@ class ServiceParticipantFirebase {
         .setData(edited.toMap());
   }
 
-  void deleteParticipant(String documentID) {
-    Firestore.instance
-        .collection('participants')
-        .document(documentID)
-        .delete();
+  Future<void> deleteParticipant(String documentID) async {
+    await _database.deleteData(path: FireStorePath.participant(documentID));
   }
 
 

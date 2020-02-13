@@ -69,7 +69,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     }
 
     Widget participantSelector() {
-      return StreamBuilder<QuerySnapshot>(
+      return StreamBuilder<List<ParticipantDocument>>(
           stream: _repository.getParticipants(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -80,17 +80,18 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
               child: DropdownButton(
                 hint: Text( i18n(context, 'participant')  ),
                 isExpanded: true,
-                value:  _participantId != null ? snapshot.data.documents.firstWhere((doc) => doc.documentID == _participantId) : null,
-                onChanged: (DocumentSnapshot newValue) {
-                  _participant = ParticipantDocument.fromSnapshot(newValue);
-                  _participant.participantId = newValue.documentID;
+                value:  _participantId != null ? snapshot.data.firstWhere((p) => p.reference.documentID == _participantId) : null,
+                onChanged: (ParticipantDocument newParticipant) {
+                  _participant = newParticipant;
+                  // ignore: cascade_invocations
+                  _participant.participantId = newParticipant.reference.documentID;
                   _participantId =  _participant.participantId;
                   setState(() {});
                 },
-                items: snapshot.data.documents.map((DocumentSnapshot document) {
+                items: snapshot.data.map((ParticipantDocument participant) {
                   return DropdownMenuItem(
-                      value: document,
-                      child: Text(document.data['name'] ?? ""),
+                      value: participant,
+                      child: Text(participant.name ?? ""),
                   );
                 }).toList(),
               ),

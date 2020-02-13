@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -48,8 +47,8 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
 
 
   Widget _buildBody(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
-      stream: _repository.getParticipantDetail(currentParticipant.participantId),
+    return StreamBuilder<ParticipantDocument>(
+      stream: _repository.getParticipantDetail(currentParticipant.reference.documentID),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();

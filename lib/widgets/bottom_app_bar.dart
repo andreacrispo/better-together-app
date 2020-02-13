@@ -164,7 +164,8 @@ class BTBottomAppBarWidget extends StatelessWidget {
 
   Widget _logOut(context, isAnonymous) {
     // TODO: FIXME Uncomment before prod
-    //  if(isAnonymous) return Container();
+     if(isAnonymous && kReleaseMode)
+       return Container();
 
     return  ListTile(
         leading: Icon(Icons.lock_open),

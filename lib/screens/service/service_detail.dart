@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -73,7 +72,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 
   Widget _buildBody(BuildContext context, ServiceDetailArgs args) {
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<List<ParticipantDocument>>(
       stream: _repository.getServiceWithParticipants(args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
@@ -125,7 +124,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             ),
             // If the main content is a list, use SliverList instead.
             SliverFillRemaining(
-              child: _buildTable(context, snapshot.data.documents)
+              child: _buildTable(context, snapshot.data)
             ),
           ],
         );
@@ -133,13 +132,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     );
   }
 
-  Widget _buildTable(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildTable(BuildContext context, List<ParticipantDocument> participants) {
     final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
-    final List<ParticipantDocument> participants = [];
-    snapshot.forEach((DocumentSnapshot docSnap) {
-      participants.add(ParticipantDocument.fromSnapshot(docSnap));
-    });
-
     final Locale locale = FlutterI18n.currentLocale(context);
     final String currentMonth = localeMonthString[locale.languageCode][passArgs.monthPaid];
 
