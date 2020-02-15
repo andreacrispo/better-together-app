@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -86,21 +85,21 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
   Widget _buildBody(BuildContext context) {
     final serviceProvider = Provider.of<ServiceListNotifier>(context);
-    return StreamBuilder<QuerySnapshot>(
-      stream: _repository.getServices(serviceProvider.sortByVariable, serviceProvider.isSortByDesc),
+    return StreamBuilder<List<ServiceDocument>>(
+      stream: _repository.getServices(serviceProvider.sortByVariable, isSortByDesc: serviceProvider.isSortByDesc),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
-        if(snapshot.data.documents.isEmpty)
+        if(snapshot.data.isEmpty)
           return _buildEmptyServiceList();
 
-        return _buildList(context, snapshot.data.documents);
+        return _buildList(context, snapshot.data);
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildList(BuildContext context, List<ServiceDocument> snapshot) {
     return ListView.builder(
       padding: EdgeInsets.all(8),
       shrinkWrap: true,
@@ -123,10 +122,10 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
               ),
             ),
             direction: DismissDirection.endToStart,
-            onDismissed: (direction) {
-              final DocumentSnapshot item = snapshot[index];
+            onDismissed: (direction) async {
+              final item = snapshot[index];
               snapshot.removeAt(index);
-              _deleteService(item);
+              await _repository.deleteService(item.reference.documentID);
             },
             child: _buildListItem(context, snapshot[index])
         );
@@ -134,9 +133,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final ServiceDocument service = ServiceDocument.fromSnapshot(data);
-
+  Widget _buildListItem(BuildContext context,  ServiceDocument service) {
     final Color backgroundColor = service.color != null ? HexColor(service.color) : Theme.of(context).primaryColor;
     final String currencySymbol = service.currencyCode != null ? currenciesMap[service.currencyCode][0] : "€";
     return Card(
@@ -153,7 +150,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
               Navigator.pushNamed(context,
                   ServiceDetailWidget.routeName,
                   arguments: ServiceDetailArgs(
-                      serviceId: data.documentID,
+                      serviceId: service.reference.documentID,
                       service: service,
                       monthPaid: DateTime.now().month,
                       yearPaid: DateTime.now().year
@@ -193,12 +190,6 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
     );
   }
 
-
-  Future<void> _deleteService(DocumentSnapshot service) async {
-    await Firestore.instance.collection('services')
-        .document(service.documentID)
-        .delete();
-  }
 
   Widget _buildEmptyServiceList() {
     return Column(

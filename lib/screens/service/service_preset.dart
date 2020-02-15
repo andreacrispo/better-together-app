@@ -153,7 +153,7 @@ class _ServicePresetState extends State<ServicePreset> {
         arguments: service
     );
     if (newItem != null) {
-      await _repository.createService(context, newItem);
+      await _repository.createService(newItem);
       Navigator.pop(context);
     }
   }

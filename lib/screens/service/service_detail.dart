@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -73,7 +72,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
 
   Widget _buildBody(BuildContext context, ServiceDetailArgs args) {
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<List<ParticipantDocument>>(
       stream: _repository.getServiceWithParticipants(args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
@@ -125,7 +124,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             ),
             // If the main content is a list, use SliverList instead.
             SliverFillRemaining(
-              child: _buildTable(context, snapshot.data.documents)
+              child: _buildTable(context, snapshot.data)
             ),
           ],
         );
@@ -133,13 +132,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     );
   }
 
-  Widget _buildTable(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildTable(BuildContext context, List<ParticipantDocument> participants) {
     final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
-    final List<ParticipantDocument> participants = [];
-    snapshot.forEach((DocumentSnapshot docSnap) {
-      participants.add(ParticipantDocument.fromSnapshot(docSnap));
-    });
-
     final Locale locale = FlutterI18n.currentLocale(context);
     final String currentMonth = localeMonthString[locale.languageCode][passArgs.monthPaid];
 
@@ -155,6 +149,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             children: <Widget>[
               IconButton(
                   icon: Icon(Icons.arrow_back),
+                  color: Theme.of(context).textTheme.button.color,
                   onPressed: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid)
               ),
               Row(
@@ -166,6 +161,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                   ),
                   IconButton(
                     icon: Icon(Icons.calendar_today),
+                    color: Theme.of(context).textTheme.button.color,
                     onPressed: () {
                       showMonthPicker(
                         initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
@@ -179,6 +175,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               ),
               IconButton(
                   icon: Icon(Icons.arrow_forward),
+                  color: Theme.of(context).textTheme.button.color,
                   onPressed: () =>
                       nextMonth(passArgs.monthPaid, passArgs.yearPaid)
               ),
@@ -206,14 +203,40 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   Widget createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
     if (participants.isEmpty) {
+      final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
       return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+         mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            SizedBox(height: 150,),
             RaisedButton(
               onPressed: () => copyParticipantsFromPreviousMonth(context),
               child: Text(i18n(context,'copy_participants_previous_month') ),
             ),
+            SizedBox(height: 40,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text(i18n(context,'copy_participants_from'), style: TextStyle(fontSize: 22),),
+                IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () {
+                    showMonthPicker(
+                      initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
+                      context: context,
+                    ).then((dateTime) async {
+                      await _repository.copyParticipantsFromAnotherDate(
+                          serviceId: currentServiceId,
+                          currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid),
+                          fromAnotherTimestamp: getTimestamp(dateTime.year, dateTime.month)
+                      );
+                      setState(() {});
+                    });
+                  },
+                )
+              ],
+            ),
+
           ],
       );
     }
@@ -368,14 +391,22 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   }
 
   copyParticipantsFromPreviousMonth(BuildContext context) async {
-    final ServiceDetailArgs passArgs = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
+    final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
     final int month = passArgs.monthPaid;
     final int year = passArgs.yearPaid;
-    await _repository.copyParticipantsFromPreviousMonth(
-        currentServiceId, year, month);
+    await _repository.copyParticipantsFromPreviousMonth(currentServiceId, year, month);
+    setState(() {});
+  }
+
+
+  copyParticipantsFromAnotherDate() async {
+    final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
+
+    await _repository.copyParticipantsFromAnotherDate(
+      serviceId: currentServiceId,
+      fromAnotherTimestamp: null, // TIMESTAMP
+      currentToTimestamp: getTimestamp( passArgs.yearPaid, passArgs.monthPaid)
+    );
     setState(() {});
   }
 
