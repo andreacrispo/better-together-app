@@ -149,6 +149,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             children: <Widget>[
               IconButton(
                   icon: Icon(Icons.arrow_back),
+                  color: Theme.of(context).textTheme.button.color,
                   onPressed: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid)
               ),
               Row(
@@ -160,6 +161,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                   ),
                   IconButton(
                     icon: Icon(Icons.calendar_today),
+                    color: Theme.of(context).textTheme.button.color,
                     onPressed: () {
                       showMonthPicker(
                         initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
@@ -173,6 +175,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               ),
               IconButton(
                   icon: Icon(Icons.arrow_forward),
+                  color: Theme.of(context).textTheme.button.color,
                   onPressed: () =>
                       nextMonth(passArgs.monthPaid, passArgs.yearPaid)
               ),
