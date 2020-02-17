@@ -37,6 +37,8 @@
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
+# The above file need to sign build - DO NOT COMMIT
+**/android/key.properties
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
