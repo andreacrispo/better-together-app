@@ -146,8 +146,35 @@ class ServiceParticipantFirebase {
     await _database.addData(path: FireStorePath.participantsOfService(serviceId), data: participant.toMap());
   }
 
-  Future<void> editParticipantFromService(String serviceId, ParticipantDocument participant) async {
+  Future<void> editParticipantFromService({String serviceId, ParticipantDocument participant, bool useCredit}) async {
+    /*
     final String participantId = participant.reference.documentID;
+    await _database.setData(
+        path: FireStorePath.serviceParticipant(serviceId, participantId),
+        data: participant.toMap()
+    );
+    */
+    final String participantId =  participant.reference.documentID;
+
+    if(useCredit) {
+      participant.credit -= participant.pricePaid;
+      final String dateKey = Timestamp.now().toDate().toIso8601String();
+      participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
+    }
+
+    final serviceListIds = participant.serviceIds.toSet()..add(serviceId);
+
+
+    await _database.setData(
+        path: FireStorePath.participant(participantId),
+        data: {
+          'credit': participant.credit,
+          'creditHistory': participant.creditHistory,
+          'serviceIds': serviceListIds.toList()
+        },
+        merge: true
+    );
+
     await _database.setData(
         path: FireStorePath.serviceParticipant(serviceId, participantId),
         data: participant.toMap()

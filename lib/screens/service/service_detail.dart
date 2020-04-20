@@ -13,19 +13,14 @@ import '../../widgets/has_paid_button.dart';
 import 'service_form.dart';
 import 'service_participant_form.dart';
 
-
 class ServiceDetailArgs {
   String serviceId;
   ServiceDocument service;
   int yearPaid;
   int monthPaid;
 
-  ServiceDetailArgs({
-    this.serviceId, this.service, this.yearPaid, this.monthPaid
-  });
+  ServiceDetailArgs({this.serviceId, this.service, this.yearPaid, this.monthPaid});
 }
-
-
 
 class ServiceDetailWidget extends StatefulWidget {
   ServiceDetailWidget({Key key}) : super(key: key);
@@ -57,12 +52,10 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     this.currentService = passArgs.service;
     this.appBarTitle = this.currentService.name;
     return Scaffold(
-      body:
-      SwipeDetector(
-         onSwipeLeft:  () => nextMonth(passArgs.monthPaid, passArgs.yearPaid),
-         onSwipeRight: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid),
-          child: _buildBody(context, passArgs)
-      ),
+      body: SwipeDetector(
+          onSwipeLeft: () => nextMonth(passArgs.monthPaid, passArgs.yearPaid),
+          onSwipeRight: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid),
+          child: _buildBody(context, passArgs)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => addParticipantToService(context),
         child: Icon(Icons.add),
@@ -70,17 +63,13 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     );
   }
 
-
   Widget _buildBody(BuildContext context, ServiceDetailArgs args) {
     return StreamBuilder<List<ParticipantDocument>>(
       stream: _repository.getServiceWithParticipants(args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
       builder: (context, snapshot) {
-        if (!snapshot.hasData && !snapshot.hasError)
-          return LinearProgressIndicator();
+        if (!snapshot.hasData && !snapshot.hasError) return LinearProgressIndicator();
 
-        final String currencySymbol = currentService.currencyCode != null
-            ? currenciesMap[currentService.currencyCode][0]
-            : "€";
+        final String currencySymbol = currentService.currencyCode != null ? currenciesMap[currentService.currencyCode][0] : "€";
         return CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -92,40 +81,29 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
               forceElevated: true,
               centerTitle: true,
               backgroundColor: HexColor(currentService.color),
-              flexibleSpace:  FlexibleSpaceBar(
-                title:  Column(
+              flexibleSpace: FlexibleSpaceBar(
+                title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Center(
-                        child: Text(currentService.name,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                        )
-                    ),
-                    Center(
-                        child: Text("${currentService.price} $currencySymbol",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16.0)
-                        )
-                    ),
+                        child: Text(
+                      currentService.name,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    )),
+                    Center(child: Text("${currentService.price} $currencySymbol", textAlign: TextAlign.center, style: TextStyle(fontSize: 16.0))),
                   ],
                 ),
                 centerTitle: true,
               ),
               actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  tooltip: i18n(context, 'edit'),
-                  onPressed: () => _editService(currentService)
-                ),
+                IconButton(icon: Icon(Icons.edit), tooltip: i18n(context, 'edit'), onPressed: () => _editService(currentService)),
               ],
             ),
             // If the main content is a list, use SliverList instead.
-            SliverFillRemaining(
-              child: _buildTable(context, snapshot.data)
-            ),
+            SliverFillRemaining(child: _buildTable(context, snapshot.data)),
           ],
         );
       },
@@ -137,107 +115,99 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     final Locale locale = FlutterI18n.currentLocale(context);
     final String currentMonth = localeMonthString[locale.languageCode][passArgs.monthPaid];
 
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        verticalDirection: VerticalDirection.down,
+    return Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start, verticalDirection: VerticalDirection.down, children: <Widget>[
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Theme.of(context).textTheme.button.color,
+              onPressed: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid)),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  color: Theme.of(context).textTheme.button.color,
-                  onPressed: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid)
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text(
-                    "$currentMonth ${passArgs.yearPaid}",
-                    style: TextStyle(fontSize: 32),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.calendar_today),
-                    color: Theme.of(context).textTheme.button.color,
-                    onPressed: () {
-                      showMonthPicker(
-                        initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
-                        context: context,
-                      ).then((dateTime) {
-                        changeMonthNavigator(dateTime.month, dateTime.year);
-                      });
-                    },
-                  )
-                ],
+              Text(
+                "$currentMonth ${passArgs.yearPaid}",
+                style: TextStyle(fontSize: 32),
               ),
               IconButton(
-                  icon: Icon(Icons.arrow_forward),
-                  color: Theme.of(context).textTheme.button.color,
-                  onPressed: () =>
-                      nextMonth(passArgs.monthPaid, passArgs.yearPaid)
-              ),
-            ],
-          ),
-
-          Expanded(
-              child: createTableParticipants(participants, context)
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Card(
-                elevation: 10,
-                child: Text(""),
+                icon: Icon(Icons.calendar_today),
+                color: Theme.of(context).textTheme.button.color,
+                onPressed: () {
+                  showMonthPicker(
+                    initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
+                    context: context,
+                  ).then((dateTime) {
+                    changeMonthNavigator(dateTime.month, dateTime.year);
+                  });
+                },
               )
             ],
+          ),
+          IconButton(
+              icon: Icon(Icons.arrow_forward),
+              color: Theme.of(context).textTheme.button.color,
+              onPressed: () => nextMonth(passArgs.monthPaid, passArgs.yearPaid)),
+        ],
+      ),
+      Expanded(child: createTableParticipants(participants, context)),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Card(
+            elevation: 10,
+            child: Text(""),
           )
-        ]
-    );
+        ],
+      )
+    ]);
   }
-
 
   Widget createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
     if (participants.isEmpty) {
       final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
       return Column(
-         mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 150,),
-            RaisedButton(
-              onPressed: () => copyParticipantsFromPreviousMonth(context),
-              child: Text(i18n(context,'copy_participants_previous_month') ),
-            ),
-            SizedBox(height: 40,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Text(i18n(context,'copy_participants_from'), style: TextStyle(fontSize: 22),),
-                IconButton(
-                  icon: Icon(Icons.calendar_today),
-                  onPressed: () {
-                    showMonthPicker(
-                      initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
-                      context: context,
-                    ).then((dateTime) async {
-                      await _repository.copyParticipantsFromAnotherDate(
-                          serviceId: currentServiceId,
-                          currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid),
-                          fromAnotherTimestamp: getTimestamp(dateTime.year, dateTime.month)
-                      );
-                      setState(() {});
-                    });
-                  },
-                )
-              ],
-            ),
-
-          ],
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            height: 150,
+          ),
+          RaisedButton(
+            onPressed: () => copyParticipantsFromPreviousMonth(context),
+            child: Text(i18n(context, 'copy_participants_previous_month')),
+          ),
+          SizedBox(
+            height: 40,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Text(
+                i18n(context, 'copy_participants_from'),
+                style: TextStyle(fontSize: 22),
+              ),
+              IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () {
+                  showMonthPicker(
+                    initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
+                    context: context,
+                  ).then((dateTime) async {
+                    await _repository.copyParticipantsFromAnotherDate(
+                        serviceId: currentServiceId,
+                        currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid),
+                        fromAnotherTimestamp: getTimestamp(dateTime.year, dateTime.month));
+                    setState(() {});
+                  });
+                },
+              )
+            ],
+          ),
+        ],
       );
     }
 
@@ -251,24 +221,23 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       child: DataTable(
         columnSpacing: 10,
         sortAscending: sort,
-       // sortColumnIndex: 1,
+        // sortColumnIndex: 1,
         columns: [
           DataColumn(
-            label: Text(i18n(context,'name')),
+            label: Text(i18n(context, 'name')),
             numeric: false,
           ),
           DataColumn(
-              label: Text(i18n(context,'has_paid')),
+              label: Text(i18n(context, 'has_paid')),
               numeric: false,
               onSort: (columnIndex, ascending) {
                 onSortColumn(columnIndex, ascending, participants);
                 setState(() {
                   sort = !sort;
                 });
-              }
-          ),
+              }),
           DataColumn(
-            label: Text(i18n(context,'price_paid')),
+            label: Text(i18n(context, 'price_paid')),
             numeric: true,
           ),
           DataColumn(
@@ -277,53 +246,45 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         ],
         rows: participants
             .map(
-              (participant) =>
-              DataRow(
-                  cells: [
-                    DataCell(Text(participant.name)),
-                    DataCell(
-                        HasPaidWidget(hasPaid: participant.hasPaid,
-                            callback: (updatePaid) {
-                              participant.hasPaid = updatePaid;
-                              if (participant.hasPaid) {
-                                participant.pricePaid =
-                                    participant.pricePaid ??
-                                    ( this.currentService.price / this.currentService.participantNumber);
-                              } else {
-                                participant.pricePaid = null;
-                              }
-                              updatePaidStatus(participant);
-                            }
-                        )
-                    ),
-                    DataCell(
-                      Text(participant.pricePaid != null ? participant.pricePaid
-                          .toString() : ''),
-                    ),
-                    DataCell(
-                      PopupMenuButton<int>(
-                        itemBuilder: (context) =>
-                        [
-                          PopupMenuItem(
-                            value: 1,
-                            child: Text(i18n(context,'edit')),
-                          ),
-                          PopupMenuItem(
-                            value: 2,
-                            child: Text(i18n(context,'delete')),
-                          ),
-                        ],
-                        onSelected: (value) {
-                          if (value == 1)
-                            editParticipantFromService(participant);
-                          else if (value == 2)
-                            deleteParticipantFromService(participant);
-                        },
-                        icon: Icon(Icons.more_vert),
+              (participant) => DataRow(cells: [
+                DataCell(Text(participant.name)),
+                DataCell(HasPaidWidget(
+                    hasPaid: participant.hasPaid,
+                    callback: (updatePaid) {
+                      participant.hasPaid = updatePaid;
+                      if (participant.hasPaid) {
+                        participant.pricePaid = participant.pricePaid ?? (this.currentService.price / this.currentService.participantNumber);
+                      } else {
+                        participant.pricePaid = null;
+                      }
+                      updatePaidStatus(participant);
+                    })),
+                DataCell(
+                  Text(participant.pricePaid != null ? participant.pricePaid.toString() : ''),
+                ),
+                DataCell(
+                  PopupMenuButton<int>(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 1,
+                        child: Text(i18n(context, 'edit')),
                       ),
-                    )
-                  ]),
-        ).toList(),
+                      PopupMenuItem(
+                        value: 2,
+                        child: Text(i18n(context, 'delete')),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      if (value == 1)
+                        editParticipantFromService(participant);
+                      else if (value == 2) deleteParticipantFromService(participant);
+                    },
+                    icon: Icon(Icons.more_vert),
+                  ),
+                )
+              ]),
+            )
+            .toList(),
       ),
     );
   }
@@ -340,11 +301,10 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   addParticipantToService(BuildContext context) async {
     final result = await Navigator.pushNamed<dynamic>(
-        context,
-        ServiceParticipantForm.routeName,
+      context,
+      ServiceParticipantForm.routeName,
     );
-    if(result == null)
-      return;
+    if (result == null) return;
 
     final ParticipantDocument newParticipant = result[0];
     final bool useCredit = result[1];
@@ -353,40 +313,42 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
       newParticipant.datePaid = getTimestamp(passArgs.yearPaid, passArgs.monthPaid);
       _repository.addParticipantIntoService(
-          serviceId: currentServiceId,
-          participant: newParticipant,
-          useCredit: useCredit,
+        serviceId: currentServiceId,
+        participant: newParticipant,
+        useCredit: useCredit,
       );
       setState(() {});
     }
   }
 
   editParticipantFromService(ParticipantDocument participant) async {
-    final result = await Navigator.pushNamed<dynamic>(
-        context,
-        ServiceParticipantForm.routeName,
-        arguments: participant
-    );
-    if(result == null)
-      return;
+    final result = await Navigator.pushNamed<dynamic>(context, ServiceParticipantForm.routeName, arguments: participant);
+    if (result == null) return;
 
     final ParticipantDocument editedParticipant = result[0];
+    final bool useCredit = result[1];
 
     if (editedParticipant != null) {
-      await _repository.editParticipantFromService(currentServiceId, editedParticipant);
+      await _repository.editParticipantFromService(
+          serviceId: currentServiceId,
+          participant :editedParticipant,
+          useCredit: useCredit
+      );
       setState(() {});
     }
-
   }
 
   deleteParticipantFromService(ParticipantDocument participant) async {
-    await _repository.deleteParticipantFromService(
-        currentServiceId, participant);
+    await _repository.deleteParticipantFromService(currentServiceId, participant);
     setState(() {});
   }
 
   updatePaidStatus(ParticipantDocument participant) async {
-    await _repository.editParticipantFromService(currentServiceId, participant);
+    await _repository.editParticipantFromService(
+        serviceId: currentServiceId,
+        participant: participant,
+        useCredit: true
+    );
     setState(() {});
   }
 
@@ -398,15 +360,13 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     setState(() {});
   }
 
-
   copyParticipantsFromAnotherDate() async {
     final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
 
     await _repository.copyParticipantsFromAnotherDate(
-      serviceId: currentServiceId,
-      fromAnotherTimestamp: null, // TIMESTAMP
-      currentToTimestamp: getTimestamp( passArgs.yearPaid, passArgs.monthPaid)
-    );
+        serviceId: currentServiceId,
+        fromAnotherTimestamp: null, // TIMESTAMP
+        currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid));
     setState(() {});
   }
 
@@ -446,23 +406,12 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       context,
       CustomRouteFadeAnimation(
           builder: (context) => ServiceDetailWidget(),
-          settings: RouteSettings(arguments: ServiceDetailArgs(
-              serviceId: currentServiceId,
-              service: currentService,
-              monthPaid: month,
-              yearPaid: year
-          ))
-      ),
+          settings: RouteSettings(arguments: ServiceDetailArgs(serviceId: currentServiceId, service: currentService, monthPaid: month, yearPaid: year))),
     );
   }
 
-
   _editService(ServiceDocument service) async {
-    final ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(
-        context,
-        ServiceForm.routeName,
-        arguments: service
-    );
+    final ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(context, ServiceForm.routeName, arguments: service);
     if (editedService != null) {
       await _repository.editService(service.reference.documentID, editedService);
     }
@@ -471,12 +420,10 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties..add(StringProperty('appBarTitle', appBarTitle))
-              ..add(DiagnosticsProperty<bool>('sort', sort))
-              ..add(DiagnosticsProperty<ServiceDocument>('currentService', currentService))
-              ..add(StringProperty('currentServiceId', currentServiceId));
+    properties
+      ..add(StringProperty('appBarTitle', appBarTitle))
+      ..add(DiagnosticsProperty<bool>('sort', sort))
+      ..add(DiagnosticsProperty<ServiceDocument>('currentService', currentService))
+      ..add(StringProperty('currentServiceId', currentServiceId));
   }
-
-
 }
-
