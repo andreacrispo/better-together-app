@@ -173,21 +173,27 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SizedBox(
-            height: 150,
+          SizedBox(height: 90),
+          Text(
+            i18n(context, 'no_participant_added'),
+            style: TextStyle(fontSize: 18),
           ),
+          SizedBox(height:40),
+          Text(
+            i18n(context, 'copy_participants_from'),
+            style: TextStyle(fontSize: 22),
+          ),
+          SizedBox(height: 20),
           RaisedButton(
             onPressed: () => copyParticipantsFromPreviousMonth(context),
             child: Text(i18n(context, 'copy_participants_previous_month')),
           ),
-          SizedBox(
-            height: 40,
-          ),
+          SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                i18n(context, 'copy_participants_from'),
+                i18n(context, 'copy_participants_from_select_date'),
                 style: TextStyle(fontSize: 22),
               ),
               IconButton(
@@ -366,7 +372,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     await _repository.copyParticipantsFromAnotherDate(
         serviceId: currentServiceId,
         fromAnotherTimestamp: null, // TIMESTAMP
-        currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid));
+        currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid)
+    );
     setState(() {});
   }
 

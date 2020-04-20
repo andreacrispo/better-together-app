@@ -198,10 +198,9 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             child:
             CircleAvatar(
               backgroundColor: Colors.transparent,
-              radius: 120,
+              radius: 140,
               child: Image.asset(
                   'assets/images/icon-service.png',
-                  color: Theme.of(context).accentColor,
               ),
             ),
           ),

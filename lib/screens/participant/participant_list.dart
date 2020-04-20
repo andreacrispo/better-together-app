@@ -157,12 +157,13 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
   Widget _buildEmptyParticipantList() {
     return Column(
         children: [
+          SizedBox(height: 20,),
           Center(
             child:
             CircleAvatar(
               backgroundColor: Colors.transparent,
-              radius: 100,
-              child: Image.asset('assets/images/icon-users.png', color: Theme.of(context).accentColor ),
+              radius: 150,
+              child: Image.asset('assets/images/icon-users.png',),
             ),
           ),
           SizedBox(height: 50,),

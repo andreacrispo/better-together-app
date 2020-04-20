@@ -107,16 +107,13 @@ class ServiceParticipantFirebase {
           .getDocuments();
 
     for(final DocumentSnapshot snapshot in previousParticipants.documents){
-       final participant = snapshot.data;
-       participant['datePaid'] = currentToTimestamp;
-       participant['pricePaid'] = null;
-       participant['hasPaid'] = false;
+       final data = snapshot.data;
+       data['datePaid'] = currentToTimestamp;
+       data['pricePaid'] = null;
+       data['hasPaid'] = false;
 
-       await Firestore.instance
-                      .collection("services")
-                      .document(serviceId)
-                      .collection('participants')
-                      .add(participant);
+       final participant = ParticipantDocument.fromMap(data);
+       await this.addParticipantIntoService(serviceId: serviceId, participant: participant, useCredit: false);
     }
 
   }
@@ -154,7 +151,6 @@ class ServiceParticipantFirebase {
         data: participant.toMap()
     );
     */
-    final String participantId =  participant.reference.documentID;
 
     if(useCredit) {
       participant.credit -= participant.pricePaid;
@@ -166,7 +162,7 @@ class ServiceParticipantFirebase {
 
 
     await _database.setData(
-        path: FireStorePath.participant(participantId),
+        path: FireStorePath.participant(participant.participantId),
         data: {
           'credit': participant.credit,
           'creditHistory': participant.creditHistory,
@@ -175,8 +171,10 @@ class ServiceParticipantFirebase {
         merge: true
     );
 
+    final String docRefId =  participant.reference.documentID;
+
     await _database.setData(
-        path: FireStorePath.serviceParticipant(serviceId, participantId),
+        path: FireStorePath.serviceParticipant(serviceId, docRefId),
         data: participant.toMap()
     );
   }

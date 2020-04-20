@@ -21,7 +21,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
 
   ParticipantDocument _participant = ParticipantDocument();
   final _formKey = GlobalKey<FormState>();
-  bool _useCredit = false;
+  bool _useCredit = true;
   String _participantId;
 
 
@@ -108,7 +108,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         children: <Widget>[
           Text(i18n(context, "has_paid")),
           Switch(
-            value: _participant.hasPaid ?? false,
+            value: _participant.hasPaid ?? true,
             onChanged: (value) {
               setState(() {
                 _participant.hasPaid = value;
