@@ -18,7 +18,6 @@ class LoginSignUpWidget extends StatefulWidget {
 
 
 class _LoginSignUpState extends State<LoginSignUpWidget> {
-
   final _formKey = GlobalKey<FormState>();
   AuthMode _authMode = AuthMode.Login;
   String _password;
@@ -145,7 +144,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
           form.save();
 
           if (form.validate()) {
-            await _loginOrSignup();
+            await _loginOrSignup(context);
           }
         },
         child: Center(
@@ -261,7 +260,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
     );
   }
 
-  Future _loginOrSignup() async {
+  Future _loginOrSignup(ctx) async {
     try {
       if(_authMode == AuthMode.Login){
         await Provider.of<AuthService>(context).loginUser(email: _email, password: _password);
@@ -269,10 +268,30 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
         await Provider.of<AuthService>(context).signUp(email: _email, password: _password);
       }
     } on AuthException catch (error) {
-      //return _buildErrorDialog(context, error.message);
-    } on Exception catch (error) {
-      //return _buildErrorDialog(context, error.toString());
+      return _buildErrorDialog(context, error.message);
+     } on Exception catch (error) {
+      return _buildErrorDialog(context, error.toString());
     }
+  }
+
+
+  Future _buildErrorDialog(BuildContext context, _message) {
+    return showDialog(
+      builder: (context) {
+        return AlertDialog(
+          title:  Text(i18n(context, 'error')),
+          content: Text( i18n(context, 'wrong_credentials')),
+          actions: [
+            FlatButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      },
+      context: context,
+    );
   }
 
 }

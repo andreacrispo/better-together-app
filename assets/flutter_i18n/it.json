@@ -40,5 +40,8 @@
   "currency": "Valuta",
   "no_service_added":  "Non è stato aggiunto nessun servizio",
   "no_participant_added": "Non è stato aggiunto nessun partecipante",
-  "add_custom_service": "Servizio personalizzato"
+  "add_custom_service": "Servizio personalizzato",
+  "wrong_credentials": "Username o password errati",
+  "error": "Errore"
+
 }

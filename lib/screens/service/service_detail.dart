@@ -67,7 +67,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     return StreamBuilder<List<ParticipantDocument>>(
       stream: _repository.getServiceWithParticipants(args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
       builder: (context, snapshot) {
-        if (!snapshot.hasData && !snapshot.hasError) return LinearProgressIndicator();
+        if (!snapshot.hasData && !snapshot.hasError)
+          return LinearProgressIndicator();
 
         final String currencySymbol = currentService.currencyCode != null ? currenciesMap[currentService.currencyCode][0] : "€";
         return CustomScrollView(
@@ -185,6 +186,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
           ),
           SizedBox(height: 20),
           RaisedButton(
+
             onPressed: () => copyParticipantsFromPreviousMonth(context),
             child: Text(i18n(context, 'copy_participants_previous_month')),
           ),
@@ -197,6 +199,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                 style: TextStyle(fontSize: 22),
               ),
               IconButton(
+                color: Theme.of(context).textTheme.button.color,
                 icon: Icon(Icons.calendar_today),
                 onPressed: () {
                   showMonthPicker(

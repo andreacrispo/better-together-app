@@ -165,10 +165,33 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
                   fontWeight: FontWeight.bold,
                   fontSize: 28),
             ),
-            trailing: Text(
-                "${service.price} $currencySymbol",
-                style: TextStyle(color: Colors.white, fontSize: 14),
-                textAlign: TextAlign.right
+            trailing:Wrap(
+              spacing: 12,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                        "${service.price} $currencySymbol",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        textAlign: TextAlign.right
+                    ),
+                    SizedBox(height: 8,),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          WidgetSpan(
+                            child: Icon(Icons.supervised_user_circle, size: 20),
+                          ),
+                          TextSpan(
+                            text: "  ${service.participantNumber}",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
           )
       ),
