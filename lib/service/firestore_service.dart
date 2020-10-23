@@ -12,7 +12,6 @@ class FirestoreService {
     @required Map<String, dynamic> data
   }) async {
     final reference = Firestore.instance.collection(path);
-    print('$path: $data');
     final result = await reference.add(data);
     return result;
   }
@@ -23,13 +22,11 @@ class FirestoreService {
     bool merge = false,
   }) async {
     final reference = Firestore.instance.document(path);
-    print('$path: $data');
     await reference.setData(data, merge: merge);
   }
 
   Future<void> deleteData({@required String path}) async {
     final reference = Firestore.instance.document(path);
-    print('delete: $path');
     await reference.delete();
   }
 

@@ -1,12 +1,12 @@
 import 'dart:developer' as developer;
 
-import 'package:better_together_app/service/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../model/participant_document.dart';
 import '../model/service_document.dart';
 import '../utils/utils.dart';
+import 'firestore_service.dart';
 
 
 class FireStorePath {
@@ -189,7 +189,7 @@ class ServiceParticipantFirebase {
     return _database.collectionStream(
         path: FireStorePath.participants(),
         builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference),
-        queryBuilder: (Query query) => query .where('uid', isEqualTo: this.uid),
+        queryBuilder: (Query query) => query.where('uid', isEqualTo: this.uid),
         // TODO: FIXME: Remove when sort order works in firebase
         // Problema con orderBy di firebase, la query carica all'infinito
         sort: (a, b) => a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase())
