@@ -104,9 +104,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
   }
 
   Widget _buildListItem(BuildContext context, ParticipantDocument participant) {
-    final String currencySymbol = participant.currencyCode != null
-        ? currenciesMap[participant.currencyCode][0]
-        : "€";
+    final String currencySymbol = getCurrencySymbol(participant.currencyCode);
     return Card(
       key: ValueKey(participant.name),
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),

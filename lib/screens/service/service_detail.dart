@@ -70,7 +70,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
-        final String currencySymbol = currentService.currencyCode != null ? currenciesMap[currentService.currencyCode][0] : "€";
+        final String currencySymbol = getCurrencySymbol(currentService.currencyCode);
         return CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -169,7 +169,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   Widget createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
     if (participants.isEmpty) {
-      final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
+      final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments; 
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,

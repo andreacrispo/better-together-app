@@ -88,7 +88,7 @@ class _ServiceFormState extends State<ServiceForm> {
         });
       },
       items: currenciesMap.keys.map((currencyCode) {
-        final String currencyName = currenciesMap[currencyCode][1];
+        final String currencyName = getCurrencyDescription(currencyCode);
         return DropdownMenuItem(
           value: currencyCode,
           child: Text(currencyName),
@@ -124,7 +124,7 @@ class _ServiceFormState extends State<ServiceForm> {
             decoration: getInputDecoration(i18n(context, 'number_of_participants')),
             keyboardType: TextInputType.numberWithOptions(),
             inputFormatters: <TextInputFormatter>[
-              WhitelistingTextInputFormatter.digitsOnly
+              FilteringTextInputFormatter.digitsOnly
             ],
             validator: (value) {
               if (value.isEmpty)

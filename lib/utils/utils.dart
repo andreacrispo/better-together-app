@@ -71,20 +71,29 @@ Map<String, List<String>> localeMonthString = {
 
 
 
-Map<String, List<String>> currenciesMap =  {
-  "CAD": ["\$", 'Canadian dollar'],
-  "HKD": ["\$", 'Hong Kong Dollar'],
-  "ISK": ["kr", 'Icelandic króna'],
-  "PHP": ["₱", 'Philippine peso'],
-  "DKK": ["kr", 'Danish krone'],
-  "HUF": ["Ft", 'Hungarian forint'],
-  "CZK": ["Kč", 'Czech koruna'],
-  "AUD": ["\$", 'Australian dollar'],
-  "RON": ["lei", 'Romanian leu'],
-  "USD": ["\$", 'US Dollar'],
-  "EUR": ["€", "Euro"],
-  "SEK": ["kr", 'Swedish krona'],
-  "NOK": ["kr", 'Norwegian krone'],
+class Currency {
+
+  Currency(this.symbol, this.description, {this.icon = ""});
+  String symbol;
+  String description;
+  String icon;
+}
+
+
+Map<String, Currency> currenciesMap =  {
+  "CAD": Currency("\$", 'Canadian dollar'),
+  "HKD": Currency("\$", 'Hong Kong Dollar'),
+  "ISK": Currency("kr", 'Icelandic króna'),
+  "PHP": Currency("₱", 'Philippine peso'),
+  "DKK": Currency("kr", 'Danish krone'),
+  "HUF": Currency("Ft", 'Hungarian forint'),
+  "CZK": Currency("Kč", 'Czech koruna'),
+  "AUD": Currency("\$", 'Australian dollar'),
+  "RON": Currency("lei", 'Romanian leu'),
+  "USD": Currency("\$", 'US Dollar'),
+  "EUR": Currency("€", "Euro"),
+  "SEK": Currency("kr", 'Swedish krona'),
+  "NOK": Currency("kr", 'Norwegian krone'),
   /*
   "IDR": ["\$", 'US Dollar'],
   "INR": ["\$", 'US Dollar'],
@@ -108,6 +117,21 @@ Map<String, List<String>> currenciesMap =  {
   "MYR": ["\$", 'US Dollar'],
   */
 };
+
+
+Currency getCurrency(String currencyCode) {
+  return currencyCode != null
+      ? currenciesMap[currencyCode]
+      : currenciesMap["EUR"];
+}
+
+String getCurrencySymbol(String currencyCode) {
+  return getCurrency(currencyCode).symbol;
+}
+
+String getCurrencyDescription(String currencyCode) {
+  return getCurrency(currencyCode).description;
+}
 
 String i18n(BuildContext context, String placeholder) => FlutterI18n.translate(context, placeholder);
 

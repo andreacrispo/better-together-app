@@ -73,7 +73,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                 ),
 
                 Container(
-                  margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+                  margin: EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 20),
                   child: _buildCreditHistorySection(),
                 )
               ]
@@ -84,9 +84,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   }
 
   Card _buildSummaryCard(BuildContext context) {
-     final String currencySymbol = currentParticipant.currencyCode != null
-         ? currenciesMap[currentParticipant.currencyCode][0]
-         : "€";
+    final String currencySymbol = getCurrencySymbol(currentParticipant.currencyCode);
     return Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -160,7 +158,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
             itemCount: sortedHistory.length,
             itemBuilder: (BuildContext context, int index) {
               final String key = sortedHistory.elementAt(index);
-              final String dateFormatted = _dateFormated(key);
+              final String dateFormatted = _dateFormatted(key);
               return  Column(
                 children: <Widget>[
                   ListTile(
@@ -172,7 +170,8 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
               );
              },
           ),
-          isExpanded: this.isHistoryExpanded
+          isExpanded: this.isHistoryExpanded,
+          canTapOnHeader: true
         )
       ]
     );
@@ -190,7 +189,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
   }
 
 
-  String _dateFormated(dateAsString) {
+  String _dateFormatted(dateAsString) {
     String dateFormatted = dateAsString;
       try {
         dateFormatted = DateFormat('yyyy-MM-dd').format(DateTime.parse(dateAsString));

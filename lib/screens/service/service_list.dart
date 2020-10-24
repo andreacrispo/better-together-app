@@ -135,7 +135,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
 
   Widget _buildListItem(BuildContext context,  ServiceDocument service) {
     final Color backgroundColor = service.color != null ? HexColor(service.color) : Theme.of(context).primaryColor;
-    final String currencySymbol = service.currencyCode != null ? currenciesMap[service.currencyCode][0] : "€";
+    final String currencySymbol = getCurrencySymbol( service.currencyCode);
     return Card(
       key: ValueKey(service.name),
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),

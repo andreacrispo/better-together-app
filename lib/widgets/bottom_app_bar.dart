@@ -60,7 +60,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
     );
   }
 
-  _changeRoute(context, newRouteName, newWidget) {
+  void _changeRoute(context, newRouteName, newWidget) {
     bool isNewRouteSameAsCurrent = false;
 
     Navigator.popUntil(context, (route) {
@@ -96,7 +96,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
     );
   }
 
-  _showMoreMenu(BuildContext context) async {
+  void _showMoreMenu(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
     final themeNotifier = Provider.of<ThemeNotifier>(context);
@@ -137,7 +137,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
   }
 
 
-  _currenciesBottomSheet(context) {
+  void _currenciesBottomSheet(context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext buildCtx) {
@@ -147,11 +147,10 @@ class BTBottomAppBarWidget extends StatelessWidget {
             itemCount: currenciesMap.length,
             itemBuilder: (BuildContext context, int index) {
               final String key = currenciesMap.keys.elementAt(index);
-              final String currencyName = currenciesMap[key][1];
               return  Column(
                 children: <Widget>[
                   ListTile(
-                    title:  Text(currencyName),
+                    title:  Text(getCurrencyDescription(key)),
                   ),
                   Divider(height: 2.0,),
                 ],

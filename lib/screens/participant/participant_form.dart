@@ -72,10 +72,9 @@ class _ParticipantFormState extends State<ParticipantForm> {
         });
       },
       items: currenciesMap.keys.map((currencyCode) {
-        final String currencyName = currenciesMap[currencyCode][1];
         return DropdownMenuItem(
           value: currencyCode,
-          child: Text(currencyName),
+          child: Text(getCurrencyDescription(currencyCode)),
         );
       }).toList(),
     );
