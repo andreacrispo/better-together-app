@@ -42,7 +42,7 @@ class _ServiceFormState extends State<ServiceForm> {
     final iconField =  CircleAvatar(
         backgroundColor: (_service.color != null || _service.color != "") ? HexColor(_service.color) : Colors.grey,
         radius: 50,
-        child: Image.asset(_service.icon != null ? 'assets/${_service.icon}.png' :  'assets/$DEFAULT_ICON.png'),
+        child: Image.asset('assets/${_service.icon ?? DEFAULT_ICON}.png'),
     );
 
     final nameField = TextFormField(

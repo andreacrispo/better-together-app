@@ -54,7 +54,9 @@ class _ServicePresetState extends State<ServicePreset> {
                 context: context,
                 delegate: _PresetSearchDelegate(_servicePresetList) // _delegate,
             );
-            _addServicePreset(selected);
+            if(selected != null) {
+              _addServicePreset(selected);
+            }
           },
         ),
       ],
@@ -110,8 +112,7 @@ class _ServicePresetState extends State<ServicePreset> {
           child:
           ListTile(
             onTap: () => _addServicePreset(service),
-           contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             leading: Container(
               padding: EdgeInsets.only(right: 16.0),
               decoration: BoxDecoration(
@@ -142,6 +143,7 @@ class _ServicePresetState extends State<ServicePreset> {
     for(final item in parsedJson) {
       result.add(ServiceDocument.fromMap(item));
     }
+    result.sort((a,b) => a.name.compareTo(b.name));
     return result;
   }
 
@@ -220,7 +222,7 @@ class _PresetSearchDelegate extends SearchDelegate {
       itemCount: suggestionList.length,
       itemBuilder: (context, index) =>
           ListTile(
-            trailing: Icon(Icons.add),
+            trailing: Icon(Icons.arrow_forward),
             onTap: () => this.close(context, suggestionList[index]), // showResults(context),
             title: RichText(
                 text:
@@ -238,9 +240,6 @@ class _PresetSearchDelegate extends SearchDelegate {
           ),
     );
   }
-
-
-
 
 }
 
