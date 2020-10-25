@@ -144,15 +144,8 @@ class ServiceParticipantFirebase {
   }
 
   Future<void> editParticipantFromService({String serviceId, ParticipantDocument participant, bool useCredit}) async {
-    /*
-    final String participantId = participant.reference.documentID;
-    await _database.setData(
-        path: FireStorePath.serviceParticipant(serviceId, participantId),
-        data: participant.toMap()
-    );
-    */
 
-    if(useCredit) {
+    if(useCredit && participant.pricePaid != null) {
       participant.credit -= participant.pricePaid;
       final String dateKey = Timestamp.now().toDate().toIso8601String();
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:swipedetector/swipedetector.dart';
 
@@ -10,6 +9,7 @@ import '../../service/service_participant_firebase.dart';
 import '../../utils/custom_route_animation.dart';
 import '../../utils/utils.dart';
 import '../../widgets/has_paid_button.dart';
+import '../../widgets/month_navigator.dart';
 import 'service_form.dart';
 import 'service_participant_form.dart';
 
@@ -113,63 +113,37 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   Widget _buildTable(BuildContext context, List<ParticipantDocument> participants) {
     final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
-    final Locale locale = FlutterI18n.currentLocale(context);
-    final String currentMonth = localeMonthString[locale.languageCode][passArgs.monthPaid];
 
-    return Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start, verticalDirection: VerticalDirection.down, children: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          IconButton(
-              icon: Icon(Icons.arrow_back),
-              color: Theme.of(context).textTheme.button.color,
-              onPressed: () => previousMonth(passArgs.monthPaid, passArgs.yearPaid)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                "$currentMonth ${passArgs.yearPaid}",
-                style: TextStyle(fontSize: 32),
-              ),
-              IconButton(
-                icon: Icon(Icons.calendar_today),
-                color: Theme.of(context).textTheme.button.color,
-                onPressed: () {
-                  showMonthPicker(
-                    initialDate: DateTime(passArgs.yearPaid, passArgs.monthPaid),
-                    context: context,
-                  ).then((dateTime) {
-                    changeMonthNavigator(dateTime.month, dateTime.year);
-                  });
-                },
-              )
-            ],
-          ),
-          IconButton(
-              icon: Icon(Icons.arrow_forward),
-              color: Theme.of(context).textTheme.button.color,
-              onPressed: () => nextMonth(passArgs.monthPaid, passArgs.yearPaid)),
-        ],
-      ),
-      Expanded(child: createTableParticipants(participants, context)),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        verticalDirection: VerticalDirection.down,
         children: <Widget>[
-          Card(
-            elevation: 10,
-            child: Text(""),
-          )
-        ],
-      )
-    ]);
+            MonthNavigatorWidget(
+                currentMonth: passArgs.monthPaid,
+                currentYear: passArgs.yearPaid,
+                changeMonthCallback: changeMonthNavigator,
+                previousMonthCallback: previousMonth,
+                nextMonthCallback: nextMonth,
+            ),
+            Expanded(child: createTableParticipants(participants, context)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Card(
+                  elevation: 10,
+                  child: Text(""),
+                )
+              ],
+            )
+        ]
+    );
   }
 
   Widget createTableParticipants(List<ParticipantDocument> participants, BuildContext context) {
     if (participants.isEmpty) {
-      final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments; 
+      final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -380,43 +354,39 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     setState(() {});
   }
 
-  changeMonth(DragUpdateDetails details, passArgs) {
-    //if details.primaryDelta is positive ,the drag is left to right. So previous month
-    if (details.delta.dx > 0) {
-      previousMonth(passArgs.monthPaid, passArgs.yearPaid);
-    }
-    //if details.primaryDelta is negative ,the drag is right to left. So next month
-    else if (details.delta.dx <= 0) {
-      nextMonth(passArgs.monthPaid, passArgs.yearPaid);
-    }
-  }
-
   void previousMonth(int month, int year) {
+    int prevMonth = month; int prevYear = year;
     if (month - 1 <= 0) {
-      month = 12;
-      year -= 1;
+      prevMonth = 12;
+      prevYear -= 1;
     } else {
-      month -= 1;
+      prevMonth -= 1;
     }
-    changeMonthNavigator(month, year);
+    changeMonthNavigator(prevMonth, prevYear);
   }
 
   void nextMonth(int month, int year) {
+    int nextMonth = month; int nextYear = year;
     if (month + 1 >= 13) {
-      month = 1;
-      year += 1;
+      nextMonth = 1;
+      nextYear += 1;
     } else {
-      month += 1;
+      nextMonth += 1;
     }
-    changeMonthNavigator(month, year);
+    changeMonthNavigator(nextMonth, nextYear);
   }
+
 
   void changeMonthNavigator(int month, int year) {
     Navigator.pushReplacement(
       context,
       CustomRouteFadeAnimation(
           builder: (context) => ServiceDetailWidget(),
-          settings: RouteSettings(arguments: ServiceDetailArgs(serviceId: currentServiceId, service: currentService, monthPaid: month, yearPaid: year))),
+          settings: RouteSettings(arguments: ServiceDetailArgs(
+              serviceId: currentServiceId, service: currentService,
+              monthPaid: month, yearPaid: year
+          ))
+      ),
     );
   }
 
@@ -437,3 +407,5 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
       ..add(StringProperty('currentServiceId', currentServiceId));
   }
 }
+
+
