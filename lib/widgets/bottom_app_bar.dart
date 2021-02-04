@@ -29,11 +29,13 @@ class BTBottomAppBarWidget extends StatelessWidget {
       shape: const CircularNotchedRectangle(),
       child: Row(children: <Widget>[
         IconButton(
+            color: target == ServiceListWidget.routeName ? Theme.of(context).accentColor : Colors.white,
             iconSize: 36,
-            icon: const Icon(Icons.home, semanticLabel: 'Show service list'),
+            icon: const Icon(Icons.featured_play_list_outlined, semanticLabel: 'Show service list'),
             onPressed: () => _changeRoute(context, ServiceListWidget.routeName, ServiceListWidget())
         ),
         IconButton(
+            color: target == ParticipantListWidget.routeName ? Theme.of(context).accentColor : Colors.white,
             iconSize: 36,
             icon: const Icon(Icons.supervised_user_circle, semanticLabel: 'Show participants list'),
             onPressed: () => _changeRoute(context,ParticipantListWidget.routeName, ParticipantListWidget())

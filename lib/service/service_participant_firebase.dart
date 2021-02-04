@@ -122,7 +122,7 @@ class ServiceParticipantFirebase {
   addParticipantIntoService({String serviceId, ParticipantDocument participant, bool useCredit}) async {
     final String participantId = participant.participantId;
 
-    if(useCredit) {
+    if(participant.hasPaid && useCredit) {
       participant.credit -= participant.pricePaid;
       final String dateKey = Timestamp.now().toDate().toIso8601String();
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
