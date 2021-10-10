@@ -98,17 +98,19 @@ class ServiceParticipantFirebase {
     Timestamp currentToTimestamp
   }) async {
 
-    final QuerySnapshot previousParticipants = await Firestore.instance
+    final QuerySnapshot previousParticipants = await FirebaseFirestore.instance
           .collection("services")
-          .document(serviceId)
+          .doc(serviceId)
           .collection('participants')
           .where('uid', isEqualTo: this.uid)
           .where('datePaid', isEqualTo: fromAnotherTimestamp)
-          .getDocuments();
+          .get();
 
-    for(final DocumentSnapshot snapshot in previousParticipants.documents){
-       final data = snapshot.data;
-       data['datePaid'] = currentToTimestamp;
+    for(final DocumentSnapshot snapshot in previousParticipants.docs){
+      Map<String, dynamic> data = snapshot.data();
+
+
+        data['datePaid'] = currentToTimestamp;
        data['pricePaid'] = null;
        data['hasPaid'] = false;
 
@@ -164,7 +166,7 @@ class ServiceParticipantFirebase {
         merge: true
     );
 
-    final String docRefId =  participant.reference.documentID;
+    final String docRefId =  participant.reference.id;
 
     await _database.setData(
         path: FireStorePath.serviceParticipant(serviceId, docRefId),
@@ -173,7 +175,7 @@ class ServiceParticipantFirebase {
   }
 
   Future<void> deleteParticipantFromService(String serviceId, ParticipantDocument participant) async {
-    final String participantId = participant.reference.documentID;
+    final String participantId = participant.reference.id;
     await  _database.deleteData(path: FireStorePath.serviceParticipant(serviceId, participantId));
   }
 
@@ -208,31 +210,35 @@ class ServiceParticipantFirebase {
      final serviceListIds = edited.serviceIds;
      for(final String serviceId in serviceListIds) {
 
-        final QuerySnapshot participants = await Firestore.instance
+        final QuerySnapshot participants = await FirebaseFirestore.instance
             .collection('services')
-            .document(serviceId)
+            .doc(serviceId)
             .collection('participants')
             .where('uid', isEqualTo: this.uid)
-            .where('participantId', isEqualTo: edited.reference.documentID)
-            .getDocuments();
+            .where('participantId', isEqualTo: edited.reference.id)
+            .get();
 
-        for(final DocumentSnapshot docParticipant in participants.documents) {
-          final participantMapData = docParticipant.data;
+        for(final DocumentSnapshot docParticipant in participants.docs) {
+          Map<String, dynamic>  participantMapData = docParticipant.data();
+
+
           participantMapData['name'] = edited.name;
-          participantMapData['credit'] = edited.credit;
-          await Firestore.instance
+       participantMapData['credit'] = edited.credit;
+
+
+          await FirebaseFirestore.instance
               .collection('services')
-              .document(serviceId)
+              .doc(serviceId)
               .collection('participants')
-              .document(docParticipant.documentID)
-              .setData(participantMapData, merge: true);
+              .doc(docParticipant.id)
+              .set(participantMapData, SetOptions(merge: true));
         }
      }
      
-     await Firestore.instance
+     await FirebaseFirestore.instance
         .collection('participants')
-        .document(documentID)
-        .setData(edited.toMap());
+        .doc(documentID)
+        .set(edited.toMap());
   }
 
   Future<void> deleteParticipant(String documentID) async {

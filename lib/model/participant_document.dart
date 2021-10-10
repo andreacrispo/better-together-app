@@ -31,7 +31,7 @@ class ParticipantDocument {
   ;
 
   ParticipantDocument.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
 
   String participantId;

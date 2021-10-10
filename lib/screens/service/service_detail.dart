@@ -393,7 +393,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   _editService(ServiceDocument service) async {
     final ServiceDocument editedService = await Navigator.pushNamed<ServiceDocument>(context, ServiceForm.routeName, arguments: service);
     if (editedService != null) {
-      await _repository.editService(service.reference.documentID, editedService);
+      await _repository.editService(service.reference.id, editedService);
     }
   }
 

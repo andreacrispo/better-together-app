@@ -80,11 +80,11 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
               child: DropdownButton(
                 hint: Text( i18n(context, 'participant')  ),
                 isExpanded: true,
-                value:  _participantId != null ? snapshot.data.firstWhere((p) => p.reference.documentID == _participantId) : null,
+                value:  _participantId != null ? snapshot.data.firstWhere((p) => p.reference.id == _participantId) : null,
                 onChanged: (ParticipantDocument newParticipant) {
                   _participant = newParticipant;
                   // ignore: cascade_invocations
-                  _participant.participantId = newParticipant.reference.documentID;
+                  _participant.participantId = newParticipant.reference.id;
                   _participantId =  _participant.participantId;
                   setState(() {});
                 },
@@ -215,7 +215,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
       final DocumentReference doc = await _repository.createParticipant(newParticipant);
       setState(() {
         _participant = newParticipant;
-        _participant.participantId = doc.documentID;
+        _participant.participantId = doc.id;
         _participantId = _participant.participantId;
       });
     }

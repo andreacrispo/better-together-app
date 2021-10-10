@@ -1,5 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ import 'service/service_participant_firebase.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   final bool darkThemeActive = sharedPreferences.getBool('darkThemeActive') ?? true;
@@ -58,9 +60,9 @@ class BetterTogetherApp extends StatelessWidget {
     //    GlobalWidgetsLocalizations.delegate
       ],
       onGenerateRoute: Router.generate,
-      home: FutureBuilder<FirebaseUser>(
+      home: FutureBuilder<User>(
         future: Provider.of<AuthService>(context).getUser(),
-        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.error != null) {
               return Text(snapshot.error.toString());

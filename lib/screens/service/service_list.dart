@@ -125,7 +125,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
             onDismissed: (direction) async {
               final item = snapshot[index];
               snapshot.removeAt(index);
-              await _repository.deleteService(item.reference.documentID);
+              await _repository.deleteService(item.reference.id);
             },
             child: _buildListItem(context, snapshot[index])
         );
@@ -150,7 +150,7 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
               Navigator.pushNamed(context,
                   ServiceDetailWidget.routeName,
                   arguments: ServiceDetailArgs(
-                      serviceId: service.reference.documentID,
+                      serviceId: service.reference.id,
                       service: service,
                       monthPaid: DateTime.now().month,
                       yearPaid: DateTime.now().year

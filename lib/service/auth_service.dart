@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> getUser() {
-    return _auth.currentUser();
+  Future<User> getUser() {
+    return  Future.value(_auth.currentUser);
   }
 
   signUp({String email, String password}) async {
@@ -16,31 +16,30 @@ class AuthService with ChangeNotifier {
           .createUserWithEmailAndPassword(email: email, password: password);
       notifyListeners();
       return result.user;
-    } on AuthException catch (e) {
-      throw AuthException(e.code, e.message);
+    } on FirebaseAuthException catch (e) {
+      throw FirebaseAuthException(code: e.code, message: e.message);
     }
   }
 
-  Future<FirebaseUser> loginUser({String email, String password}) async {
+  Future<User> loginUser({String email, String password}) async {
     try {
       final result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
       notifyListeners();
       return result.user;
-    } on AuthException catch (e) {
-
-      throw  AuthException(e.code, e.message);
+    } on FirebaseAuthException catch (e) {
+      throw FirebaseAuthException(code: e.code, message: e.message);
     }
   }
 
-  Future<FirebaseUser>  signInAnonymously() async {
+  Future<User>  signInAnonymously() async {
     // TODO: FIX - use signInWithCustomToken
     // TODO: to avoid multiple user
     try {
       final result = await  FirebaseAuth.instance.signInAnonymously();
       notifyListeners();
       return result.user;
-    } on AuthException catch (e) {
-      throw AuthException(e.code, e.message);
+    } on FirebaseAuthException catch (e) {
+      throw  FirebaseAuthException(code: e.code, message: e.message);
     }
   }
 

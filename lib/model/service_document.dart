@@ -31,7 +31,7 @@ class ServiceDocument {
   ;
 
   ServiceDocument.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
 
   String serviceId;

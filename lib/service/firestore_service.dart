@@ -11,7 +11,7 @@ class FirestoreService {
     @required String path,
     @required Map<String, dynamic> data
   }) async {
-    final reference = Firestore.instance.collection(path);
+    final reference = FirebaseFirestore.instance.collection(path);
     final result = await reference.add(data);
     return result;
   }
@@ -21,12 +21,12 @@ class FirestoreService {
     @required Map<String, dynamic> data,
     bool merge = false,
   }) async {
-    final reference = Firestore.instance.document(path);
-    await reference.setData(data, merge: merge);
+    final reference = FirebaseFirestore.instance.doc(path);
+    await reference.set(data, SetOptions(merge: merge));
   }
 
   Future<void> deleteData({@required String path}) async {
-    final reference = Firestore.instance.document(path);
+    final reference = FirebaseFirestore.instance.doc(path);
     await reference.delete();
   }
 
@@ -36,14 +36,14 @@ class FirestoreService {
     Query Function(Query query) queryBuilder,
     int Function(T lhs, T rhs) sort,
   }) {
-    Query query = Firestore.instance.collection(path);
+    Query query = FirebaseFirestore.instance.collection(path);
     if (queryBuilder != null) {
       query = queryBuilder(query);
     }
     final Stream<QuerySnapshot> snapshots = query.snapshots();
     return snapshots.map((snapshot) {
-      final result = snapshot.documents
-          .map((snapshot) => builder(snapshot.data, snapshot.reference))
+      final result = snapshot.docs
+          .map((snapshot) => builder(snapshot.data(), snapshot.reference))
           .where((value) => value != null)
           .toList();
       if (sort != null) {
@@ -57,10 +57,10 @@ class FirestoreService {
     @required String path,
     @required T Function(Map<String, dynamic> data, DocumentReference reference) builder,
   }) {
-    final DocumentReference reference = Firestore.instance.document(path);
+    final DocumentReference reference = FirebaseFirestore.instance.doc(path);
     final Stream<DocumentSnapshot> snapshots = reference.snapshots();
     return snapshots
-        .map((snapshot) => builder(snapshot.data, snapshot.reference));
+        .map((snapshot) => builder(snapshot.data(), snapshot.reference));
   }
 }
 

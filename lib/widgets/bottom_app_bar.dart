@@ -101,8 +101,8 @@ class BTBottomAppBarWidget extends StatelessWidget {
   void _showMoreMenu(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final bool isDarkThemeActive = prefs.getBool('darkThemeActive') ?? true;
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
-    final authUser = await Provider.of<AuthService>(context).getUser();
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    final authUser = await Provider.of<AuthService>(context, listen: false).getUser();
     await showModalBottomSheet(
         context: context,
         builder: (BuildContext bc){
@@ -172,7 +172,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
         leading: Icon(Icons.lock_open),
         title: Text("Logout"),
         onTap: ()  async {
-          await  Provider.of<AuthService>(context).logout();
+          await  Provider.of<AuthService>(context, listen: false).logout();
           await Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
         }
     );

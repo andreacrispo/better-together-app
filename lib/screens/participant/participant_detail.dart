@@ -48,7 +48,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<ParticipantDocument>(
-      stream: _repository.getParticipantDetail(currentParticipant.reference.documentID),
+      stream: _repository.getParticipantDetail(currentParticipant.reference.id),
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return LinearProgressIndicator();
@@ -184,7 +184,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
         arguments: currentParticipant
     );
     if (edited != null)
-      await _repository.editParticipant(currentParticipant.reference.documentID, edited);
+      await _repository.editParticipant(currentParticipant.reference.id, edited);
 
   }
 

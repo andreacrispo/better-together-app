@@ -141,7 +141,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
   }
 
   Future<void> _deleteParticipant(ParticipantDocument p) async {
-    await _repository.deleteParticipant(p.reference.documentID);
+    await _repository.deleteParticipant(p.reference.id);
   }
 
   void _openParticipantDetail(ParticipantDocument participant) {

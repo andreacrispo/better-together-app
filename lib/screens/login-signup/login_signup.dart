@@ -169,7 +169,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
       },
       child: Text(
         _authMode == AuthMode.Login
-            ? i18n(context, "signup_phrase") + " " + i18n(context, 'signup')
+            ? "${i18n(context, "signup_phrase")} ${i18n(context, 'signup')}"
             : i18n(context, "login_phrase"),
         style: TextStyle(color: Colors.grey[600]),
       ),
@@ -179,7 +179,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
       padding: EdgeInsets.all(8),
       splashColor: Colors.blueGrey[700],
       onPressed: () async {
-        await Provider.of<AuthService>(context).signInAnonymously();
+        await Provider.of<AuthService>(context, listen: false).signInAnonymously();
       },
        child: Text(
         i18n(context,   'sign_in_anonymously'),
@@ -263,11 +263,11 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
   Future _loginOrSignup(ctx) async {
     try {
       if(_authMode == AuthMode.Login){
-        await Provider.of<AuthService>(context).loginUser(email: _email, password: _password);
+        await Provider.of<AuthService>(context, listen: false).loginUser(email: _email, password: _password);
       }else {
-        await Provider.of<AuthService>(context).signUp(email: _email, password: _password);
+        await Provider.of<AuthService>(context, listen: false).signUp(email: _email, password: _password);
       }
-    } on AuthException catch (error) {
+    } on FirebaseAuthException catch (error) {
       return _buildErrorDialog(context, error.message);
      } on Exception catch (error) {
       return _buildErrorDialog(context, error.toString());
