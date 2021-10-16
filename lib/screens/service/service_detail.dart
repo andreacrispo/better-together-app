@@ -243,7 +243,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                       updatePaidStatus(participant);
                     })),
                 DataCell(
-                  Text(participant.pricePaid != null ? participant.pricePaid.toString() : ''),
+                  Text(participant.pricePaid != null ? participant.pricePaid.toStringAsFixed(3): ''),
                 ),
                 DataCell(
                   PopupMenuButton<int>(

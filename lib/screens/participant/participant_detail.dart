@@ -121,7 +121,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                      )
                   ),
                   subtitle: Text(
-                    "${i18n(context,'credit')}:  ${currentParticipant.credit} $currencySymbol",
+                    "${i18n(context,'credit')}:  ${currentParticipant.credit.toStringAsFixed(3)} $currencySymbol",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -159,11 +159,12 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
             itemBuilder: (BuildContext context, int index) {
               final String key = sortedHistory.elementAt(index);
               final String dateFormatted = _dateFormatted(key);
+              final num credit = currentParticipant.creditHistory[key];
               return  Column(
                 children: <Widget>[
                   ListTile(
                     title:  Text("$dateFormatted"),
-                    trailing: Text("${currentParticipant.creditHistory[key]}"),
+                    trailing: Text("${credit.toStringAsFixed(3)}"),
                   ),
                   Divider(height: 2.0,),
                 ],

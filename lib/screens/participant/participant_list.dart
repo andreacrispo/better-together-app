@@ -124,7 +124,7 @@ class _ParticipantListWidgetState extends State<ParticipantListWidget> {
                   fontSize: 28),
             ),
             trailing: Text(
-                "${i18n(context,'credit')}: ${participant.credit ?? 0} $currencySymbol",
+                "${i18n(context,'credit')}: ${participant.credit.toStringAsFixed(3) ?? 0} $currencySymbol",
                 style: TextStyle(color: Colors.white, fontSize: 16),
                 textAlign: TextAlign.right
             ),

@@ -91,6 +91,9 @@ class _ServiceListWidgetState extends State<ServiceListWidget> {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
 
+        if(snapshot.hasError)
+          return _buildEmptyServiceList(); // TODO:FIXME
+
         if(snapshot.data.isEmpty)
           return _buildEmptyServiceList();
 
