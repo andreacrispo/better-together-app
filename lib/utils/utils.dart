@@ -148,3 +148,9 @@ Timestamp getTimestamp(int yearPaid, int monthPaid) {
   return Timestamp.fromDate(DateTime(yearPaid, monthPaid));
 }
 
+String formatCredit(num credit) {
+  if(credit == null)
+    return "";
+
+  return  credit.toStringAsFixed(3);
+}

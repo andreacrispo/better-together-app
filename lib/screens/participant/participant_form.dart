@@ -44,7 +44,7 @@ class _ParticipantFormState extends State<ParticipantForm> {
     );
 
     final creditField = TextFormField(
-      initialValue: _participant.credit != null ? _participant.credit.toString() : "",
+      initialValue: _participant.credit != null ? formatCredit(_participant.credit) : "",
       decoration: getInputDecoration(i18n(context, 'credit')),
       validator: (value) {
         if (value.isEmpty)

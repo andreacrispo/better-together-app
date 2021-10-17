@@ -121,7 +121,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                      )
                   ),
                   subtitle: Text(
-                    "${i18n(context,'credit')}:  ${currentParticipant.credit.toStringAsFixed(3)} $currencySymbol",
+                    "${i18n(context,'credit')}:  ${formatCredit(currentParticipant.credit)} $currencySymbol",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -139,6 +139,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
 
   Widget _buildCreditHistorySection() {
     final sortedHistory =  currentParticipant.creditHistory.keys.toList()..sort((a,b) => b.compareTo(a));
+    final String currencySymbol = getCurrencySymbol(currentParticipant.currencyCode);
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
@@ -164,7 +165,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                 children: <Widget>[
                   ListTile(
                     title:  Text("$dateFormatted"),
-                    trailing: Text("${credit.toStringAsFixed(3)}"),
+                    trailing: Text("${formatCredit(credit)} $currencySymbol"),
                   ),
                   Divider(height: 2.0,),
                 ],

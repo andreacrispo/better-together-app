@@ -159,8 +159,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
             style: TextStyle(fontSize: 22),
           ),
           SizedBox(height: 20),
-          RaisedButton(
-
+          ElevatedButton(
             onPressed: () => copyParticipantsFromPreviousMonth(context),
             child: Text(i18n(context, 'copy_participants_previous_month')),
           ),
@@ -258,9 +257,11 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                       ),
                     ],
                     onSelected: (value) {
-                      if (value == 1)
+                      if (value == 1) {
                         editParticipantFromService(participant);
-                      else if (value == 2) deleteParticipantFromService(participant);
+                      } else if (value == 2) {
+                        deleteParticipantFromService(participant);
+                      }
                     },
                     icon: Icon(Icons.more_vert),
                   ),
@@ -282,12 +283,14 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     }
   }
 
-  addParticipantToService(BuildContext context) async {
+  Future<void> addParticipantToService(BuildContext context) async {
     final result = await Navigator.pushNamed<dynamic>(
       context,
       ServiceParticipantForm.routeName,
     );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
 
     final ParticipantDocument newParticipant = result[0];
     final bool useCredit = result[1];
@@ -295,7 +298,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     if (newParticipant != null) {
       final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
       newParticipant.datePaid = getTimestamp(passArgs.yearPaid, passArgs.monthPaid);
-      _repository.addParticipantIntoService(
+      await _repository.addParticipantIntoService(
         serviceId: currentServiceId,
         participant: newParticipant,
         useCredit: useCredit,
@@ -306,7 +309,9 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   editParticipantFromService(ParticipantDocument participant) async {
     final result = await Navigator.pushNamed<dynamic>(context, ServiceParticipantForm.routeName, arguments: participant);
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
 
     final ParticipantDocument editedParticipant = result[0];
     final bool useCredit = result[1];
