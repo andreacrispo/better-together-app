@@ -108,7 +108,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         children: <Widget>[
           Text(i18n(context, "has_paid")),
           Switch(
-            value: _participant.hasPaid ?? true,
+            value: _participant.hasPaid ?? false,
             onChanged: (value) {
               setState(() {
                 _participant.hasPaid = value;

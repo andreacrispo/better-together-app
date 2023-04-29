@@ -65,7 +65,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   Widget _buildBody(BuildContext context, ServiceDetailArgs args) {
     return StreamBuilder<List<ParticipantDocument>>(
-      stream: _repository.getServiceWithParticipants(args.serviceId, getTimestamp(args.yearPaid, args.monthPaid)),
+      stream: _repository.getServiceWithParticipants(args.serviceId, getDatePaid(args.yearPaid, args.monthPaid)),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
@@ -181,8 +181,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                   ).then((dateTime) async {
                     await _repository.copyParticipantsFromAnotherDate(
                         serviceId: currentServiceId,
-                        currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid),
-                        fromAnotherTimestamp: getTimestamp(dateTime.year, dateTime.month));
+                        currentToTimestamp: getDatePaid(passArgs.yearPaid, passArgs.monthPaid),
+                        fromAnotherTimestamp: getDatePaid(dateTime.year, dateTime.month));
                     setState(() {});
                   });
                 },
@@ -354,7 +354,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     await _repository.copyParticipantsFromAnotherDate(
         serviceId: currentServiceId,
         fromAnotherTimestamp: null, // TIMESTAMP
-        currentToTimestamp: getTimestamp(passArgs.yearPaid, passArgs.monthPaid)
+        currentToTimestamp: getDatePaid(passArgs.yearPaid, passArgs.monthPaid)
     );
     setState(() {});
   }

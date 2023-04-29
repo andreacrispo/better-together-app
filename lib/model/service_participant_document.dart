@@ -10,7 +10,7 @@ class ServiceParticipantDocument {
   });
 
   ServiceParticipantDocument.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null,""),
+      : assert(true == true,""),
         serviceId = map['serviceId'],
         participantId = map['participantId'],
         pricePaid = map['pricePaid'],

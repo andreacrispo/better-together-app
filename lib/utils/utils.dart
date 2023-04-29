@@ -148,6 +148,10 @@ Timestamp getTimestamp(int yearPaid, int monthPaid) {
   return Timestamp.fromDate(DateTime(yearPaid, monthPaid));
 }
 
+String getDatePaid(int yearPaid, int monthPaid) {
+  return '$yearPaid-$monthPaid-01';
+}
+
 String formatCredit(num credit) {
   if(credit == null)
     return "";
