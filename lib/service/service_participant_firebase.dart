@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -183,30 +182,47 @@ class ServiceParticipantFirebase {
 
   Future<void> editParticipantFromService({String serviceId, ParticipantDocument participant, bool useCredit}) async {
 
-    if(useCredit && participant.pricePaid != null) {
+    final String participantId = participant.participantId;
+
+    Map<String, dynamic> pricePaid = {};
+    if(participant.hasPaid != null && participant.hasPaid && useCredit) {
       participant.credit -= participant.pricePaid;
       final String dateKey = Timestamp.now().toDate().toIso8601String();
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
+      pricePaid = {
+        'hasPaid': true,
+        'pricePaid': participant.pricePaid
+      };
+    } else {
+      pricePaid = {
+        'hasPaid': false,
+        'pricePaid': 0
+      };
     }
 
     final serviceListIds = participant.serviceIds.toSet()..add(serviceId);
+    final datePaid = participant.datePaid != null ? participant.datePaid.toDate()  : Timestamp.now().toDate();
 
+
+    final datePaidKey = getDatePaid(datePaid.year, datePaid.month);
+    if(participant.paymentHistory.containsKey(datePaidKey)){
+      participant.paymentHistory[datePaidKey] = pricePaid;
+    }else {
+      participant.paymentHistory.putIfAbsent(getDatePaid(datePaid.year, datePaid.month), () => pricePaid);
+    }
+    participant.serviceIds = serviceListIds.toList();
 
     await _database.setData(
-        path: FireStorePath.participant(participant.participantId),
-        data: {
-          'credit': participant.credit,
-          'creditHistory': participant.creditHistory,
-          'serviceIds': serviceListIds.toList()
-        },
+        path: FireStorePath.participant(participantId),
+        data: participant.toMap(),
         merge: true
     );
 
-    final String docRefId =  participant.reference.id;
 
     await _database.setData(
-        path: FireStorePath.serviceParticipant(serviceId, docRefId),
-        data: participant.toMap()
+        path: FireStorePath.serviceParticipant(serviceId, participantId),
+        data: participant.toMap(),
+        merge: true
     );
   }
 

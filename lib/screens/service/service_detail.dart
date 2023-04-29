@@ -1,3 +1,6 @@
+import 'package:better_together_app/screens/service/service_list.dart';
+import 'package:better_together_app/widgets/bottom_app_bar.dart';
+import 'package:better_together_app/widgets/bottom_bar_service_detail.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
@@ -38,6 +41,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
   String currentServiceId;
 
+  ServiceDetailArgs serviceDetailArgs;
+
   @override
   void initState() {
     _repository = ServiceParticipantFirebase();
@@ -48,6 +53,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
   @override
   Widget build(BuildContext context) {
     final ServiceDetailArgs passArgs = ModalRoute.of(context).settings.arguments;
+    this.serviceDetailArgs = passArgs;
     this.currentServiceId = passArgs.serviceId;
     this.currentService = passArgs.service;
     this.appBarTitle = this.currentService.name;
@@ -60,6 +66,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
         onPressed: () => addParticipantToService(context),
         child: Icon(Icons.add),
       ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar:  BottomBarServiceDetail(target: ServiceDetailWidget.routeName, serviceDetailArgs: passArgs)
     );
   }
 
@@ -94,7 +102,24 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     )),
-                    Center(child: Text("${currentService.price} $currencySymbol", textAlign: TextAlign.center, style: TextStyle(fontSize: 16.0))),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text("${currentService.price} $currencySymbol", textAlign: TextAlign.left, style: TextStyle(fontSize: 14.0)),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  child: Icon(Icons.supervised_user_circle, size: 14),
+                                ),
+                                TextSpan(
+                                  text: "  ${currentService.participantNumber}",
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          )
+                        ])
                   ],
                 ),
                 centerTitle: true,
@@ -235,7 +260,9 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                     callback: (updatePaid) {
                       participant.hasPaid = updatePaid;
                       if (participant.hasPaid) {
-                        participant.pricePaid = participant.pricePaid ?? (this.currentService.price / this.currentService.participantNumber);
+                        final pricePaid = (participant.pricePaid != null && participant.pricePaid != 0 ) ? participant.pricePaid : (this.currentService.price / this.currentService.participantNumber);
+                        participant.datePaid = getTimestamp(this.serviceDetailArgs.yearPaid, this.serviceDetailArgs.monthPaid);
+                        participant.pricePaid = pricePaid;
                       } else {
                         participant.pricePaid = null;
                       }
@@ -251,10 +278,13 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                         value: 1,
                         child: Text(i18n(context, 'edit')),
                       ),
+                      /*
                       PopupMenuItem(
                         value: 2,
                         child: Text(i18n(context, 'delete')),
                       ),
+                      */
+
                     ],
                     onSelected: (value) {
                       if (value == 1) {
@@ -315,7 +345,7 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
 
     final ParticipantDocument editedParticipant = result[0];
     final bool useCredit = result[1];
-
+    editedParticipant.datePaid = getTimestamp(this.serviceDetailArgs.yearPaid, this.serviceDetailArgs.monthPaid);
     if (editedParticipant != null) {
       await _repository.editParticipantFromService(
           serviceId: currentServiceId,

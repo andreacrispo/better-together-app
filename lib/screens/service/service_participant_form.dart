@@ -75,7 +75,6 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
             if (!snapshot.hasData) {
               return LinearProgressIndicator();
             }
-
             return Center(
               child: DropdownButton(
                 hint: Text( i18n(context, 'participant')  ),
@@ -127,7 +126,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text("${i18n(context,"credit")}: ", style: TextStyle(fontSize: 18),),
-          Text(_participant.credit != null ? _participant.credit.toString() : "0",style: TextStyle(fontSize: 18),),
+          Text(_participant.credit != null ? formatCredit(_participant.credit).toString() : "0",style: TextStyle(fontSize: 18),),
           Text(i18n(context,'money_from_credit'),),
           Switch(
             value: _useCredit,

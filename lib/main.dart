@@ -1,4 +1,5 @@
 
+import 'package:better_together_app/screens/service/service_participant_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -95,21 +96,19 @@ abstract class Router {
       case ServiceDetailWidget.routeName:
         return MaterialPageRoute(builder: (context) => ServiceDetailWidget(), settings: settings);
       case ServiceForm.routeName:
-        return MaterialPageRoute<ServiceDocument>(
-            builder: (context) => ServiceForm(), settings: settings);
+        return MaterialPageRoute<ServiceDocument>(builder: (context) => ServiceForm(), settings: settings);
       case ServiceParticipantForm.routeName:
-        return MaterialPageRoute<dynamic>(
-            builder: (context) => ServiceParticipantForm(), settings: settings);
+        return MaterialPageRoute<dynamic>(builder: (context) => ServiceParticipantForm(), settings: settings);
       case ServicePreset.routeName:
-        return MaterialPageRoute(
-            builder: (context) => ServicePreset(), settings: settings);
+        return MaterialPageRoute(builder: (context) => ServicePreset(), settings: settings);
       case ParticipantListWidget.routeName:
         return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);
       case ParticipantDetailWidget.routeName:
         return MaterialPageRoute(builder: (context) => ParticipantDetailWidget(), settings: settings);
       case ParticipantForm.routeName:
-        return MaterialPageRoute<ParticipantDocument>(
-            builder: (context) => ParticipantForm(), settings: settings);
+        return MaterialPageRoute<ParticipantDocument>(builder: (context) => ParticipantForm(), settings: settings);
+      case ServiceParticipantListWidget.routeName:
+        return MaterialPageRoute(builder: (context) => ServiceParticipantListWidget(), settings: settings);
     }
     return null;
   }
