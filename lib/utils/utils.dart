@@ -156,5 +156,5 @@ String formatCredit(num credit) {
   if(credit == null)
     return "";
 
-  return  credit.toStringAsFixed(3);
+  return  credit.toStringAsFixed(2);
 }
