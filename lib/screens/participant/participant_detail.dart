@@ -153,24 +153,27 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
                 title: Text(i18n(context,'credit_history')),
               );
           },
-          body: ListView.builder(
-            padding: EdgeInsets.all(2),
-            shrinkWrap: true,
-            itemCount: sortedHistory.length,
-            itemBuilder: (BuildContext context, int index) {
-              final String key = sortedHistory.elementAt(index);
-              final String dateFormatted = _dateFormatted(key);
-              final num credit = currentParticipant.creditHistory[key];
-              return  Column(
-                children: <Widget>[
-                  ListTile(
-                    title:  Text("$dateFormatted"),
-                    trailing: Text("${formatCredit(credit)} $currencySymbol"),
-                  ),
-                  Divider(height: 2.0,),
-                ],
-              );
-             },
+          body: Container(
+            height: 450,
+            child: ListView.builder(
+              padding: EdgeInsets.all(2),
+              shrinkWrap: true,
+              itemCount: sortedHistory.length,
+              itemBuilder: (BuildContext context, int index) {
+                final String key = sortedHistory.elementAt(index);
+                final String dateFormatted = _dateFormatted(key);
+                final num credit = currentParticipant.creditHistory[key];
+                return  Column(
+                  children: <Widget>[
+                    ListTile(
+                      title:  Text("$dateFormatted"),
+                      trailing: Text("${formatCredit(credit)} $currencySymbol"),
+                    ),
+                    Divider(height: 2.0,),
+                  ],
+                );
+               },
+            ),
           ),
           isExpanded: this.isHistoryExpanded,
           canTapOnHeader: true

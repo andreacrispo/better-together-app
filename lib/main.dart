@@ -1,5 +1,6 @@
 
 import 'package:better_together_app/screens/service/service_participant_list.dart';
+import 'package:better_together_app/utils/custom_route_animation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ abstract class Router {
       case ServiceListWidget.routeName:
         return MaterialPageRoute(builder: (context) => ServiceListWidget(), settings: settings);
       case ServiceDetailWidget.routeName:
-        return MaterialPageRoute(builder: (context) => ServiceDetailWidget(), settings: settings);
+        return CustomRouteFadeAnimation(builder: (context) => ServiceDetailWidget(), settings: settings);
       case ServiceForm.routeName:
         return MaterialPageRoute<ServiceDocument>(builder: (context) => ServiceForm(), settings: settings);
       case ServiceParticipantForm.routeName:
@@ -108,7 +109,7 @@ abstract class Router {
       case ParticipantForm.routeName:
         return MaterialPageRoute<ParticipantDocument>(builder: (context) => ParticipantForm(), settings: settings);
       case ServiceParticipantListWidget.routeName:
-        return MaterialPageRoute(builder: (context) => ServiceParticipantListWidget(), settings: settings);
+        return CustomRouteFadeAnimation(builder: (context) => ServiceParticipantListWidget(), settings: settings);
     }
     return null;
   }

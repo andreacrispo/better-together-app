@@ -49,7 +49,7 @@ class ServiceDetailWidgetState extends State<ServiceParticipantListWidget> {
 
   Widget _buildBody(BuildContext context, ServiceDetailArgs args) {
     return StreamBuilder<List<ParticipantDocument>>(
-      stream: _repository.getServiceWithParticipants(args.serviceId, getDatePaid(args.yearPaid, args.monthPaid)),
+      stream: _repository.getParticipantsOfService(args.serviceId),
       builder: (context, snapshot) {
         if (!snapshot.hasData && !snapshot.hasError)
           return LinearProgressIndicator();
@@ -139,7 +139,7 @@ class ServiceDetailWidgetState extends State<ServiceParticipantListWidget> {
             onDismissed: (direction) {
               final item = snapshot[index];
               snapshot.removeAt(index);
-             // _deleteParticipant(item);
+            //  _deleteParticipantFromService(item);
             },
             child: _buildListItem(context, snapshot[index])
         );
@@ -196,6 +196,7 @@ class ServiceDetailWidgetState extends State<ServiceParticipantListWidget> {
       ..add(DiagnosticsProperty<ServiceDocument>('currentService', currentService))
       ..add(StringProperty('currentServiceId', currentServiceId));
   }
+
 }
 
 

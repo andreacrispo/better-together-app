@@ -90,6 +90,13 @@ class ServiceParticipantFirebase {
   }
 
 
+  Stream<List<ParticipantDocument>>  getParticipantsOfService(String serviceId) {
+    final participantsOfService = _database.collectionStream(
+        path: FireStorePath.participantsOfService(serviceId),
+        builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference),
+    );
+    return participantsOfService;
+  }
 
 
     Future<void> copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
