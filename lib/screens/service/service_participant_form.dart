@@ -35,10 +35,6 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        borderSide: BorderSide(),
-      ),
       //fillColor: Colors.green
     );
   }

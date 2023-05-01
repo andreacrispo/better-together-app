@@ -39,7 +39,7 @@ class _ServicePresetState extends State<ServicePreset> {
     final fab = FloatingActionButton.extended(
       label: Text(i18n(context,'add_custom_service')),
       icon: Icon(Icons.add),
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onPressed: () => _addServicePreset(null),
     );
 

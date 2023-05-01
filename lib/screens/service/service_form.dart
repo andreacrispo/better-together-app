@@ -20,12 +20,6 @@ class _ServiceFormState extends State<ServiceForm> {
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        borderSide: BorderSide(
-        ),
-      ),
-      //fillColor: Colors.green
     );
   }
   
@@ -146,7 +140,7 @@ class _ServiceFormState extends State<ServiceForm> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            OutlineButton(
+            OutlinedButton(
               onPressed: _openColorPicker,
               child: Text(i18n(context, "choose_color")),
             ),
@@ -228,11 +222,14 @@ class _ServiceFormState extends State<ServiceForm> {
           title: Text(title),
           content: content,
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: Navigator.of(context).pop,
               child: Text(i18n(context, 'cancel')),
             ),
-            FlatButton(
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white
+              ),
               onPressed: () => Navigator.of(context).pop(),
               child: Text(i18n(context, 'select')),
             ),

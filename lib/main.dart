@@ -1,6 +1,4 @@
 
-import 'package:better_together_app/screens/service/service_participant_list.dart';
-import 'package:better_together_app/utils/custom_route_animation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +17,11 @@ import 'screens/service/service_detail.dart';
 import 'screens/service/service_form.dart';
 import 'screens/service/service_list.dart';
 import 'screens/service/service_participant_form.dart';
+import 'screens/service/service_participant_list.dart';
 import 'screens/service/service_preset.dart';
 import 'service/auth_service.dart';
 import 'service/service_participant_firebase.dart';
+import 'utils/custom_route_animation.dart';
 
 
 
@@ -56,6 +56,7 @@ class BetterTogetherApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme:  themeNotifier.getTheme(),
+
       localizationsDelegates: [
         FlutterI18nDelegate(),
    //     GlobalMaterialLocalizations.delegate,

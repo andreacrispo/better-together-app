@@ -1,7 +1,6 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
@@ -37,7 +36,7 @@ class MonthNavigatorWidget extends StatelessWidget {
         children: <Widget>[
           IconButton(
               icon: Icon(Icons.arrow_back),
-              color: Theme.of(context).textTheme.button.color,
+              color: Theme.of(context).textTheme.labelLarge.color,
               onPressed: () =>  previousMonthCallback(currentMonth, currentYear)
           ),
           Row(
@@ -49,7 +48,7 @@ class MonthNavigatorWidget extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(Icons.calendar_today),
-                color: Theme.of(context).textTheme.button.color,
+                color: Theme.of(context).textTheme.labelLarge.color,
                 onPressed: () {
                   showMonthPicker(
                     initialDate: DateTime(currentYear, currentMonth),
@@ -63,7 +62,7 @@ class MonthNavigatorWidget extends StatelessWidget {
           ),
           IconButton(
               icon: Icon(Icons.arrow_forward),
-              color: Theme.of(context).textTheme.button.color,
+              color: Theme.of(context).textTheme.labelLarge.color,
               onPressed: () => nextMonthCallback(currentMonth, currentYear)),
         ]
     );

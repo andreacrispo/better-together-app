@@ -89,7 +89,7 @@ class _ParticipantDetailWidgetState extends State<ParticipantDetailWidget> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          color: Theme.of(context).primaryColor,
+      //    color: Theme.of(context).primaryColor,
           elevation: 10,
           child: Column(
             mainAxisSize: MainAxisSize.min,

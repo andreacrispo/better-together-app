@@ -1,6 +1,4 @@
 
-import 'package:better_together_app/screens/service/service_detail.dart';
-import 'package:better_together_app/screens/service/service_participant_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_theme.dart';
 import '../main.dart';
+import '../screens/service/service_detail.dart';
+import '../screens/service/service_participant_list.dart';
 import '../service/auth_service.dart';
 import '../utils/utils.dart';
 
@@ -24,18 +24,20 @@ class BottomBarServiceDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final activeColor = Theme.of(context).colorScheme.tertiary;
+    final secondaryColor = Theme.of(context).colorScheme.onTertiaryContainer;
     return BottomAppBar(
       elevation: 5,
       shape: const CircularNotchedRectangle(),
       child: Row(children: <Widget>[
         IconButton(
-            color: target == ServiceDetailWidget.routeName ? Theme.of(context).accentColor : Colors.white,
+            color: target == ServiceDetailWidget.routeName ? activeColor : secondaryColor,
             iconSize: 36,
             icon: const Icon(Icons.featured_play_list_outlined, semanticLabel: 'Show service list'),
             onPressed: () => _changeRoute(context, ServiceDetailWidget.routeName, ServiceDetailWidget())
         ),
         IconButton(
-            color: target == ServiceParticipantListWidget.routeName ? Theme.of(context).accentColor : Colors.white,
+            color: target == ServiceParticipantListWidget.routeName  ? activeColor : secondaryColor,
             iconSize: 36,
             icon: const Icon(Icons.supervised_user_circle, semanticLabel: 'Show participants list'),
             onPressed: () => _changeRoute(context,ServiceParticipantListWidget.routeName, ServiceParticipantListWidget())
