@@ -68,7 +68,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
           ),
           decoration: InputDecoration(
               labelText: "Email",
-              errorStyle: TextStyle(color: Theme.of(context).errorColor),
+              errorStyle: TextStyle(color: Theme.of(context).colorScheme.error),
               labelStyle: TextStyle(
                   color: Colors.black
               )
@@ -95,7 +95,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
             decoration: InputDecoration(
               fillColor: Colors.black26,
                 labelText: "Password",
-                errorStyle: TextStyle(color: Theme.of(context).errorColor),
+                errorStyle: TextStyle(color: Theme.of(context).colorScheme.error),
                 labelStyle: TextStyle(
                     color: Colors.black
                 )
@@ -115,7 +115,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
           decoration: InputDecoration(
               labelText: i18n(context,'confirm_password'),
               filled: true,
-              errorStyle: TextStyle(color: Theme.of(context).errorColor),
+              errorStyle: TextStyle(color: Theme.of(context).colorScheme.error),
               labelStyle: TextStyle(
                   color: Colors.black
               )
@@ -134,10 +134,12 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
     final loginOrSignUpButton =  Container(
       height: 50,
       margin: EdgeInsets.symmetric(horizontal: 50),
-      child: RaisedButton(
-        color: Colors.blueGrey[700],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+      child: 	ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor:  Colors.blueGrey[700],
+          shape:  RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
         ),
         onPressed: () async {
           final form = _formKey.currentState;
@@ -161,7 +163,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
       ),
     );
 
-    final switchBetween = FlatButton(
+    final switchBetween = TextButton(
       onPressed: ()  {
         setState(() {
           this._authMode = (_authMode == AuthMode.Login) ? AuthMode.Signup : AuthMode.Login;
@@ -175,9 +177,11 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
       ),
     );
 
-    final skipLogin = FlatButton(
-      padding: EdgeInsets.all(8),
-      splashColor: Colors.blueGrey[700],
+    final skipLogin = TextButton(
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.all(8),
+        foregroundColor: Colors.blueGrey[700],
+      ),
       onPressed: () async {
         await Provider.of<AuthService>(context, listen: false).signInAnonymously();
       },
@@ -282,7 +286,7 @@ class _LoginSignUpState extends State<LoginSignUpWidget> {
           title:  Text(i18n(context, 'error')),
           content: Text( i18n(context, 'wrong_credentials')),
           actions: [
-            FlatButton(
+            TextButton(
                 child: Text('Ok'),
                 onPressed: () {
                   Navigator.of(context).pop();

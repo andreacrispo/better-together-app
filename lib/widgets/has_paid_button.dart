@@ -14,10 +14,16 @@ class HasPaidWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      color: hasPaid ? Colors.green : Colors.red,
-      textColor: Colors.white,
-      padding: EdgeInsets.all(8.0),
+    return  TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: hasPaid ? Colors.green : Colors.red,
+        textStyle: TextStyle(color: Colors.white),
+        padding: EdgeInsets.all(8.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+      ),
       onPressed: () {
         callback(!hasPaid);
       },

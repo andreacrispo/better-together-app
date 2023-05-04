@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -148,9 +147,13 @@ Timestamp getTimestamp(int yearPaid, int monthPaid) {
   return Timestamp.fromDate(DateTime(yearPaid, monthPaid));
 }
 
+String getDatePaid(int yearPaid, int monthPaid) {
+  return '$yearPaid-$monthPaid-01';
+}
+
 String formatCredit(num credit) {
   if(credit == null)
     return "";
 
-  return  credit.toStringAsFixed(3);
+  return  credit.toStringAsFixed(2);
 }

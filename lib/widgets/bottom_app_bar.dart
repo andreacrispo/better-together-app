@@ -28,18 +28,22 @@ class BTBottomAppBarWidget extends StatelessWidget {
       elevation: 5,
       shape: const CircularNotchedRectangle(),
       child: Row(children: <Widget>[
+        /*
         IconButton(
             color: target == ServiceListWidget.routeName ? Theme.of(context).accentColor : Colors.white,
             iconSize: 36,
             icon: const Icon(Icons.featured_play_list_outlined, semanticLabel: 'Show service list'),
             onPressed: () => _changeRoute(context, ServiceListWidget.routeName, ServiceListWidget())
         ),
+
         IconButton(
             color: target == ParticipantListWidget.routeName ? Theme.of(context).accentColor : Colors.white,
             iconSize: 36,
             icon: const Icon(Icons.supervised_user_circle, semanticLabel: 'Show participants list'),
             onPressed: () => _changeRoute(context,ParticipantListWidget.routeName, ParticipantListWidget())
         ),
+        */
+
         const Expanded(child: SizedBox()),
         /*
         IconButton(
@@ -54,7 +58,7 @@ class BTBottomAppBarWidget extends StatelessWidget {
           : null,
 
         IconButton(
-            iconSize: 36,
+            iconSize: 30,
             icon: Icon(Icons.more_vert),
             onPressed: () => _showMoreMenu(context)
         ),

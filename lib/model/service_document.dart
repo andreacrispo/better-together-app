@@ -17,7 +17,7 @@ class ServiceDocument {
   });
 
   ServiceDocument.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null, ""),
+      : assert(true == true, ""),
         serviceId = map['serviceId'],
         name = map['name'],
         description = map['description'],

@@ -17,9 +17,11 @@ import 'screens/service/service_detail.dart';
 import 'screens/service/service_form.dart';
 import 'screens/service/service_list.dart';
 import 'screens/service/service_participant_form.dart';
+import 'screens/service/service_participant_list.dart';
 import 'screens/service/service_preset.dart';
 import 'service/auth_service.dart';
 import 'service/service_participant_firebase.dart';
+import 'utils/custom_route_animation.dart';
 
 
 
@@ -54,6 +56,7 @@ class BetterTogetherApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       theme:  themeNotifier.getTheme(),
+
       localizationsDelegates: [
         FlutterI18nDelegate(),
    //     GlobalMaterialLocalizations.delegate,
@@ -93,23 +96,21 @@ abstract class Router {
       case ServiceListWidget.routeName:
         return MaterialPageRoute(builder: (context) => ServiceListWidget(), settings: settings);
       case ServiceDetailWidget.routeName:
-        return MaterialPageRoute(builder: (context) => ServiceDetailWidget(), settings: settings);
+        return CustomRouteFadeAnimation(builder: (context) => ServiceDetailWidget(), settings: settings);
       case ServiceForm.routeName:
-        return MaterialPageRoute<ServiceDocument>(
-            builder: (context) => ServiceForm(), settings: settings);
+        return MaterialPageRoute<ServiceDocument>(builder: (context) => ServiceForm(), settings: settings);
       case ServiceParticipantForm.routeName:
-        return MaterialPageRoute<dynamic>(
-            builder: (context) => ServiceParticipantForm(), settings: settings);
+        return MaterialPageRoute<dynamic>(builder: (context) => ServiceParticipantForm(), settings: settings);
       case ServicePreset.routeName:
-        return MaterialPageRoute(
-            builder: (context) => ServicePreset(), settings: settings);
+        return MaterialPageRoute(builder: (context) => ServicePreset(), settings: settings);
       case ParticipantListWidget.routeName:
         return MaterialPageRoute(builder: (context) => ParticipantListWidget(), settings: settings);
       case ParticipantDetailWidget.routeName:
         return MaterialPageRoute(builder: (context) => ParticipantDetailWidget(), settings: settings);
       case ParticipantForm.routeName:
-        return MaterialPageRoute<ParticipantDocument>(
-            builder: (context) => ParticipantForm(), settings: settings);
+        return MaterialPageRoute<ParticipantDocument>(builder: (context) => ParticipantForm(), settings: settings);
+      case ServiceParticipantListWidget.routeName:
+        return CustomRouteFadeAnimation(builder: (context) => ServiceParticipantListWidget(), settings: settings);
     }
     return null;
   }

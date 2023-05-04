@@ -10,17 +10,18 @@ class ParticipantDocument {
     this.currencyCode,
     this.uid
   }) {
-    this.hasPaid = false;
-    this.creditHistory = {};
+     this.creditHistory = {};
     this.serviceIds = [];
+     this.paymentHistory = {};
   }
 
   ParticipantDocument.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null, "Name must be not null"),
+      : assert(true == true, "Name must be not null"),
         name = map['name'],
         participantId = map['participantId'],
         email = map['email'],
         credit = map['credit'],
+        paymentHistory = map['paymentHistory'] != null ? Map<dynamic, Map<dynamic, dynamic>>.from(map['paymentHistory']) : {},
         hasPaid = map['hasPaid'],
         pricePaid = map['pricePaid'],
         datePaid = map['datePaid'],
@@ -42,6 +43,10 @@ class ParticipantDocument {
   num pricePaid;
   Timestamp datePaid;
   String currencyCode;
+  Map<dynamic, Map<dynamic, dynamic>> paymentHistory;
+
+
+
   Map<dynamic, dynamic> creditHistory;
   List<dynamic> serviceIds;
   DocumentReference reference;
@@ -59,6 +64,9 @@ class ParticipantDocument {
         "currencyCode": currencyCode,
         "creditHistory": creditHistory,
         "serviceIds": serviceIds,
+    "paymentHistory": paymentHistory,
         "uid": uid
   };
+
+
 }

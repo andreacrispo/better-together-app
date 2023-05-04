@@ -67,23 +67,49 @@ class ServiceParticipantFirebase {
     await _database.deleteData(path: FireStorePath.service(documentID));
   }
 
-  Stream<List<ParticipantDocument>> getServiceWithParticipants(String serviceId, Timestamp datePaid) {
-    return _database.collectionStream(
+  Stream<List<ParticipantDocument>> getServiceWithParticipants(String serviceId, String datePaid) {
+
+    final hasPaidDate = 'paymentHistory.$datePaid.hasPaid';
+
+    final participantsOfService = _database.collectionStream(
       path: FireStorePath.participantsOfService(serviceId),
       builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference),
-      queryBuilder: (Query query) => query.where('datePaid', isEqualTo: datePaid)
+      queryBuilder: (Query query) => query.where(hasPaidDate, whereIn: [true,false])
     );
+
+    return participantsOfService.map((snapshot) {
+      final result = snapshot
+          .map(( ParticipantDocument snapshot) {
+        snapshot.pricePaid =  snapshot.paymentHistory[datePaid]['pricePaid'];
+        snapshot.hasPaid = snapshot.paymentHistory[datePaid]['hasPaid'];
+              return snapshot;
+          }).toList();
+
+      return result;
+    });
   }
 
-  Future<void> copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
-    final currentPaid = getTimestamp(year, month);
+
+  Stream<List<ParticipantDocument>>  getParticipantsOfService(String serviceId) {
+    final participantsOfService = _database.collectionStream(
+        path: FireStorePath.participantsOfService(serviceId),
+        builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference),
+    );
+    return participantsOfService;
+  }
+
+
+    Future<void> copyParticipantsFromPreviousMonth(String serviceId, int year, int month) async {
+    final currentPaid = getDatePaid(year, month);
+    int prevMonth = month;
+    int prevYear = year;
     if (month - 1 <= 0) {
-      month = 12;
-      year -= 1;
+      prevMonth = 12;
+      prevYear -= 1;
     } else {
-      month -= 1;
+      prevMonth -= 1;
     }
-    final previousPaid = getTimestamp(year, month);
+    final previousPaid = getDatePaid(prevYear, prevMonth);
 
     await this.copyParticipantsFromAnotherDate(
       serviceId: serviceId,
@@ -94,27 +120,28 @@ class ServiceParticipantFirebase {
 
   Future<void> copyParticipantsFromAnotherDate({
     String serviceId,
-    Timestamp fromAnotherTimestamp,
-    Timestamp currentToTimestamp
+    String fromAnotherTimestamp,
+    String currentToTimestamp
   }) async {
 
+    final hasPaidDate = 'paymentHistory.$fromAnotherTimestamp.hasPaid';
     final QuerySnapshot previousParticipants = await FirebaseFirestore.instance
           .collection("services")
           .doc(serviceId)
           .collection('participants')
           .where('uid', isEqualTo: this.uid)
-          .where('datePaid', isEqualTo: fromAnotherTimestamp)
+          .where(hasPaidDate, whereIn: [true,false])
           .get();
 
     for(final DocumentSnapshot snapshot in previousParticipants.docs){
       Map<String, dynamic> data = snapshot.data();
 
-
-        data['datePaid'] = currentToTimestamp;
-       data['pricePaid'] = null;
-       data['hasPaid'] = false;
-
        final participant = ParticipantDocument.fromMap(data);
+      Map<String, dynamic> values = {
+        'hasPaid': false,
+        'pricePaid': 0
+      };
+       participant.paymentHistory.putIfAbsent(currentToTimestamp, () => values);
        await this.addParticipantIntoService(serviceId: serviceId, participant: participant, useCredit: false);
     }
 
@@ -124,53 +151,85 @@ class ServiceParticipantFirebase {
   addParticipantIntoService({String serviceId, ParticipantDocument participant, bool useCredit}) async {
     final String participantId = participant.participantId;
 
-    if(participant.hasPaid && useCredit) {
+    Map<String, dynamic> pricePaid = {};
+    if(participant.hasPaid != null && participant.hasPaid && useCredit) {
       participant.credit -= participant.pricePaid;
       final String dateKey = Timestamp.now().toDate().toIso8601String();
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
+      pricePaid = {
+        'hasPaid': true,
+        'pricePaid': participant.pricePaid
+      };
+    } else {
+      pricePaid = {
+        'hasPaid': false,
+        'pricePaid': 0
+      };
     }
 
     final serviceListIds = participant.serviceIds.toSet()..add(serviceId);
+    final datePaid = participant.datePaid != null ? participant.datePaid.toDate()  : Timestamp.now().toDate();
+
+    participant.paymentHistory.putIfAbsent(getDatePaid(datePaid.year, datePaid.month), () => pricePaid);
+    participant.serviceIds = serviceListIds.toList();
 
     await _database.setData(
         path: FireStorePath.participant(participantId),
-        data: {
-          'credit': participant.credit,
-          'creditHistory': participant.creditHistory,
-          'serviceIds': serviceListIds.toList()
-        },
+        data: participant.toMap(),
         merge: true
     );
 
-    await _database.addData(path: FireStorePath.participantsOfService(serviceId), data: participant.toMap());
+
+    await _database.setData(
+        path: FireStorePath.serviceParticipant(serviceId, participantId),
+        data: participant.toMap(),
+        merge: true
+    );
   }
 
   Future<void> editParticipantFromService({String serviceId, ParticipantDocument participant, bool useCredit}) async {
 
-    if(useCredit && participant.pricePaid != null) {
+    final String participantId = participant.participantId;
+
+    Map<String, dynamic> pricePaid = {};
+    if(participant.hasPaid != null && participant.hasPaid && useCredit) {
       participant.credit -= participant.pricePaid;
       final String dateKey = Timestamp.now().toDate().toIso8601String();
       participant.creditHistory.putIfAbsent(dateKey, () => participant.credit);
+      pricePaid = {
+        'hasPaid': true,
+        'pricePaid': participant.pricePaid
+      };
+    } else {
+      pricePaid = {
+        'hasPaid': false,
+        'pricePaid': 0
+      };
     }
 
     final serviceListIds = participant.serviceIds.toSet()..add(serviceId);
+    final datePaid = participant.datePaid != null ? participant.datePaid.toDate()  : Timestamp.now().toDate();
 
+
+    final datePaidKey = getDatePaid(datePaid.year, datePaid.month);
+    if(participant.paymentHistory.containsKey(datePaidKey)){
+      participant.paymentHistory[datePaidKey] = pricePaid;
+    }else {
+      participant.paymentHistory.putIfAbsent(getDatePaid(datePaid.year, datePaid.month), () => pricePaid);
+    }
+    participant.serviceIds = serviceListIds.toList();
 
     await _database.setData(
-        path: FireStorePath.participant(participant.participantId),
-        data: {
-          'credit': participant.credit,
-          'creditHistory': participant.creditHistory,
-          'serviceIds': serviceListIds.toList()
-        },
+        path: FireStorePath.participant(participantId),
+        data: participant.toMap(),
         merge: true
     );
 
-    final String docRefId =  participant.reference.id;
 
     await _database.setData(
-        path: FireStorePath.serviceParticipant(serviceId, docRefId),
-        data: participant.toMap()
+        path: FireStorePath.serviceParticipant(serviceId, participantId),
+        data: participant.toMap(),
+        merge: true
     );
   }
 

@@ -35,10 +35,6 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
     return InputDecoration(
       labelText: labelText,
       fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        borderSide: BorderSide(),
-      ),
       //fillColor: Colors.green
     );
   }
@@ -75,7 +71,6 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
             if (!snapshot.hasData) {
               return LinearProgressIndicator();
             }
-
             return Center(
               child: DropdownButton(
                 hint: Text( i18n(context, 'participant')  ),
@@ -108,7 +103,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         children: <Widget>[
           Text(i18n(context, "has_paid")),
           Switch(
-            value: _participant.hasPaid ?? true,
+            value: _participant.hasPaid ?? false,
             onChanged: (value) {
               setState(() {
                 _participant.hasPaid = value;
@@ -127,7 +122,7 @@ class _ServiceParticipantFormState extends State<ServiceParticipantForm> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text("${i18n(context,"credit")}: ", style: TextStyle(fontSize: 18),),
-          Text(_participant.credit != null ? _participant.credit.toString() : "0",style: TextStyle(fontSize: 18),),
+          Text(_participant.credit != null ? formatCredit(_participant.credit).toString() : "0",style: TextStyle(fontSize: 18),),
           Text(i18n(context,'money_from_credit'),),
           Switch(
             value: _useCredit,
