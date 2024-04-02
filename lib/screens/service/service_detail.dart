@@ -278,19 +278,16 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
                         value: 1,
                         child: Text(i18n(context, 'edit')),
                       ),
-                      /*
                       PopupMenuItem(
                         value: 2,
                         child: Text(i18n(context, 'delete')),
                       ),
-                      */
-
                     ],
                     onSelected: (value) {
                       if (value == 1) {
                         editParticipantFromService(participant);
                       } else if (value == 2) {
-                        deleteParticipantFromService(participant);
+                        removeParticipantPaymentFromService(participant);
                       }
                     },
                     icon: Icon(Icons.more_vert),
@@ -356,8 +353,8 @@ class ServiceDetailWidgetState extends State<ServiceDetailWidget> {
     }
   }
 
-  deleteParticipantFromService(ParticipantDocument participant) async {
-    await _repository.deleteParticipantFromService(currentServiceId, participant);
+  removeParticipantPaymentFromService(ParticipantDocument participant) async {
+    await _repository.removeParticipantPaymentFromService(currentServiceId, serviceDetailArgs.yearPaid, serviceDetailArgs.monthPaid, participant);
     setState(() {});
   }
 

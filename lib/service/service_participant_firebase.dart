@@ -94,6 +94,7 @@ class ServiceParticipantFirebase {
     final participantsOfService = _database.collectionStream(
         path: FireStorePath.participantsOfService(serviceId),
         builder: (data, reference) => ParticipantDocument.fromMap(data, reference: reference),
+        sort: (a, b) => a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase())
     );
     return participantsOfService;
   }
@@ -281,7 +282,7 @@ class ServiceParticipantFirebase {
           Map<String, dynamic>  participantMapData = docParticipant.data();
 
 
-          participantMapData['name'] = edited.name;
+       participantMapData['name'] = edited.name;
        participantMapData['credit'] = edited.credit;
 
 
@@ -303,6 +304,28 @@ class ServiceParticipantFirebase {
   Future<void> deleteParticipant(String documentID) async {
     await _database.deleteData(path: FireStorePath.participant(documentID));
   }
+
+
+  Future<void> removeParticipantPaymentFromService(String serviceId, int yearPaid, int monthPaid, ParticipantDocument participant) async {
+
+    final String participantId = participant.participantId;
+    String datePaid = getDatePaid(yearPaid, monthPaid);
+    participant.paymentHistory.remove(datePaid);
+
+    final participantMap = participant.toMap();
+    await _database.setData(
+        path: FireStorePath.participant(participantId),
+        data: participantMap,
+        merge: false
+    );
+
+    await _database.setData(
+        path: FireStorePath.serviceParticipant(serviceId, participantId),
+        data: participantMap,
+        merge: false
+    );
+  }
+
 
 
 }

@@ -154,18 +154,18 @@ class ServiceDetailWidgetState extends State<ServiceParticipantListWidget> {
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColorDark,
             borderRadius: BorderRadius.circular(4.0),
           ),
           child:
           ListTile(
           onTap: () => _openParticipantDetail(participant),
-            contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 2.0),
             title: Text(
               "${participant.name}",
               style: TextStyle(color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 28),
+                  fontSize: 20),
             ),
             trailing: Text(
                 "${i18n(context,'credit')}: ${formatCredit(participant.credit)} $currencySymbol",
